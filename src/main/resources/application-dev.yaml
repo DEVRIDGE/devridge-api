@@ -1,0 +1,42 @@
+server:
+  port: 8081
+spring:
+  # TODO 보안 필요
+  jwt:
+    secretKey: test123
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 173999742423-ei2qhaat1p1g4lh8btp5ga129di0sg64.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MySQL
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: true
+    show-sql: true
+    output:
+      ansi:
+        enabled: always
+
+logging:
+  level:
+    org.hibernate.type: TRACE
+    io.devridge.api: DEBUG
