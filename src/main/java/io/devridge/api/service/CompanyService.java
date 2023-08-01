@@ -5,8 +5,6 @@ import io.devridge.api.domain.company_job.CompanyRepository;
 import io.devridge.api.dto.CompanyResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
