@@ -16,7 +16,7 @@ public class JobController {
     private final JobService jobService;
 
     @GetMapping("/jobs")
-    public ResponseEntity jobList() {
+    public ResponseEntity<ApiResponse<Object>> jobList() {
         JobResponseDto jobResponseDto = jobService.jobList();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(jobResponseDto));
     }
