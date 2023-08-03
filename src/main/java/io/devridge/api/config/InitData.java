@@ -19,6 +19,9 @@ public class InitData {
         Company company1 = makeCompany("토스증권");
         Job job1 = makeJob("백엔드");
         CompanyJob companyJob = mkaeCompanyJob(company1, job1);
+
+        // 로드맵 추가
+
     }
 
     private Company makeCompany(String name) {
@@ -35,5 +38,7 @@ public class InitData {
         CompanyJob companyJob = new CompanyJob(company, job);
         return companyJobRepository.save(companyJob);
     }
+
+
 
 }
