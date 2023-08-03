@@ -17,15 +17,4 @@ public class CompanyService {
 
         return new CompanyResponseDto(companyList);
     }
-
-    /**
-     * 테스트용 코드
-     */
-//    @PostConstruct
-//    public void init() {
-//        Company company1 = new Company(1L, "test1", "test");
-//        Company company2 = new Company(2L, "test2", "test");
-//        companyRepository.save(company1);
-//        companyRepository.save(company2);
-//    }
 }
