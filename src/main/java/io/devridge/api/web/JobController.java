@@ -1,6 +1,7 @@
 package io.devridge.api.web;
 
 import io.devridge.api.dto.JobResponseDto;
+import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.service.JobService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,6 @@ public class JobController {
     @GetMapping("/jobs")
     public ResponseEntity jobList() {
         JobResponseDto jobResponseDto = jobService.jobList();
-        return ResponseEntity.status(HttpStatus.OK).body(jobResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(jobResponseDto));
     }
 }

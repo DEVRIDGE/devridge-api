@@ -24,4 +24,9 @@ public class Company extends BaseTimeEntity {
 
     @Column(name ="company_logo")
     private String logo;
+
+    public Company(String name, String logo) {
+        this.name = name;
+        this.logo = logo;
+    }
 }
