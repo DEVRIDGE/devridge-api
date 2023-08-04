@@ -25,4 +25,9 @@ public class EmploymentSkill extends BaseTimeEntity {
     @JoinColumn(name = "employment_info_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private EmploymentInfo employmentInfo;
+
+    public EmploymentSkill(String name, EmploymentInfo employmentInfo) {
+        this.name = name;
+        this.employmentInfo = employmentInfo;
+    }
 }
