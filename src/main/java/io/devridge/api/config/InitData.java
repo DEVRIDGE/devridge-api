@@ -93,7 +93,7 @@ public class InitData {
             String key = ((String)iter.next());
             CourseInfo values = roadmap.get(key);
             List<String> courseDetails = values.getCourseDetails();
-            Course course = new Course(key, values.getCourseType(), String.valueOf(cor++), job); // 좌표 0부터 1씩 증가하도록 저장하였음
+            Course course = new Course(key, values.getCourseType(), cor++, job); // 좌표 0부터 1씩 증가하도록 저장하였음
 
             courseRepository.save(course);
             for(String courseName : courseDetails) {

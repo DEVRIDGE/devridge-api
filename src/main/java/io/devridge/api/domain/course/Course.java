@@ -28,17 +28,17 @@ public class Course extends BaseTimeEntity {
     @Column(name = "course_type")
     private CourseType type;
 
-    @Column(name = "course_coordinate")
-    private String coordinate;
+    @Column(name = "course_turn")
+    private int turn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id")
     private Job job;
 
-    public Course(String name, CourseType type, String coordinate, Job job) {
+    public Course(String name, CourseType type, int turn, Job job) {
         this.name = name;
         this.type = type;
-        this.coordinate = coordinate;
+        this.turn = turn;
         this.job = job;
     }
 }
