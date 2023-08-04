@@ -34,4 +34,11 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id")
     private Job job;
+
+    public Course(String name, CourseType type, String coordinate, Job job) {
+        this.name = name;
+        this.type = type;
+        this.coordinate = coordinate;
+        this.job = job;
+    }
 }

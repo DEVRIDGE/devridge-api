@@ -16,7 +16,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/companies")
-    public ResponseEntity companyList() {
+    public ResponseEntity<ApiResponse<Object>> companyList() {
         CompanyResponseDto companyResponseDto = companyService.companyList();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(companyResponseDto));
     }

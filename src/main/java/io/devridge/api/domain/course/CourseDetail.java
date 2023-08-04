@@ -25,4 +25,9 @@ public class CourseDetail extends BaseTimeEntity {
     @JoinColumn(name = "course_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
+
+    public CourseDetail(String name, Course course) {
+        this.name = name;
+        this.course = course;
+    }
 }
