@@ -1,3 +1,3 @@
 ﻿Language,iOS Technologies,Cocoa Design Pattern,Network Programming,System Framework,Reactive Programming,Data Persistance,Testing,Build & Deployment,App Store
 Swift| Objective-C,LifeCycle| App Architect| view-viewController|multi-touch event handling,MVC| Singleton| Delegate|Responder Chain| Observer,RESTful APIs|TCP/IP Socket APIs,Core Foundation| Cocoa Touch,Combine| SwiftUI| RxSwift|ReactiveCocoa,Sqllite| Realm| Keychain| JSON| Plist|KeyedArchiver| iCloud| Firebase,XCTest(TDD| Quick/Nimble)| UI Test|Code Coverage,jenkins| travis| bitrise| fastlane|Xcode server|GA| Firebase| TestFlight| UserHabit,Review Guideline| iTunes Connect|Lucky Reviewer
-,,,CS,,,,,,
+SKILL,SKILL,SKILL,CS,SKILL,SKILL,SKILL,SKILL,SKILL,SKILL
