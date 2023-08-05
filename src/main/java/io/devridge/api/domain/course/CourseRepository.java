@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<List<Course>> findByJobId(Long jobId);
+    Optional<List<Course>> findByIdAndJobId(Long courseId, Long jobId);
 }
