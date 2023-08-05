@@ -1,6 +1,7 @@
 package io.devridge.api.domain.employment;
 
 import io.devridge.api.domain.BaseTimeEntity;
+import io.devridge.api.domain.course.CourseDetail;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,10 @@ public class EmploymentSkillCourseDetail extends BaseTimeEntity {
 
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private EmploymentInfo employmentInfo;
+    private CourseDetail courseDetail;
 
-    public EmploymentSkillCourseDetail(EmploymentSkill employmentSkill, EmploymentInfo employmentInfo) {
+    public EmploymentSkillCourseDetail(EmploymentSkill employmentSkill, CourseDetail courseDetail) {
         this.employmentSkill = employmentSkill;
-        this.employmentInfo = employmentInfo;
+        this.courseDetail = courseDetail;
     }
 }

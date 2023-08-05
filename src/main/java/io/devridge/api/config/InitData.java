@@ -181,6 +181,8 @@ public class InitData {
             employmentSkillRepository.save(employmentSkill);
 
             // EmploymentSkillCourseDetail 저장 TODO
+//            EmploymentSkillCourseDetail employmentSkillCourseDetail = new EmploymentSkillCourseDetail(employmentSkill, );
+//            employmentSkillCourseDetailRepository.save()
         }
     }
 }
