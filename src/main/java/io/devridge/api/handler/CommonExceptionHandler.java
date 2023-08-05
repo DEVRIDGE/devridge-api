@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class CustomExceptionHandler {
+public class CommonExceptionHandler {
 
     private static final String BAD_REQUEST_MESSAGE = "잘못된 형식 요청";
     private static final String NOT_FOUND_MESSAGE = "잘못된 주소 요청";
