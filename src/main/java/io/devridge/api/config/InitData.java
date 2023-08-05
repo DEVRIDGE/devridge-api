@@ -3,6 +3,7 @@ package io.devridge.api.config;
 import io.devridge.api.domain.company_job.*;
 import io.devridge.api.domain.course.*;
 import io.devridge.api.domain.employment.*;
+import io.devridge.api.service.EmploymentService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,7 +32,8 @@ public class InitData {
 
     private final EmploymentInfoRepository employmentInfoRepository;
     private final EmploymentSkillRepository employmentSkillRepository;
-    private final EmploymentSkillCourseDetailRepository employmentSkillCourseDetailRepository;
+
+    private final EmploymentService employmentService;
 
     @PostConstruct
     public void init() throws IOException {
@@ -53,26 +54,33 @@ public class InitData {
         CompanyJob cj4 = makeCompanyJob(toss, androidJob);
         CompanyJob cj5 = makeCompanyJob(toss, iosJob);
 
-
-
         // 로드맵 초기화
-        makeRoadMap("roadmap/backend.csv", backendJob);
-        makeRoadMap("roadmap/frontend.csv", frontendJob);
-        makeRoadMap("roadmap/devops.csv", devopsJob);
-        makeRoadMap("roadmap/android.csv", androidJob);
-        makeRoadMap("roadmap/ios.csv", iosJob);
-
+        Map<String, CourseInfo> stringCourseInfoMap = makeRoadMap("roadmap/backend.csv", backendJob);
+        Map<String, CourseInfo> stringCourseInfoMap1 = makeRoadMap("roadmap/frontend.csv", frontendJob);
+        Map<String, CourseInfo> stringCourseInfoMap2 = makeRoadMap("roadmap/devops.csv", devopsJob);
+        Map<String, CourseInfo> stringCourseInfoMap3 = makeRoadMap("roadmap/android.csv", androidJob);
+        Map<String, CourseInfo> stringCourseInfoMap4 = makeRoadMap("roadmap/ios.csv", iosJob);
 
 
         // 채용정보 초기화
-        String testEmploymentSkills = "Java, Kotlin, Spring Framework, JPA/Hibernate, Netty," +
+        String testEmploymentSkills1 = "Java, Kotlin, Spring Framework, JPA/Hibernate, Netty," +
                 "MySQL, Oracle, Redis, MongoDB, Kafka, Elasticsearch, InfluxDB, Grafana," +
                 "ELK 스택, Tomcat, JVM, OS, 네트워크, 인프라, 성능 튜닝, 실시간 데이터 처리, 네트워크 프로그래밍"; // 토스 >> 토스 증권 >> Platform 데이터
 
-        makeEmployment(toss, backendJob, "채용정보 테스트 텍스트", testEmploymentSkills);
+        String testEmploymentSkills2 = "Java, Kotlin, Spring Framework, JPA/Hibernate, Netty," +
+                "MySQL, Oracle, Redis, MongoDB, Kafka, Elasticsearch, InfluxDB, Grafana, Kubernetes, ELK"; // 토스 >> 토스 증권 >> Product 데이터
+
+        // 토스 증권의 백엔드(Server Developer) 직무
+        EmploymentInfo employmentInfo1 = makeEmploymentInfo(toss, backendJob, "토스 증권, Server Developer, Platform 테스트 채용 정보");
+        EmploymentInfo employmentInfo2 = makeEmploymentInfo(toss, backendJob, "토스 증권, Server Developer, Product 테스트 채용 정보");
+
+        List<EmploymentSkill> employmentSkills1 = makeEmploymentSkills(employmentInfo1, testEmploymentSkills1);
+        List<EmploymentSkill> employmentSkills2 = makeEmploymentSkills(employmentInfo2, testEmploymentSkills2);
+
+        // 토스의 백엔드 직무 스킬과 관련된 CourseDetail을 EmploymentSkillCourseDetailRepository에 연관시켜 저장
+        employmentService.fillEmploymentSkillCourseDetailRepository(employmentInfo1.getCompany().getId(), employmentInfo1.getJob().getId());
+
     }
-
-
 
     private Company makeCompany(String name) {
         Company company = new Company(name, "");
@@ -140,9 +148,6 @@ public class InitData {
             }
 
             roadmap.put(records.get(0).get(i), courseInfo);
-
-//            log.info("중분류: {}, 세부기술: {}, CS 여부: {}", records.get(0).get(i),
-//                    roadmap.get(records.get(0).get(i)).getCourseDetails(), roadmap.get(records.get(0).get(i)).getCourseType());
         }
         return roadmap;
     }
@@ -167,22 +172,24 @@ public class InitData {
         private List<String> courseDetails;
         private CourseType courseType;
     }
-
-    private void makeEmployment(Company company, Job job, String text, String skillsStr) {
+    public EmploymentInfo makeEmploymentInfo(Company company, Job job, String text) {
         // EmploymentInfo DB 저장
         EmploymentInfo employmentInfo = new EmploymentInfo(text, LocalDate.now(), company, job);// startDate에는 임시로 현재시간이 저장되도록 함
         employmentInfoRepository.save(employmentInfo);
 
+        return employmentInfo;
+    }
+
+    public List<EmploymentSkill> makeEmploymentSkills(EmploymentInfo employmentInfo, String skillsStr) {
         // EmploymentSkill 파싱 후 DB 저장
+        List<EmploymentSkill> employmentSkills = new ArrayList<>();
         String[] skills = skillsStr.split(",");
-        for(int i = 0; i < skills.length; i++){
+        for(int i = 0; i < skills.length; i++) {
             skills[i] = skills[i].strip();
             EmploymentSkill employmentSkill = new EmploymentSkill(skills[i], employmentInfo);
+            employmentSkills.add(employmentSkill);
             employmentSkillRepository.save(employmentSkill);
-
-            // EmploymentSkillCourseDetail 저장 TODO
-//            EmploymentSkillCourseDetail employmentSkillCourseDetail = new EmploymentSkillCourseDetail(employmentSkill, );
-//            employmentSkillCourseDetailRepository.save()
         }
+        return employmentSkills;
     }
 }
