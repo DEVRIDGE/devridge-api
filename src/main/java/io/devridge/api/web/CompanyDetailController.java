@@ -15,8 +15,8 @@ public class CompanyDetailController {
     private final CourseDetailService courseDetailService;
     @GetMapping("/courses/{courseId}")
     public ResponseEntity<ApiResponse<Object>> courseDetailList(@PathVariable Long courseId,
-                                                                @RequestParam Long companyId,
-                                                                @RequestParam Long jobId) {
+                                                                @RequestParam("company") Long companyId,
+                                                                @RequestParam("job") Long jobId) {
         CourseDetailResponseDto courseDetails = courseDetailService.getCourseDetails(courseId, companyId, jobId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetails));
