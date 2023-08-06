@@ -2,6 +2,7 @@ package io.devridge.api.domain.company_job;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,6 +27,13 @@ public class Company extends BaseTimeEntity {
     private String logo;
 
     public Company(String name, String logo) {
+        this.name = name;
+        this.logo = logo;
+    }
+
+    @Builder
+    public Company(Long id, String name, String logo) {
+        this.id = id;
         this.name = name;
         this.logo = logo;
     }
