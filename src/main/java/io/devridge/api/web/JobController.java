@@ -3,7 +3,6 @@ package io.devridge.api.web;
 import io.devridge.api.dto.JobResponseDto;
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.service.JobService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

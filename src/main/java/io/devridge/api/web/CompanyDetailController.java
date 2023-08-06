@@ -6,20 +6,17 @@ import io.devridge.api.service.CourseDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class RoadmapController {
+public class CompanyDetailController {
 
     private final CourseDetailService courseDetailService;
-    @PostMapping("/courses/{courseId}")
-    public ResponseEntity<ApiResponse<Object>> courseDetailList(@RequestParam Long companyId,
-                                                                @RequestParam Long jobId,
-                                                                @PathVariable Long courseId) {
+    @GetMapping("/courses/{courseId}")
+    public ResponseEntity<ApiResponse<Object>> courseDetailList(@PathVariable Long courseId,
+                                                                @RequestParam Long companyId,
+                                                                @RequestParam Long jobId) {
         CourseDetailResponseDto courseDetails = courseDetailService.getCourseDetails(courseId, companyId, jobId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetails));

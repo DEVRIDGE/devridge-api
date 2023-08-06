@@ -1,7 +1,5 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.course.Course;
-import io.devridge.api.domain.course.CourseDetail;
 import io.devridge.api.domain.course.CourseDetailRepository;
 import io.devridge.api.domain.course.CourseRepository;
 import io.devridge.api.domain.employment.*;
@@ -17,11 +15,6 @@ import java.util.*;
 @Transactional
 @RequiredArgsConstructor
 public class EmploymentService {
-    private final CourseDetailRepository courseDetailRepository;
-    private final CourseRepository courseRepository;
-
-    private final EmploymentInfoRepository employmentInfoRepository;
-    private final EmploymentSkillRepository employmentSkillRepository;
     private final EmploymentSkillCourseDetailRepository employmentSkillCourseDetailRepository;
 
     /**
