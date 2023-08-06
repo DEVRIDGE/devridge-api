@@ -5,9 +5,11 @@ import io.devridge.api.domain.course.CourseDetail;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +22,7 @@ public class EmploymentSkillCourseDetail extends BaseTimeEntity {
     @Column(name = "employment_skill_course_detail_id")
     private Long id;
 
+    @NotNull
     @JoinColumn(name = "employment_skill_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private EmploymentSkill employmentSkill;

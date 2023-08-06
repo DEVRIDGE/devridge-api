@@ -78,7 +78,7 @@ public class InitData {
         List<EmploymentSkill> employmentSkills2 = makeEmploymentSkills(employmentInfo2, testEmploymentSkills2);
 
         // 토스의 백엔드 직무 스킬과 관련된 CourseDetail을 EmploymentSkillCourseDetailRepository에 연관시켜 저장
-        employmentService.fillEmploymentSkillCourseDetailRepository(employmentInfo1.getCompany().getId(), employmentInfo1.getJob().getId());
+        employmentService.saveEmploymentSkillCourseDetailRepository(employmentInfo1.getCompany().getId(), employmentInfo1.getJob().getId());
 
     }
 
