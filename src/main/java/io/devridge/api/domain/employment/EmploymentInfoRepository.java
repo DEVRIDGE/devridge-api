@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmploymentInfoRepository extends JpaRepository<EmploymentInfo, Long> {
-    Optional<List<EmploymentInfo>> findByCompanyIdAndJobId(Long companyId, Long jobId);
+    List<EmploymentInfo> findByCompanyIdAndJobId(Long companyId, Long jobId);
 }

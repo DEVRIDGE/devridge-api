@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmploymentSkillRepository extends JpaRepository<EmploymentSkill, Long> {
-    public Optional<List<EmploymentSkill>> findByEmploymentInfoId(Long employmentId);
+    public List<EmploymentSkill> findByEmploymentInfoId(Long employmentId);
 
 }
