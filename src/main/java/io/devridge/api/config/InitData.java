@@ -93,22 +93,22 @@ public class InitData {
         makeCourseVideo("Java 입문 수업 (생활코딩)",
                 "https://www.youtube.com/watch?v=jdTsJzXmgU0&list=PLuHgQVnccGMCeAy-2-llhw3nWoQKUvQck",
                 "https://i.ytimg.com/vi/jdTsJzXmgU0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCT4bu6PPAaGC3galZnG6OzwaQuZg",
-                VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
+                1, VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
 
         makeCourseVideo("자바의 정석 기초편(2020최신)",
                 "https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp",
                 "https://i.ytimg.com/vi/oJlCC1DutbA/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDwdzPZDDpa0H6LMtRsd7sSDGShwg",
-                VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
+                10, VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
 
         makeCourseVideo("DATABASE2 - MySQL",
                 "https://www.youtube.com/watch?v=h_XDmyz--0w&list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW",
                 "https://i.ytimg.com/vi/h_XDmyz--0w/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBCcUBhCuE5O9Jr0KxacnPRJ0JN_w",
-                VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
+                0, VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
 
         makeCourseVideo("이것이 MySQL이다",
                 "https://www.youtube.com/watch?v=KLZWDOK8kZM&list=PLVsNizTWUw7HhYtI-4GGmlJ5yxNdwNI_X",
                 "https://i.ytimg.com/vi/KLZWDOK8kZM/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBY2w_opeKGaxCzQIIFSLzbYVKKTA",
-                VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
+                100, VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
 
     }
 
@@ -223,8 +223,8 @@ public class InitData {
         return employmentSkills;
     }
 
-    private CourseVideo makeCourseVideo(String title, String url, String thumbnail, VideoSource source, CourseDetail courseDetail) {
-        CourseVideo courseVideo = new CourseVideo(title, url, thumbnail, source, courseDetail);
+    private CourseVideo makeCourseVideo(String title, String url, String thumbnail, Integer likeCnt, VideoSource source, CourseDetail courseDetail) {
+        CourseVideo courseVideo = new CourseVideo(title, url, thumbnail, likeCnt, source, courseDetail);
         return courseVideoRepository.save(courseVideo);
     }
 }

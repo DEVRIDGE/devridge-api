@@ -1,6 +1,7 @@
 package io.devridge.api.web;
 
 import io.devridge.api.dto.CourseDetailResponseDto;
+import io.devridge.api.dto.CourseVideoResponseDto;
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.service.CourseService;
@@ -34,5 +35,14 @@ public class CourseController {
         CourseDetailResponseDto courseDetailList = courseService.getCourseDetailList(courseId, companyId, jobId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailList));
+    }
+
+    @GetMapping("/courses/{courseId}/videos")
+    public ResponseEntity<ApiResponse<Object>> courseVideoList(@PathVariable Long courseId,
+                                                               @RequestParam("company") Long companyId,
+                                                               @RequestParam("job") Long jobId,
+                                                               @RequestParam("coursedetail") Long courseDetailId) {
+        CourseVideoResponseDto courseVideoList = courseService.getCourseVideoList(courseId, courseDetailId, companyId, jobId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
     }
 }
