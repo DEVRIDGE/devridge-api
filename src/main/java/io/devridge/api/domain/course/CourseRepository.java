@@ -7,8 +7,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-
     @Query("SELECT c FROM Course c WHERE c.job.id = :jobId ORDER BY c.turn, CASE c.type WHEN 'SKILL' THEN 0 WHEN 'CS' THEN 1 ELSE 2 END")
     List<Course> getCourseListByJob(@Param("jobId") long jobId);
-
 }

@@ -2,11 +2,7 @@ package io.devridge.api.dto;
 
 import io.devridge.api.domain.company_job.Company;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.Entity;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

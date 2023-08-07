@@ -35,4 +35,11 @@ public class EmploymentInfo extends BaseTimeEntity {
     @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
+
+    public EmploymentInfo(String text, LocalDate startDate, Company company, Job job) {
+        this.text = text;
+        this.startDate = startDate;
+        this.company = company;
+        this.job = job;
+    }
 }
