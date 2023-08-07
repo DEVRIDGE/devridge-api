@@ -20,8 +20,8 @@ public class CourseVideo extends BaseTimeEntity {
     @Column(name = "course_video_id")
     private Long id;
 
-    @Column(name = "course_video_name")
-    private String name;
+    @Column(name = "course_video_title")
+    private String title;
 
     @Column(name = "course_video_url")
     private String url;
@@ -36,4 +36,12 @@ public class CourseVideo extends BaseTimeEntity {
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
+
+    public CourseVideo(String title, String url, String thumbnail, VideoSource source, CourseDetail courseDetail) {
+        this.title = title;
+        this.url = url;
+        this.thumbnail = thumbnail;
+        this.source = source;
+        this.courseDetail = courseDetail;
+    }
 }
