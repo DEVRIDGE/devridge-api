@@ -2,6 +2,7 @@ package io.devridge.api.handler;
 
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
+import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class CourseExceptionHandler {
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleCourseNotFoundException(CourseNotFoundException exception) {
         log.error("CourseNotFoundException = {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
+    }
+
+    @ExceptionHandler(CourseDetailNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCourseDetailNotFoundException(CourseDetailNotFoundException exception) {
+        log.error("CourseDetailNotFoundException = {}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
     }
 }

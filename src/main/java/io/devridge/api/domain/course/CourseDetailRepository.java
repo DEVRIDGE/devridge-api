@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long> {
     List<CourseDetail> findByCourseId(Long courseId);
@@ -15,4 +16,5 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "LEFT JOIN es.employmentInfo ei ON es.employmentInfo.id = ei.id " +
             "WHERE cd.course.id = :courseId AND ei.company.id = :companyId AND ei.job.id = :jobId")
     List<CourseDetail> getCourseDetailListByCourseIdAndCompanyIdAndJobId(@Param("courseId")long courseId,@Param("companyId") long companyId,@Param("jobId") long jobId);
+    CourseDetail findByName(String courseName);
 }

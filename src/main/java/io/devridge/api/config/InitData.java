@@ -3,6 +3,9 @@ package io.devridge.api.config;
 import io.devridge.api.domain.company_job.*;
 import io.devridge.api.domain.course.*;
 import io.devridge.api.domain.employment.*;
+import io.devridge.api.domain.video.CourseVideo;
+import io.devridge.api.domain.video.CourseVideoRepository;
+import io.devridge.api.domain.video.VideoSource;
 import io.devridge.api.service.EmploymentService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,8 @@ public class InitData {
     private final EmploymentSkillRepository employmentSkillRepository;
 
     private final EmploymentService employmentService;
+
+    private final CourseVideoRepository courseVideoRepository;
 
     @PostConstruct
     public void init() throws IOException {
@@ -81,6 +86,29 @@ public class InitData {
 
         // 토스의 백엔드 직무 스킬과 관련된 CourseDetail을 EmploymentSkillCourseDetailRepository에 연관시켜 저장
         employmentService.saveEmploymentSkillCourseDetailRepository(employmentInfo1.getCompany().getId(), employmentInfo1.getJob().getId());
+
+
+
+        // 비디오 테스트 케이스 추가
+        makeCourseVideo("Java 입문 수업 (생활코딩)",
+                "https://www.youtube.com/watch?v=jdTsJzXmgU0&list=PLuHgQVnccGMCeAy-2-llhw3nWoQKUvQck",
+                "https://i.ytimg.com/vi/jdTsJzXmgU0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCT4bu6PPAaGC3galZnG6OzwaQuZg",
+                1, VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
+
+        makeCourseVideo("자바의 정석 기초편(2020최신)",
+                "https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp",
+                "https://i.ytimg.com/vi/oJlCC1DutbA/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDwdzPZDDpa0H6LMtRsd7sSDGShwg",
+                10, VideoSource.YOUTUBE, courseDetailRepository.findByName("Java"));
+
+        makeCourseVideo("DATABASE2 - MySQL",
+                "https://www.youtube.com/watch?v=h_XDmyz--0w&list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW",
+                "https://i.ytimg.com/vi/h_XDmyz--0w/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBCcUBhCuE5O9Jr0KxacnPRJ0JN_w",
+                0, VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
+
+        makeCourseVideo("이것이 MySQL이다",
+                "https://www.youtube.com/watch?v=KLZWDOK8kZM&list=PLVsNizTWUw7HhYtI-4GGmlJ5yxNdwNI_X",
+                "https://i.ytimg.com/vi/KLZWDOK8kZM/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBY2w_opeKGaxCzQIIFSLzbYVKKTA",
+                100, VideoSource.YOUTUBE, courseDetailRepository.findByName("MySQL"));
 
     }
 
@@ -193,5 +221,10 @@ public class InitData {
             employmentSkillRepository.save(employmentSkill);
         }
         return employmentSkills;
+    }
+
+    private CourseVideo makeCourseVideo(String title, String url, String thumbnail, Integer likeCnt, VideoSource source, CourseDetail courseDetail) {
+        CourseVideo courseVideo = new CourseVideo(title, url, thumbnail, likeCnt, source, courseDetail);
+        return courseVideoRepository.save(courseVideo);
     }
 }
