@@ -1,14 +1,13 @@
 package io.devridge.api.service;
 
 import io.devridge.api.domain.company_job.CompanyJobRepository;
-import io.devridge.api.domain.course.Course;
-import io.devridge.api.domain.course.CourseDetail;
-import io.devridge.api.domain.course.CourseDetailRepository;
-import io.devridge.api.domain.course.CourseRepository;
+import io.devridge.api.domain.course.*;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.CourseVideoResponseDto;
+import io.devridge.api.dto.course.CourseIndexList;
+import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
@@ -16,11 +15,14 @@ import io.devridge.api.handler.ex.CourseNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class CourseService {
+
     private final CourseRepository courseRepository;
     private final CompanyJobRepository companyJobRepository;
     private final CourseDetailRepository courseDetailRepository;
@@ -32,8 +34,12 @@ public class CourseService {
 
         List<Course> courseList = courseRepository.getCourseListByJob(jobId);
 
-        return new CourseListResponseDto(courseList);
+        Collection<List<CourseInfoDto>> courseListCollection = groupCourseAndMakeNewList(courseList);
+        List<CourseIndexList> courses = addEmptyListIfSkillNextSkill(courseListCollection);
+
+        return new CourseListResponseDto(courses);
     }
+
     @Transactional(readOnly = true)
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId) {
         validateCompanyJobExists(companyId, jobId);
@@ -61,5 +67,30 @@ public class CourseService {
     private void validateCompanyJobExists(long companyId, long jobId) {
         companyJobRepository.findByCompanyIdAndJobId(companyId, jobId)
                 .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
+    }
+
+    private Collection<List<CourseInfoDto>> groupCourseAndMakeNewList(List<Course> courseList) {
+        return courseList.stream()
+                .map(CourseInfoDto::new)
+                .collect(Collectors.groupingBy(CourseInfoDto::getTurn, TreeMap::new, Collectors.toList()))
+                .values();
+    }
+
+    private List<CourseIndexList> addEmptyListIfSkillNextSkill(Collection<List<CourseInfoDto>> courseListCollection) {
+        List<CourseIndexList> courseListAddEmptyList = new ArrayList<>();
+        int index = 0;
+        CourseType previousCourseType = null;
+
+        for (List<CourseInfoDto> courseInfoList : courseListCollection) {
+            CourseType currentCourseType = !courseInfoList.isEmpty() ? courseInfoList.get(0).getType() : null;
+
+            if (previousCourseType == CourseType.SKILL && currentCourseType == CourseType.SKILL) {
+                courseListAddEmptyList.add(new CourseIndexList(index++, Collections.emptyList()));
+            }
+            courseListAddEmptyList.add(new CourseIndexList(index++, courseInfoList));
+
+            previousCourseType = currentCourseType;
+        }
+        return courseListAddEmptyList;
     }
 }
