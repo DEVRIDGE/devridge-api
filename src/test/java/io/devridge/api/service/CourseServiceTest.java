@@ -54,17 +54,16 @@ class CourseServiceTest {
 
         // when
         CourseListResponseDto courseListResponseDto = courseService.getCourseList(companyId, jobId);
-        
-        // then
-        List<List<CourseListResponseDto.CourseDto>> courseDtoList = courseListResponseDto.getCourseList();
 
-        assertThat(courseDtoList.size()).isEqualTo(4);
-        assertThat(courseDtoList.get(0).get(0).getType()).isEqualTo(CourseType.SKILL);
-        assertThat(courseDtoList.get(0).get(0).getName()).isEqualTo("SKILL1");
-        assertThat(courseDtoList.get(1).size()).isEqualTo(0);
-        assertThat(courseDtoList.get(2).get(0).getName()).isEqualTo("SKILL2");
-        assertThat(courseDtoList.get(2).get(1).getName()).isEqualTo("CS1");
-        assertThat(courseDtoList.get(3).get(0).getName()).isEqualTo("CS2");
+        // then
+        assertThat(courseListResponseDto.getCourseList().size()).isEqualTo(5);
+        assertThat(courseListResponseDto.getCourseList().get(0).getIndex()).isEqualTo(0);
+        assertThat(courseListResponseDto.getCourseList().get(1).getIndex()).isEqualTo(1);
+        assertThat(courseListResponseDto.getCourseList().get(1).getCourses().size()).isEqualTo(0);
+        assertThat(courseListResponseDto.getCourseList().get(2).getCourses().get(0).getName()).isEqualTo("SKILL2");
+        assertThat(courseListResponseDto.getCourseList().get(2).getCourses().get(1).getName()).isEqualTo("CS1");
+        assertThat(courseListResponseDto.getCourseList().get(3).getCourses().get(0).getName()).isEqualTo("CS2");
+        assertThat(courseListResponseDto.getCourseList().get(4).getCourses().get(0).getName()).isEqualTo("SKILL3");
     }
 
     @DisplayName("회사와 직무가 일치하지 않으면 에러를 던진다")
@@ -90,6 +89,7 @@ class CourseServiceTest {
         courseList.add(Course.builder().id(3L).name("SKILL2").type(CourseType.SKILL).turn(3).job(job).build());
         courseList.add(Course.builder().id(2L).name("CS1").type(CourseType.CS).turn(3).job(job).build());
         courseList.add(Course.builder().id(4L).name("CS2").type(CourseType.CS).turn(4).job(job).build());
+        courseList.add(Course.builder().id(5L).name("SKILL3").type(CourseType.SKILL).turn(5).job(job).build());
         return courseList;
     }
 }
