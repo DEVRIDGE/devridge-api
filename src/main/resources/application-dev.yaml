@@ -1,5 +1,11 @@
 server:
   port: 8081
+  error:
+    include-exception: false
+    include-binding-errors: never
+    include-message: never
+    include-stacktrace: never
+
 spring:
   # TODO 보안 필요
   jwt:
@@ -40,3 +46,5 @@ logging:
   level:
     org.hibernate.type: TRACE
     io.devridge.api: DEBUG
+
+
