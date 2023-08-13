@@ -31,7 +31,7 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public CourseListResponseDto getCourseList(long companyId, long jobId) {
-        CompanyJobInfo companyJobInfo = validateCompanyJobAndGetInfo(companyId, jobId);
+        CompanyJobInfo companyJobInfo = findCompanyAndJob(companyId, jobId);
 
         List<Course> courseList = courseRepository.getCourseListByJob(jobId);
 
@@ -43,30 +43,33 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId) {
-        validateCompanyJobAndGetInfo(companyId, jobId);
+        validateCompanyJob(companyId, jobId);
 
         Course courseName = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
         List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
-
 
         return new CourseDetailResponseDto(courseName.getName(), courseDetailList);
     }
 
     @Transactional(readOnly = true)
     public CourseVideoResponseDto getCourseVideoList(long courseId, long courseDetailId, long companyId, long jobId) {
-        validateCompanyJobAndGetInfo(companyId, jobId);
+        validateCompanyJob(companyId, jobId);
 
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
-
 
         List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
 
         return new CourseVideoResponseDto(course.getName(), courseDetail.getName(), courseVideoList);
     }
 
-    private CompanyJobInfo validateCompanyJobAndGetInfo(long companyId, long jobId) {
-        return companyJobRepository.findByCompanyIdAndJobId(companyId, jobId)
+    private CompanyJobInfo findCompanyAndJob(long companyId, long jobId) {
+        return companyJobRepository.findCompanyJobInfo(companyId, jobId)
+                .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
+    }
+
+    private void validateCompanyJob(long companyId, long jobId) {
+        companyJobRepository.findByCompanyIdAndJobId(companyId, jobId)
                 .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
     }
 
