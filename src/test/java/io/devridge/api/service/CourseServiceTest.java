@@ -78,7 +78,7 @@ class CourseServiceTest {
         long jobId = 2L;
 
         // stub
-        when(companyJobRepository.findByCompanyIdAndJobId(companyId, jobId))
+        when(companyJobRepository.findCompanyJobInfo(companyId, jobId))
                 .thenReturn(Optional.empty());
 
         // when & then
