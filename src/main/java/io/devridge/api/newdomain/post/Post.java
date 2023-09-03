@@ -22,7 +22,7 @@ public class Post extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "post_type")
-    private String type;
+    private PostType type;
 
     @Column(name = "post_content")
     private String content;

@@ -1,5 +1,6 @@
 package io.devridge.api.newdomain.user;
 
+import io.devridge.api.domain.course.StudyStatus;
 import io.devridge.api.newdomain.BaseTimeEntity;
 import io.devridge.api.newdomain.roadmap.Roadmap;
 import lombok.AccessLevel;
@@ -23,7 +24,7 @@ public class UserRoadmap extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "roadmap_study_status")
-    private String studyStatus;
+    private StudyStatus studyStatus;
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,8 +1,10 @@
 package io.devridge.api.newdomain.roadmap;
 
+import io.devridge.api.domain.course.CourseType;
 import io.devridge.api.newdomain.BaseTimeEntity;
 import io.devridge.api.newdomain.companyinfo.Job;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,7 +27,7 @@ public class Course extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "course_type")
-    private String type;
+    private CourseType type;
 
     @Column(name = "course_order")
     private Integer order;
@@ -33,4 +35,13 @@ public class Course extends BaseTimeEntity {
     @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
+
+    @Builder
+    public Course(Long id, String name, CourseType type, int order, Job job) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.order = order;
+        this.job = job;
+    }
 }
