@@ -1,6 +1,6 @@
-package io.devridge.api.newdomain.video;
-
-public enum VideoSource {
-
-    YOUTUBE
-}
+//package io.devridge.api.newdomain.video;
+//
+//public enum VideoSource {
+//
+//    YOUTUBE
+//}
