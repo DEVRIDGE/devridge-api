@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "comapny")
 @Entity
 public class Company extends BaseTimeEntity {
 

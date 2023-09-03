@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "company_info")
 @Entity
 public class CompanyInfo {
 

@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "service")
 @Entity
 public class Service extends BaseTimeEntity {
 
@@ -22,7 +21,7 @@ public class Service extends BaseTimeEntity {
 
     @Column(name = "service_name")
     private String name;
-    
+
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
