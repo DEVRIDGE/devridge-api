@@ -39,5 +39,5 @@ out/
 
 src/main/resources/application-prod.yaml
 
-.ds_store
+.DS_Store
 
