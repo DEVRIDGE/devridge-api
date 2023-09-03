@@ -1,5 +1,6 @@
 package io.devridge.api.newdomain.companyinfo;
 
+import io.devridge.api.newdomain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "company_job")
 @Entity
-public class CompanyJob {
+public class CompanyJob extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_job_id")
