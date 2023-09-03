@@ -22,7 +22,7 @@ public class Service extends BaseTimeEntity {
 
     @Column(name = "service_name")
     private String name;
-
+    
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
