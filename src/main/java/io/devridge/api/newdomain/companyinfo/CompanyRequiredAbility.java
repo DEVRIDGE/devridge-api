@@ -30,15 +30,6 @@ public class CompanyRequiredAbility extends BaseTimeEntity {
     private CompanyInfo companyInfo;
 
     @JoinColumn(name = "course_detail_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
-
-    @JoinColumn(name = "course_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
-
-    @JoinColumn(name = "job_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Job job;
-
 }
