@@ -1,6 +1,5 @@
 package io.devridge.api.newdomain.roadmap;
 
-import io.devridge.api.domain.course.CourseType;
 import io.devridge.api.newdomain.BaseTimeEntity;
 import io.devridge.api.newdomain.companyinfo.Job;
 import lombok.AccessLevel;

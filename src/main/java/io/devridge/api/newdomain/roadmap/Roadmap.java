@@ -24,7 +24,7 @@ public class Roadmap extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "roadmap_matching_flag")
-    private String matchingFlag;
+    private MatchingStatus matchingFlag;
 
     @JoinColumn(name = "course_id")
     @ManyToOne(fetch = FetchType.LAZY)

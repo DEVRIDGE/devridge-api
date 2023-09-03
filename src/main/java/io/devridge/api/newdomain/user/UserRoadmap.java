@@ -1,6 +1,5 @@
 package io.devridge.api.newdomain.user;
 
-import io.devridge.api.domain.course.StudyStatus;
 import io.devridge.api.newdomain.BaseTimeEntity;
 import io.devridge.api.newdomain.roadmap.Roadmap;
 import lombok.AccessLevel;

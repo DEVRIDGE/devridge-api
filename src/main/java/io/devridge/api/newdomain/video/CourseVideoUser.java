@@ -1,7 +1,7 @@
 package io.devridge.api.newdomain.video;
 
-import io.devridge.api.domain.BaseTimeEntity;
-import io.devridge.api.domain.user.User;
+import io.devridge.api.newdomain.BaseTimeEntity;
+import io.devridge.api.newdomain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
