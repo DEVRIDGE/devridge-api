@@ -1,9 +1,9 @@
 package io.devridge.api.web;
 
-import io.devridge.api.domain.company_job.*;
-import io.devridge.api.domain.course.Course;
-import io.devridge.api.domain.course.CourseRepository;
-import io.devridge.api.domain.course.CourseType;
+import io.devridge.api.domain.companyinfo.*;
+import io.devridge.api.domain.roadmap.Course;
+import io.devridge.api.domain.roadmap.CourseRepository;
+import io.devridge.api.domain.roadmap.CourseType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,10 +43,10 @@ class CourseControllerTest {
         Company company = companyRepository.save(Company.builder().name("토스 증권").build());
         Job job = jobRepository.save(Job.builder().name("백엔드").build());
         companyJobRepository.save(CompanyJob.builder().company(company).job(job).build());
-        courseRepository.save(Course.builder().name("SKILL1").type(CourseType.SKILL).turn(1).job(job).build());
-        courseRepository.save(Course.builder().name("SKILL2").type(CourseType.SKILL).turn(3).job(job).build());
-        courseRepository.save(Course.builder().name("CS1").type(CourseType.CS).turn(3).job(job).build());
-        courseRepository.save(Course.builder().name("CS2").type(CourseType.CS).turn(4).job(job).build());
+        courseRepository.save(Course.builder().name("SKILL1").type(CourseType.SKILL).order(1).job(job).build());
+        courseRepository.save(Course.builder().name("SKILL2").type(CourseType.SKILL).order(3).job(job).build());
+        courseRepository.save(Course.builder().name("CS1").type(CourseType.CS).order(3).job(job).build());
+        courseRepository.save(Course.builder().name("CS2").type(CourseType.CS).order(4).job(job).build());
     }
 
     @DisplayName("코스 조회 성공")

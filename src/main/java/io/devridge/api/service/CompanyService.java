@@ -1,10 +1,12 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.company_job.Company;
-import io.devridge.api.domain.company_job.CompanyRepository;
+
+import io.devridge.api.domain.companyinfo.Company;
+import io.devridge.api.domain.companyinfo.CompanyRepository;
 import io.devridge.api.dto.CompanyResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

@@ -1,6 +1,6 @@
 package io.devridge.api.dto;
 
-import io.devridge.api.domain.company_job.Company;
+import io.devridge.api.domain.companyinfo.Company;
 import lombok.Getter;
 
 import java.util.List;

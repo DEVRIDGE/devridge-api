@@ -1,6 +1,6 @@
 package io.devridge.api.dto;
 
-import io.devridge.api.domain.course.CourseDetail;
+import io.devridge.api.domain.roadmap.CourseDetail;
 import lombok.Getter;
 
 import java.util.*;

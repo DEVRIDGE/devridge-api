@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
+
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<Object>> getCourseList(
             @RequestParam("company") long companyId,

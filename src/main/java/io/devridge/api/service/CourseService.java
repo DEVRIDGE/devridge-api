@@ -1,7 +1,7 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.company_job.CompanyJobRepository;
-import io.devridge.api.domain.course.*;
+import io.devridge.api.domain.companyinfo.CompanyJobRepository;
+import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.CourseDetailResponseDto;
@@ -46,7 +46,9 @@ public class CourseService {
         validateCompanyJob(companyId, jobId);
 
         Course courseName = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
-        List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
+        // TODO 쿼리수정
+        List<CourseDetail> courseDetailList = null;
+        //List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
 
         return new CourseDetailResponseDto(courseName.getName(), courseDetailList);
     }
