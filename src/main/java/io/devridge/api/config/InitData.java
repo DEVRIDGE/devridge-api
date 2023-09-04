@@ -1,8 +1,13 @@
 //package io.devridge.api.config;
 //
 //import io.devridge.api.domain.company_job.*;
+//import io.devridge.api.domain.companyinfo.*;
 //import io.devridge.api.domain.course.*;
 //import io.devridge.api.domain.employment.*;
+//import io.devridge.api.domain.roadmap.Course;
+//import io.devridge.api.domain.roadmap.CourseDetail;
+//import io.devridge.api.domain.roadmap.CourseDetailRepository;
+//import io.devridge.api.domain.roadmap.CourseRepository;
 //import io.devridge.api.domain.video.CourseVideo;
 //import io.devridge.api.domain.video.CourseVideoRepository;
 //import io.devridge.api.domain.video.VideoSource;

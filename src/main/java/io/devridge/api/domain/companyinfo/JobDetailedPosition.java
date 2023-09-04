@@ -12,17 +12,18 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Service extends BaseTimeEntity {
+public class JobService extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "service_id")
+    @Column(name = "job_service_id")
     private Long id;
 
-    @Column(name = "service_name")
-    private String name;
-
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Company company;
+    private Job job;
+
+    @JoinColumn(name = "service_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DetailedPosition detailedPosition;
 }
