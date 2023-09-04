@@ -24,8 +24,11 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_email")
     private String email;
 
+    @Column(name = "user_name")
+    private String name;
+
     @Column(name = "user_picture")
-    private String picture;
+    private String profilePicture;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
@@ -38,9 +41,9 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Builder
-    public User(String email, String picture, UserRole role, String provider, String providerId) {
+    public User(String email, String profilePicture, UserRole role, String provider, String providerId) {
         this.email = email;
-        this.picture = picture;
+        this.profilePicture = profilePicture;
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;

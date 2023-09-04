@@ -1,8 +1,8 @@
-package io.devridge.api.domain.post;
+package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
-import io.devridge.api.domain.user.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,20 +13,24 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Post extends BaseTimeEntity {
+public class CompanyJob extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "company_job_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "post_type")
-    private PostType type;
-
-    @Column(name = "post_content")
-    private String content;
-
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Job job;
+
+    @JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Company company;
+
+    @Builder
+    public CompanyJob(Long id, Company company, Job job) {
+        this.id = id;
+        this.company = company;
+        this.job = job;
+    }
 }

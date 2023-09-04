@@ -1,11 +1,11 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.company_job.Company;
-import io.devridge.api.domain.company_job.CompanyJobRepository;
-import io.devridge.api.domain.company_job.Job;
-import io.devridge.api.domain.course.Course;
-import io.devridge.api.domain.course.CourseRepository;
-import io.devridge.api.domain.course.CourseType;
+import io.devridge.api.domain.companyinfo.Company;
+import io.devridge.api.domain.companyinfo.CompanyJobRepository;
+import io.devridge.api.domain.companyinfo.Job;
+import io.devridge.api.domain.roadmap.Course;
+import io.devridge.api.domain.roadmap.CourseRepository;
+import io.devridge.api.domain.roadmap.CourseType;
 import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
@@ -37,9 +37,9 @@ class CourseServiceTest {
     @Test
     public void getCourseList_success_test() {
         // given
-        Company company = Company.builder().id(1L).name("test company").logo("test logo").build();
+        Company company = Company.builder().id(1L).name("test company").build();
         Job job = Job.builder().id(1L).name("test job").build();
-        CompanyJobInfo companyJobInfo = CompanyJobInfo.builder().companyName(company.getName()).companyLogo(company.getLogo()).jobName(job.getName()).build();
+        CompanyJobInfo companyJobInfo = CompanyJobInfo.builder().companyName(company.getName()).jobName(job.getName()).build();
 
         List<Course> courseList = makeCourseList(job);
 
@@ -59,7 +59,6 @@ class CourseServiceTest {
         // then
         assertThat(courseListResponseDto.getCourseList().size()).isEqualTo(5);
         assertThat(courseListResponseDto.getCompanyName()).isEqualTo("test company");
-        assertThat(courseListResponseDto.getCompanyLogo()).isEqualTo("test logo");
         assertThat(courseListResponseDto.getJobName()).isEqualTo("test job");
         assertThat(courseListResponseDto.getCourseList().get(0).getIndex()).isEqualTo(0);
         assertThat(courseListResponseDto.getCourseList().get(1).getIndex()).isEqualTo(1);
@@ -89,11 +88,11 @@ class CourseServiceTest {
 
     private List<Course> makeCourseList(Job job) {
         List<Course> courseList = new ArrayList<>();
-        courseList.add(Course.builder().id(1L).name("SKILL1").type(CourseType.SKILL).turn(1).job(job).build());
-        courseList.add(Course.builder().id(3L).name("SKILL2").type(CourseType.SKILL).turn(3).job(job).build());
-        courseList.add(Course.builder().id(2L).name("CS1").type(CourseType.CS).turn(3).job(job).build());
-        courseList.add(Course.builder().id(4L).name("CS2").type(CourseType.CS).turn(4).job(job).build());
-        courseList.add(Course.builder().id(5L).name("SKILL3").type(CourseType.SKILL).turn(5).job(job).build());
+        courseList.add(Course.builder().id(1L).name("SKILL1").type(CourseType.SKILL).order(1).job(job).build());
+        courseList.add(Course.builder().id(3L).name("SKILL2").type(CourseType.SKILL).order(3).job(job).build());
+        courseList.add(Course.builder().id(2L).name("CS1").type(CourseType.CS).order(3).job(job).build());
+        courseList.add(Course.builder().id(4L).name("CS2").type(CourseType.CS).order(4).job(job).build());
+        courseList.add(Course.builder().id(5L).name("SKILL3").type(CourseType.SKILL).order(5).job(job).build());
         return courseList;
     }
 }

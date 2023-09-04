@@ -1,7 +1,7 @@
-package io.devridge.api.domain.post;
+package io.devridge.api.domain.user;
 
 import io.devridge.api.domain.BaseTimeEntity;
-import io.devridge.api.domain.user.User;
+import io.devridge.api.domain.roadmap.Roadmap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,20 +13,22 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Post extends BaseTimeEntity {
+public class UserRoadmap extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "user_roadmap_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "post_type")
-    private PostType type;
-
-    @Column(name = "post_content")
-    private String content;
+    @Column(name = "roadmap_study_status")
+    private StudyStatus studyStatus;
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @JoinColumn(name = "roadmap_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Roadmap roadmap;
 }

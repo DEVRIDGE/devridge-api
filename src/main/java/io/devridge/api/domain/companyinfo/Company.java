@@ -1,7 +1,8 @@
-package io.devridge.api.domain.course;
+package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,22 +13,19 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class CourseDetail extends BaseTimeEntity {
+public class Company extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "course_detail_id")
+    @Column(name = "company_id")
     private Long id;
 
-    @Column(name = "course_detail_name")
+    @Column(name = "company_name")
     private String name;
 
-    @JoinColumn(name = "course_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
-
-    public CourseDetail(String name, Course course) {
+    @Builder
+    public Company(Long id, String name, String logo) {
+        this.id = id;
         this.name = name;
-        this.course = course;
     }
 }

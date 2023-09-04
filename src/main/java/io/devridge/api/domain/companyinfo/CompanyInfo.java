@@ -1,8 +1,7 @@
-package io.devridge.api.domain.company_job;
+package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,30 +12,26 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class CompanyJob extends BaseTimeEntity {
+public class CompanyInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_job_id")
+    @Column(name = "company_info_id")
     private Long id;
 
-    @JoinColumn(name = "company_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Company company;
+    @Column(name = "company_info_content")
+    private String content;
 
     @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
 
-    public CompanyJob(Company company, Job job) {
-        this.company = company;
-        this.job = job;
-    }
+    @JoinColumn(name = "service_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DetailedPosition detailedPosition;
 
-    @Builder
-    public CompanyJob(Long id, Company company, Job job) {
-        this.id = id;
-        this.company = company;
-        this.job = job;
-    }
+
+    @JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Company company;
 }

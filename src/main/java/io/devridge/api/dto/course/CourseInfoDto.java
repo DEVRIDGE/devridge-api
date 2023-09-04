@@ -1,8 +1,8 @@
 package io.devridge.api.dto.course;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.devridge.api.domain.course.Course;
-import io.devridge.api.domain.course.CourseType;
+import io.devridge.api.domain.roadmap.Course;
+import io.devridge.api.domain.roadmap.CourseType;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +17,6 @@ public class CourseInfoDto {
         this.id = course.getId();
         this.name = course.getName();
         this.type = course.getType();
-        this.turn = course.getTurn();
+        this.turn = course.getOrder();
     }
 }

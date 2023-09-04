@@ -1,6 +1,7 @@
-package io.devridge.api.domain.employment;
+package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
+import io.devridge.api.domain.roadmap.CourseDetail;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,22 +13,21 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class EmploymentSkill extends BaseTimeEntity {
+public class CompanyRequiredAbility extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employment_skill_id")
+    @Column(name = "company_required_ability_id")
     private Long id;
 
-    @Column(name = "employment_skill_name")
+    @Column(name = "company_required_ability_name")
     private String name;
 
-    @JoinColumn(name = "employment_info_id")
+    @JoinColumn(name = "company_info_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private EmploymentInfo employmentInfo;
+    private CompanyInfo companyInfo;
 
-    public EmploymentSkill(String name, EmploymentInfo employmentInfo) {
-        this.name = name;
-        this.employmentInfo = employmentInfo;
-    }
+    @JoinColumn(name = "course_detail_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    private CourseDetail courseDetail;
 }

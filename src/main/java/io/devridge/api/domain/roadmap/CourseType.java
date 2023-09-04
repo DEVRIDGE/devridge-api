@@ -1,6 +1,7 @@
-package io.devridge.api.domain.course;
+package io.devridge.api.domain.roadmap;
 
 public enum CourseType {
 
     SKILL, CS
 }
+
