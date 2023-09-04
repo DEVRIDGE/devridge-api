@@ -1,7 +1,7 @@
 package io.devridge.api.domain.video;
 
 import io.devridge.api.domain.BaseTimeEntity;
-import io.devridge.api.domain.course.CourseDetail;
+import io.devridge.api.domain.roadmap.CourseDetail;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
