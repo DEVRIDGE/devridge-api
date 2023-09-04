@@ -1,5 +1,6 @@
 //package io.devridge.api.newdomain.companyinfo;
 //
+//import io.devridge.api.newdomain.BaseTimeEntity;
 //import lombok.AccessLevel;
 //import lombok.Getter;
 //import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@
 //@NoArgsConstructor(access = AccessLevel.PROTECTED)
 //@EntityListeners(AuditingEntityListener.class)
 //@Entity
-//public class CompanyInfo {
+//public class CompanyInfo extends BaseTimeEntity {
 //
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
