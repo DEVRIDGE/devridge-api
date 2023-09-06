@@ -38,8 +38,8 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailList));
     }
 
-    @GetMapping("/videos/{coursedetail}")
-    public ResponseEntity<ApiResponse<Object>> courseVideoList(@PathVariable ("coursedetail") Long courseDetailId) {
+    @GetMapping("/videos/{coursedetailId}")
+    public ResponseEntity<ApiResponse<Object>> courseVideoList(@PathVariable Long courseDetailId) {
         CourseVideoResponseDto courseVideoList = courseService.getCourseVideoList(courseDetailId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
     }
