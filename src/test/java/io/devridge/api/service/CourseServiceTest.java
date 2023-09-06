@@ -85,6 +85,9 @@ class CourseServiceTest {
                 .isInstanceOf(CompanyJobNotFoundException.class);
     }
 
+//    @DisplayName("조회한 영상을 정상적으로 찾는다.")
+//    @Test
+
 
     private List<Course> makeCourseList(Job job) {
         List<Course> courseList = new ArrayList<>();

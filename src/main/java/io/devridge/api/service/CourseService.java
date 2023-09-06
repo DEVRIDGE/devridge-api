@@ -45,24 +45,21 @@ public class CourseService {
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId) {
         validateCompanyJob(companyId, jobId);
 
-        Course courseName = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
         // TODO 쿼리수정
         List<CourseDetail> courseDetailList = null;
         //List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
 
-        return new CourseDetailResponseDto(courseName.getName(), courseDetailList);
+        return new CourseDetailResponseDto(course.getName(), courseDetailList);
     }
 
     @Transactional(readOnly = true)
-    public CourseVideoResponseDto getCourseVideoList(long courseId, long courseDetailId, long companyId, long jobId) {
-        validateCompanyJob(companyId, jobId);
-
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
+    public CourseVideoResponseDto getCourseVideoList(long courseDetailId) {
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
 
         List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
 
-        return new CourseVideoResponseDto(course.getName(), courseDetail.getName(), courseVideoList);
+        return new CourseVideoResponseDto(courseDetail.getCourse().getName(), courseDetail.getName(), courseVideoList);
     }
 
     private CompanyJobInfo findCompanyAndJob(long companyId, long jobId) {
