@@ -30,6 +30,10 @@ class CourseServiceTest {
 
     @InjectMocks
     private CourseService courseService;
+
+    @InjectMocks
+    private CourseVideoService courseVideoService;
+
     @Mock
     private CourseRepository courseRepository;
     @Mock
@@ -108,7 +112,7 @@ class CourseServiceTest {
         when(courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId)).thenReturn(courseVideoList);
 
         //when
-        CourseVideoResponseDto courseVideoResponseDto = courseService.getCourseVideoList(courseDetailId);
+        CourseVideoResponseDto courseVideoResponseDto = courseVideoService.getCourseVideoList(courseDetailId);
 
         //then
         assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
@@ -129,7 +133,7 @@ class CourseServiceTest {
         when(courseDetailRepository.findById(courseDetailId)).thenReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> courseService.getCourseVideoList(courseDetailId))
+        assertThatThrownBy(() -> courseVideoService.getCourseVideoList(courseDetailId))
                 .isInstanceOf(CourseDetailNotFoundException.class);
     }
 

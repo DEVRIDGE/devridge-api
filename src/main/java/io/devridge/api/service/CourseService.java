@@ -2,16 +2,12 @@ package io.devridge.api.service;
 
 import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.roadmap.*;
-import io.devridge.api.domain.video.CourseVideo;
-import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.CourseDetailResponseDto;
-import io.devridge.api.dto.CourseVideoResponseDto;
 import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseIndexList;
 import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
-import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +22,6 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CompanyJobRepository companyJobRepository;
-    private final CourseDetailRepository courseDetailRepository;
-    private final CourseVideoRepository courseVideoRepository;
 
     @Transactional(readOnly = true)
     public CourseListResponseDto getCourseList(long companyId, long jobId) {
@@ -51,15 +45,6 @@ public class CourseService {
         //List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
 
         return new CourseDetailResponseDto(course.getName(), courseDetailList);
-    }
-
-    @Transactional(readOnly = true)
-    public CourseVideoResponseDto getCourseVideoList(long courseDetailId) {
-        CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
-
-        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
-
-        return new CourseVideoResponseDto(courseDetail.getCourse().getName(), courseDetail.getName(), courseVideoList);
     }
 
     private CompanyJobInfo findCompanyAndJob(long companyId, long jobId) {
