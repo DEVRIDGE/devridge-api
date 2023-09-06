@@ -3,12 +3,14 @@ package io.devridge.api.service;
 import io.devridge.api.domain.companyinfo.Company;
 import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.companyinfo.Job;
-import io.devridge.api.domain.roadmap.Course;
-import io.devridge.api.domain.roadmap.CourseRepository;
-import io.devridge.api.domain.roadmap.CourseType;
+import io.devridge.api.domain.roadmap.*;
+import io.devridge.api.domain.video.CourseVideo;
+import io.devridge.api.domain.video.CourseVideoRepository;
+import io.devridge.api.dto.CourseVideoResponseDto;
 import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
+import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,12 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
     @Mock
     private CompanyJobRepository companyJobRepository;
+
+    @Mock
+    private CourseDetailRepository courseDetailRepository;
+
+    @Mock
+    private CourseVideoRepository courseVideoRepository;
 
     @DisplayName("코스리스트를 turn으로 모아서 리스트를 만들고 만약 SKILL과 SKILL 사이에 아무 것도 없다면 빈 리스트가 추가된다")
     @Test
@@ -85,8 +93,45 @@ class CourseServiceTest {
                 .isInstanceOf(CompanyJobNotFoundException.class);
     }
 
-//    @DisplayName("조회한 영상을 정상적으로 찾는다.")
-//    @Test
+    @DisplayName("특정 CourseDetail의 영상 리스트를 정상적으로 조회한다.")
+    @Test
+    public void getCourseVideoList_success_test() {
+        //given
+        long courseDetailId = 1L;
+        Course course = Course.builder().id(courseDetailId).name("언어").build();
+        CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").course(course).build();
+
+        List<CourseVideo> courseVideoList = makeCourseVideoList(courseDetail);
+
+        //stub
+        when(courseDetailRepository.findById(courseDetailId)).thenReturn(Optional.of(courseDetail));
+        when(courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId)).thenReturn(courseVideoList);
+
+        //when
+        CourseVideoResponseDto courseVideoResponseDto = courseService.getCourseVideoList(courseDetailId);
+
+        //then
+        assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
+        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상1");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseVideoResponseDto.getCourseTitle()).isEqualTo("언어");
+        assertThat(courseVideoResponseDto.getCourseDetailTitle()).isEqualTo("Java");
+    }
+
+    @DisplayName("영상 조회시, 대응되는 CourseDetail이 없으면 에러를 던진다")
+    @Test
+    public void getCourseVideoList_fail_test() {
+        //given
+        long courseDetailId = 100L;
+
+
+        //stub
+        when(courseDetailRepository.findById(courseDetailId)).thenReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> courseService.getCourseVideoList(courseDetailId))
+                .isInstanceOf(CourseDetailNotFoundException.class);
+    }
 
 
     private List<Course> makeCourseList(Job job) {
@@ -97,5 +142,12 @@ class CourseServiceTest {
         courseList.add(Course.builder().id(4L).name("CS2").type(CourseType.CS).order(4).job(job).build());
         courseList.add(Course.builder().id(5L).name("SKILL3").type(CourseType.SKILL).order(5).job(job).build());
         return courseList;
+    }
+
+    private List<CourseVideo> makeCourseVideoList(CourseDetail courseDetail) {
+        List<CourseVideo> courseVideoList = new ArrayList<>();
+        courseVideoList.add(CourseVideo.builder().id(1L).title("Java 강의 영상1").courseDetail(courseDetail).build());
+        courseVideoList.add(CourseVideo.builder().id(2L).title("Java 강의 영상2").courseDetail(courseDetail).build());
+        return courseVideoList;
     }
 }
