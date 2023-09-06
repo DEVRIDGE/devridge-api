@@ -1,8 +1,13 @@
 package io.devridge.api.config;
 
+import io.devridge.api.config.auth.OAuth2UserService;
+import io.devridge.api.domain.user.UserRole;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,31 +15,52 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final Environment environment;
+    private final OAuth2UserService oauth2UserService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        configureDevSettings(http);
+
         return http
-                .httpBasic(config -> config.disable())
-                .csrf(csrfConfig -> csrfConfig.disable())
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .formLogin(form -> form.disable())
-                // TODO h2-console 사용문제 (배포시 제거)
                 .headers(config -> config.frameOptions().disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(loginConfigurer -> {
+                    loginConfigurer.userInfoEndpoint().userService(oauth2UserService);
+                    //loginConfigurer.successHandler(oAuth2SuccessHandler);
+                })
                 .authorizeRequests(requests -> requests.anyRequest().permitAll())
+
                 .build();
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.applyPermitDefaultValues();
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    private void configureDevSettings(HttpSecurity http) throws Exception {
+        if (isProfileActive("dev") || isProfileActive("test")) {
+            http
+                    .headers(config -> config.frameOptions().disable())
+                    .csrf(AbstractHttpConfigurer::disable);
+        }
+    }
+
+    private boolean isProfileActive(String profile) { return List.of(environment.getActiveProfiles()).contains(profile); }
 }
