@@ -38,5 +38,8 @@ public class Course extends BaseTimeEntity {
     public Course(Long id, String name, CourseType type, int order, Job job) {
         this.id = id;
         this.name = name;
+        this.type = type;
+        this.order = order;
+        this.job = job;
     }
 }
