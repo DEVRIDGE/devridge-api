@@ -16,7 +16,7 @@ public class CourseVideoController {
 
     private final CourseVideoService courseVideoService;
 
-    @GetMapping("/videos/{coursedetailId}")
+    @GetMapping("/videos/{courseDetailId}")
     public ResponseEntity<ApiResponse<Object>> courseVideoList(@PathVariable Long courseDetailId) {
         CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseDetailId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
