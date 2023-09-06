@@ -41,8 +41,9 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Builder
-    public User(String email, String profilePicture, UserRole role, String provider, String providerId) {
+    public User(String email, String name, String profilePicture, UserRole role, String provider, String providerId) {
         this.email = email;
+        this.name = name;
         this.profilePicture = profilePicture;
         this.role = role;
         this.provider = provider;
