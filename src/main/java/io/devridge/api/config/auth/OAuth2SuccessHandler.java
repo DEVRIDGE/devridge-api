@@ -30,10 +30,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = tokenService.createAccessToken(user);
         String refreshToken = tokenService.createRefreshTokenAndSave(user);
 
-        String targetUrl = getTargetUrl(accessToken);
-
         setRefreshTokenCookie(response, refreshToken);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        String targetUrl = getTargetUrl(accessToken);
+        response.sendRedirect(targetUrl);
     }
 
     private String getTargetUrl(String accessToken) {

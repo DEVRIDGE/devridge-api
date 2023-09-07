@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.RedirectStrategy;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import java.io.IOException;
 
 import static io.devridge.api.config.auth.OAuthSetting.OAUTH2_LOGIN_AFTER_PAGE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,8 +43,6 @@ class OAuth2SuccessHandlerTest {
     @Mock
     private User user;
 
-    @Mock
-    private RedirectStrategy redirectStrategy;
 
     @Captor
     private ArgumentCaptor<Cookie> cookieCaptor;
@@ -55,7 +51,6 @@ class OAuth2SuccessHandlerTest {
     @Test
     public void onAuthenticationSuccess_test() throws IOException {
         // stub
-        oAuth2SuccessHandler.setRedirectStrategy(redirectStrategy);
         when(authentication.getPrincipal()).thenReturn(loginUser);
         when(loginUser.getUser()).thenReturn(user);
         when(tokenService.createAccessToken(user)).thenReturn("accessTestToken");
@@ -71,6 +66,6 @@ class OAuth2SuccessHandlerTest {
         assertEquals("refreshToken", actualCookie.getName());
         assertEquals("refreshTestToken", actualCookie.getValue());
 
-        verify(redirectStrategy).sendRedirect(eq(request), eq(response), eq(OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=accessTestToken"));
+        verify(response).sendRedirect(OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=accessTestToken");
     }
 }
