@@ -4,12 +4,10 @@ import io.devridge.api.handler.ex.UnsupportedProviderException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Map;
 import java.util.Optional;
 
-@ToString
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class OAuth2Attribute {
