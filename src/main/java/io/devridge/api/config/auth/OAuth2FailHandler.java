@@ -27,6 +27,9 @@ public class OAuth2FailHandler extends SimpleUrlAuthenticationFailureHandler {
             if ("unmatched_email_and_provider".equals(oauth2Error.getErrorCode())) {
                 log.error("unmatched_email_and_provider: {}", oauth2Error.getDescription());
                 response.sendRedirect(OAUTH2_LOGIN_FAIL_PAGE + "?error=unmatched_email_and_provider");
+            } else if ("unsupported_provider".equals(oauth2Error.getErrorCode())) {
+                log.error("unsupported_provider: {}", oauth2Error.getDescription());
+                response.sendRedirect(OAUTH2_LOGIN_FAIL_PAGE + "?error=unsupported_provider");
             } else {
                 log.error("server_error: {}", oauth2Error.getDescription());
                 response.sendRedirect(OAUTH2_LOGIN_FAIL_PAGE + "?error=server_error");

@@ -41,6 +41,17 @@ class OAuth2FailHandlerTest {
         verify(response).sendRedirect(OAUTH2_LOGIN_FAIL_PAGE + "?error=unmatched_email_and_provider");
     }
 
+    @DisplayName("지원하지 않는 SNS 제공자로 로그인을 시도하면 로그인 실패 페이지로 이동하고 unsupported_provider 에러를 전달한다.")
+    @Test
+    public void oauth2_unsupported_provider_exception_test() throws IOException, ServletException {
+        OAuth2Error oAuth2Error = new OAuth2Error("unsupported_provider");
+        OAuth2AuthenticationException oAuth2AuthenticationException = new OAuth2AuthenticationException(oAuth2Error);
+
+        oAuth2FailHandler.onAuthenticationFailure(request, response, oAuth2AuthenticationException);
+
+        verify(response).sendRedirect(OAUTH2_LOGIN_FAIL_PAGE + "?error=unsupported_provider");
+    }
+
     @DisplayName("기타 예외 발생시 로그인 실패 페이지로 이동하고 server_error 에러를 전달한다.")
     @Test
     public void oauth2_another_error_exception_test() throws IOException, ServletException {

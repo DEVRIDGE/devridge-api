@@ -2,6 +2,7 @@ package io.devridge.api.config.auth;
 
 import io.devridge.api.domain.user.User;
 import io.devridge.api.handler.ex.UnmatchedEmailAndProviderException;
+import io.devridge.api.handler.ex.UnsupportedProviderException;
 import io.devridge.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -29,6 +30,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             return createOAuth2User(user, oAuth2Attribute);
         } catch (UnmatchedEmailAndProviderException exception) {
             OAuth2Error oauth2Error = new OAuth2Error("unmatched_email_and_provider", exception.getMessage(), null);
+            throw new OAuth2AuthenticationException(oauth2Error, exception.getMessage());
+        } catch (UnsupportedProviderException exception) {
+            OAuth2Error oauth2Error = new OAuth2Error("unsupported_provider", exception.getMessage(), null);
             throw new OAuth2AuthenticationException(oauth2Error, exception.getMessage());
         }
     }
