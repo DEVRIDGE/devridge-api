@@ -2,6 +2,7 @@ package io.devridge.api.domain.roadmap;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,4 +26,10 @@ public class CourseDetail extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
+    @Builder
+    public CourseDetail(Long id, String name, Course course) {
+        this.id = id;
+        this.name = name;
+        this.course = course;
+    }
 }

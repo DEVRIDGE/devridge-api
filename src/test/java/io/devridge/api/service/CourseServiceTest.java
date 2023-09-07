@@ -3,9 +3,8 @@ package io.devridge.api.service;
 import io.devridge.api.domain.companyinfo.Company;
 import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.companyinfo.Job;
-import io.devridge.api.domain.roadmap.Course;
-import io.devridge.api.domain.roadmap.CourseRepository;
-import io.devridge.api.domain.roadmap.CourseType;
+import io.devridge.api.domain.roadmap.*;
+import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
@@ -34,6 +33,12 @@ class CourseServiceTest {
 
     @Mock
     private CompanyJobRepository companyJobRepository;
+
+    @Mock
+    private CourseDetailRepository courseDetailRepository;
+
+    @Mock
+    private CourseVideoRepository courseVideoRepository;
 
     @DisplayName("코스리스트를 turn으로 모아서 리스트를 만들고 만약 SKILL과 SKILL 사이에 아무 것도 없다면 빈 리스트가 추가된다")
     @Test
