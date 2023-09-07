@@ -7,6 +7,7 @@ import io.devridge.api.util.jwt.TokenDto;
 import io.devridge.api.util.jwt.TokenProcess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class TokenService {
         return accessTokenDto.getToken();
     }
 
+    @Transactional
     public String createRefreshTokenAndSave(User user) {
         TokenDto refreshTokenDto = tokenProcess.createRefreshToken();
         Token token = tokenRepository.findByUser(user)
