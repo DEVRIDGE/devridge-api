@@ -30,6 +30,7 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+
     @Mock
     private CompanyJobRepository companyJobRepository;
 
