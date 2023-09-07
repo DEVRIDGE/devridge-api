@@ -28,8 +28,10 @@ class CourseServiceTest {
 
     @InjectMocks
     private CourseService courseService;
+
     @Mock
     private CourseRepository courseRepository;
+
     @Mock
     private CompanyJobRepository companyJobRepository;
 

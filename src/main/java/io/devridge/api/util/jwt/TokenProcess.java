@@ -3,14 +3,12 @@ package io.devridge.api.util.jwt;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.util.time.TimeProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class TokenProcess {
