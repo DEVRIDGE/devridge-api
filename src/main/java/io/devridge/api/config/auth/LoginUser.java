@@ -30,7 +30,7 @@ public class LoginUser implements OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(() -> user.getRoleKey());
+        collect.add(user::getRoleKey);
         return collect;
     }
 
