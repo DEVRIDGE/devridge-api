@@ -33,7 +33,8 @@ public class Token extends BaseTimeEntity {
     private LocalDateTime expiredAt;
 
     @Builder
-    public Token(String content, User user, LocalDateTime expiredAt) {
+    public Token(Long id, String content, User user, LocalDateTime expiredAt) {
+        this.id = id;
         this.content = content;
         this.user = user;
         this.expiredAt = expiredAt;
