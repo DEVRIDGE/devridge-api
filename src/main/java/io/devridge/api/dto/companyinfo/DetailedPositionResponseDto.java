@@ -1,5 +1,6 @@
 package io.devridge.api.dto.companyinfo;
 
+import io.devridge.api.domain.companyinfo.Company;
 import io.devridge.api.domain.companyinfo.DetailedPosition;
 import io.devridge.api.domain.companyinfo.Job;
 import lombok.Getter;
@@ -19,10 +20,12 @@ public class DetailedPositionResponseDto {
     public class DetailedPositionDto {
         private Long id;
         private String name;
+        private Company company;
 
         public DetailedPositionDto(DetailedPosition detailedPosition) {
             this.id = detailedPosition.getId();
             this.name = detailedPosition.getName();
+            this.company = detailedPosition.getCompany();
         }
     }
 }
