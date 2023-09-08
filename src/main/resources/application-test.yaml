@@ -1,4 +1,16 @@
 spring:
+  jwt:
+    secretKey: test123
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 173999742423-ei2qhaat1p1g4lh8btp5ga129di0sg64.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
     driver-class-name: org.h2.Driver
