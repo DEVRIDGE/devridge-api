@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import static io.devridge.api.config.auth.OAuthSetting.OAUTH2_LOGIN_AFTER_PAGE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,9 +44,8 @@ class OAuth2SuccessHandlerTest {
     @Mock
     private User user;
 
-
     @Captor
-    private ArgumentCaptor<Cookie> cookieCaptor;
+    private ArgumentCaptor<String> headerCaptor;
 
     @DisplayName("OAuth2 로그인에 성공하면 쿠키에 refreshToken을 저장하고 url 뒤에 accessToken을 붙여서 리다이렉트 한다.")
     @Test
@@ -60,11 +60,10 @@ class OAuth2SuccessHandlerTest {
         oAuth2SuccessHandler.onAuthenticationSuccess(request, response, authentication);
 
         // then
-        verify(response).addCookie(cookieCaptor.capture());
+        verify(response).addHeader(eq("Set-Cookie"), headerCaptor.capture());
 
-        Cookie actualCookie = cookieCaptor.getValue();
-        assertEquals("refreshToken", actualCookie.getName());
-        assertEquals("refreshTestToken", actualCookie.getValue());
+        String setCookieHeader = headerCaptor.getValue();
+        assertTrue(setCookieHeader.startsWith("refreshToken=refreshTestToken"));
 
         verify(response).sendRedirect(OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=accessTestToken");
     }
