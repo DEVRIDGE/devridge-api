@@ -19,9 +19,8 @@ class TokenProcessTest {
     @BeforeEach
     public void setUp() {
         FakeTimeProvider fakeTimeProvider = new FakeTimeProvider(LocalDateTime.of(2023, 9, 7, 13, 20, 30));
-        JwtSetting jwtSetting = new JwtSetting();
         FakeTokenProvider tokenProvider = new FakeTokenProvider("success_token");
-        tokenProcess = new TokenProcess(fakeTimeProvider, jwtSetting, tokenProvider);
+        tokenProcess = new TokenProcess(fakeTimeProvider, tokenProvider);
     }
 
 

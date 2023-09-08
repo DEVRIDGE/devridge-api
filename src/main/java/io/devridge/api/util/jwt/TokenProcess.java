@@ -9,16 +9,18 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static io.devridge.api.util.jwt.JwtSetting.ACCESS_TOKEN_VALID_TIME;
+import static io.devridge.api.util.jwt.JwtSetting.REFRESH_TOKEN_VALID_TIME;
+
 @RequiredArgsConstructor
 @Component
 public class TokenProcess {
 
     private final TimeProvider timeProvider;
-    private final JwtSetting jwtSetting;
     private final TokenProvider tokenProvider;
 
     public TokenDto createAccessToken(User user) {
-        LocalDateTime tokenExpiredAt = timeProvider.getCurrentTime().plus(Duration.ofMillis(jwtSetting.getAccessTokenValidTime()));
+        LocalDateTime tokenExpiredAt = timeProvider.getCurrentTime().plus(Duration.ofMillis(ACCESS_TOKEN_VALID_TIME));
         Date tokenExpiredDate = timeProvider.convertToJavaUtilDate(tokenExpiredAt);
         String accessToken = tokenProvider.createAccessToken(user, tokenExpiredDate);
 
@@ -30,7 +32,7 @@ public class TokenProcess {
 
     public TokenDto createRefreshToken() {
         LocalDateTime currentTime = timeProvider.getCurrentTime();
-        LocalDateTime tokenExpiredAt = currentTime.plus(Duration.ofMillis(jwtSetting.getRefreshTokenValidTime()));
+        LocalDateTime tokenExpiredAt = currentTime.plus(Duration.ofMillis(REFRESH_TOKEN_VALID_TIME));
         String refreshToken = tokenProvider.createRefreshToken(timeProvider.convertToJavaUtilDate(currentTime), timeProvider.convertToJavaUtilDate(tokenExpiredAt));
 
         return TokenDto.builder()
