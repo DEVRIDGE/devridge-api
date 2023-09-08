@@ -1,5 +1,8 @@
 package io.devridge.api.service;
 
+import io.devridge.api.domain.companyinfo.Company;
+import io.devridge.api.domain.companyinfo.DetailedPosition;
+import io.devridge.api.domain.companyinfo.Job;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +18,8 @@ public class DetailedPositionServiceTest {
     @Test
     public void getDetailedPositionList_success_test() {
         //given
+        Company company = Company.builder().id(1L).name("토스").build();
+        Job job = Job.builder().id(1L).name("백엔드").build();
         //stub
         //when
         //then
