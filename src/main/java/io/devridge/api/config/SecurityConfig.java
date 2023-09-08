@@ -3,7 +3,6 @@ package io.devridge.api.config;
 import io.devridge.api.config.auth.OAuth2FailHandler;
 import io.devridge.api.config.auth.OAuth2SuccessHandler;
 import io.devridge.api.config.auth.OAuth2UserService;
-import io.devridge.api.config.filter.CustomAuthenticationEntryPoint;
 import io.devridge.api.config.filter.CustomSecurityFilterManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,13 +23,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final Environment environment;
     private final OAuth2UserService oauth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailHandler oAuth2FailHandler;
     private final CustomSecurityFilterManager customSecurityFilterManager;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,8 +47,8 @@ public class SecurityConfig {
                     loginConfigurer.failureHandler(oAuth2FailHandler);
                 })
                 .exceptionHandling(config -> {
-                    config.authenticationEntryPoint(customAuthenticationEntryPoint);
-//                    config.accessDeniedHandler(this::accessDeniedResponseHandler);
+                    config.authenticationEntryPoint(authenticationEntryPoint);
+                    config.accessDeniedHandler(accessDeniedHandler);
                 })
                 .authorizeRequests(requests -> requests.anyRequest().permitAll())
                 .apply(customSecurityFilterManager).and()
