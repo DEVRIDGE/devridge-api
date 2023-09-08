@@ -3,6 +3,7 @@ package io.devridge.api.config.auth;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -40,12 +41,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(true);
         int expiresInDays = 7;
-        long expiresInSeconds = expiresInDays * 24 * 60 * 60;
-        refreshTokenCookie.setMaxAge((int) expiresInSeconds);
-        response.addCookie(refreshTokenCookie);
+        int expiresInSeconds = expiresInDays * 24 * 60 * 60;
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .domain("localhost")
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(expiresInSeconds)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }
