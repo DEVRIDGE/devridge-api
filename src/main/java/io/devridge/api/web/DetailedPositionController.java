@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class DetailedPositionController {
-    private DetailedPositionService detailedPositionService;
+    private final DetailedPositionService detailedPositionService;
 
     @GetMapping("/detailedPositions")
     public ResponseEntity<ApiResponse<Object>> detailedPositionList() {
