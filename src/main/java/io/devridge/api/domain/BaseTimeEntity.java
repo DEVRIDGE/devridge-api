@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-
 public abstract class BaseTimeEntity {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -26,5 +25,5 @@ public abstract class BaseTimeEntity {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(nullable = false)
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 }
