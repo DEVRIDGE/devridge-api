@@ -13,7 +13,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DetailedPositionService {
     private final CompanyJobRepository companyJobRepository;
     private final DetailedPositionRepository detailedPositionRepository;

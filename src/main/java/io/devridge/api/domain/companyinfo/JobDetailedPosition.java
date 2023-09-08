@@ -2,6 +2,7 @@ package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,4 +27,11 @@ public class JobDetailedPosition extends BaseTimeEntity {
     @JoinColumn(name = "detailed_position_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private DetailedPosition detailedPosition;
+
+    @Builder
+    public JobDetailedPosition(Long id, Job job, DetailedPosition detailedPosition) {
+        this.id = id;
+        this.job = job;
+        this.detailedPosition = detailedPosition;
+    }
 }
