@@ -22,17 +22,27 @@ public class TokenService {
     }
 
     @Transactional
-    public String createRefreshTokenAndSave(User user) {
-        TokenDto refreshTokenDto = tokenProcess.createRefreshToken();
-        Token token = tokenRepository.findByUser(user)
-                .map(t -> t.changeToken(refreshTokenDto.getToken()))
-                .orElseGet(() -> saveToken(refreshTokenDto, user));
-
-        return token.getContent();
+    public String getOrUpdateRefreshToken(User user) {
+        return tokenRepository.findByUser(user)
+                .map(currentRefreshToken -> {
+                    if (tokenProcess.isTokenValid(currentRefreshToken.getContent())) {
+                        return currentRefreshToken.getContent();
+                    }
+                    return generateAndSaveNewRefreshToken(user, currentRefreshToken);
+                })
+                .orElseGet(() -> generateAndSaveNewRefreshToken(user, null));
     }
 
-    private Token saveToken(TokenDto refreshTokenDto, User user) {
-        return tokenRepository.save(createToken(refreshTokenDto, user));
+    private String generateAndSaveNewRefreshToken(User user, Token currentToken) {
+        TokenDto refreshTokenDto = tokenProcess.createRefreshToken();
+
+        if(currentToken != null) {
+            currentToken.changeToken(refreshTokenDto.getToken());
+        } else {
+            tokenRepository.save(createToken(refreshTokenDto, user));
+        }
+
+        return refreshTokenDto.getToken();
     }
 
     private Token createToken(TokenDto tokenDto, User user) {

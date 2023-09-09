@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (matchesAuthEndpoints(request.getRequestURI())) {
                 if (isHeaderVerify(request)) {
                     String token = request.getHeader(JWT_HEADER).replace(TOKEN_PREFIX, "");
-                    Long userId = tokenProvider.verify(token);
+                    Long userId = tokenProvider.verifyAndGetUserId(token);
                     LoginUser loginUser = getLoginUser(userId);
                     Authentication authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

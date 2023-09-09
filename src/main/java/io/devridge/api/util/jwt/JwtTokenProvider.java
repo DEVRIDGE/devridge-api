@@ -41,11 +41,21 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public Long verify(String token) {
+    public Long verifyAndGetUserId(String token) {
         DecodedJWT decodedJWT = decodingToken(token);
         Claim JwtIdClaim = getIdByJwt(decodedJWT);
 
         return convertIdClaimToLong(JwtIdClaim);
+    }
+
+    @Override
+    public boolean isTokenValid(String token) {
+        try {
+            decodingToken(token);
+            return true;
+        } catch (JwtExpiredException | JwtVerifyException exception) {
+            return false;
+        }
     }
 
     private DecodedJWT decodingToken(String token) {
