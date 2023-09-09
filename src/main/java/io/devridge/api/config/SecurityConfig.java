@@ -5,7 +5,7 @@ import io.devridge.api.config.auth.OAuth2SuccessHandler;
 import io.devridge.api.config.auth.OAuth2UserService;
 import io.devridge.api.config.filter.JwtAuthorizationFilter;
 import io.devridge.api.domain.user.UserRepository;
-import io.devridge.api.util.jwt.TokenProvider;
+import io.devridge.api.util.jwt.TokenProcess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -31,7 +31,7 @@ public class SecurityConfig {
     private final OAuth2FailHandler oAuth2FailHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-    private final TokenProvider tokenProvider;
+    private final TokenProcess tokenProcess;
     private final UserRepository userRepository;
 
     @Bean
@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .antMatchers(AuthEndpoints.REQUIRED_STATIC_AUTH_URLS).authenticated()
                 .antMatchers(AuthEndpoints.REQUIRED_WILDCARD_AUTH_URLS).authenticated()
                 .anyRequest().permitAll().and()
-            .addFilterBefore(new JwtAuthorizationFilter(tokenProvider, userRepository, authenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthorizationFilter(tokenProcess, userRepository, authenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();

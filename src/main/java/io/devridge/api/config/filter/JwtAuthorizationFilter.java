@@ -6,7 +6,7 @@ import io.devridge.api.config.filter.exception.*;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.user.UserRepository;
 import io.devridge.api.handler.ex.UserNotFoundException;
-import io.devridge.api.util.jwt.TokenProvider;
+import io.devridge.api.util.jwt.TokenProcess;
 import io.devridge.api.util.jwt.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import static io.devridge.api.util.jwt.JwtSetting.TOKEN_PREFIX;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final TokenProvider tokenProvider;
+    private final TokenProcess tokenProcess;
     private final UserRepository userRepository;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (matchesAuthEndpoints(request.getRequestURI())) {
                 if (isHeaderVerify(request)) {
                     String token = request.getHeader(JWT_HEADER).replace(TOKEN_PREFIX, "");
-                    Long userId = tokenProvider.verifyAndGetUserId(token);
+                    Long userId = tokenProcess.verifyAndGetUserId(token);
                     LoginUser loginUser = getLoginUser(userId);
                     Authentication authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

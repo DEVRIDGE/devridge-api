@@ -44,4 +44,8 @@ public class TokenProcess {
     public boolean isTokenValid(String token) {
         return tokenProvider.isTokenValid(token);
     }
+
+    public Long verifyAndGetUserId(String token) {
+        return tokenProvider.verifyAndGetUserId(token);
+    }
 }

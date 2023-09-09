@@ -3,10 +3,12 @@ package io.devridge.api.config.filter;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.user.UserRepository;
 import io.devridge.api.domain.user.UserRole;
-import io.devridge.api.mock.FakeJwtConfiguration;
-import io.devridge.api.mock.FakeTokenProvider;
 import io.devridge.api.util.jwt.JwtSetting;
-import org.junit.jupiter.api.BeforeEach;
+import io.devridge.api.util.jwt.TokenProcess;
+import io.devridge.api.util.jwt.exception.JwtExpiredException;
+import io.devridge.api.util.jwt.exception.JwtIdConversionException;
+import io.devridge.api.util.jwt.exception.JwtNotHaveIdException;
+import io.devridge.api.util.jwt.exception.JwtVerifyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,12 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@Import({ FakeJwtConfiguration.class })
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class JwtAuthorizationFilterTest {
@@ -43,16 +42,11 @@ class JwtAuthorizationFilterTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private FakeTokenProvider tokenProvider;
+    @MockBean
+    private TokenProcess tokenProcess;
 
     @MockBean
     private UserRepository userRepository;
-
-    @BeforeEach
-    public void init() {
-        tokenProvider.init();
-    }
 
     @DisplayName("로그인이 필요없는 API에 토큰을 가지고 있어도 검증 없이 응답한다.")
     @Test
@@ -85,7 +79,6 @@ class JwtAuthorizationFilterTest {
     public void not_valid_header_is_not_login_user_api_success_test(String headerKey, String headerValue) throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
@@ -96,16 +89,17 @@ class JwtAuthorizationFilterTest {
     }
 
     @DisplayName("잘못된 형식의 토큰을 보내면 에러를 응답한다")
-    @ParameterizedTest
-    @MethodSource("verificationFailureTokenProvider")
-    public void token_verification_fail_test(String token) throws Exception {
+    @Test
+    public void token_verification_fail_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
+
+        // stub
+        when(tokenProcess.verifyAndGetUserId(any())).thenThrow(new JwtVerifyException("Some error occurred"));
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
-                .header(JwtSetting.JWT_HEADER, token));
+                .header(JwtSetting.JWT_HEADER, TOKEN_PREFIX + "wrongToken"));
 
         // then
         result.andExpect(status().isUnauthorized());
@@ -119,9 +113,9 @@ class JwtAuthorizationFilterTest {
     public void token_expired_fail_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
-        tokenProvider.currentAt = LocalDateTime.of(2020, 1, 1, 0, 0, 1);
-        tokenProvider.expiredAt = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+
+        // stub
+        when(tokenProcess.verifyAndGetUserId(any())).thenThrow(new JwtExpiredException("토큰 만료 오류"));
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
@@ -139,7 +133,9 @@ class JwtAuthorizationFilterTest {
     public void token_not_have_user_id_fail_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
+
+        // stub
+        when(tokenProcess.verifyAndGetUserId(any())).thenThrow(new JwtNotHaveIdException());
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
@@ -157,8 +153,9 @@ class JwtAuthorizationFilterTest {
     public void token_id_convert_long_fail_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
-        tokenProvider.userId = "FAKE";
+
+        // stub
+        when(tokenProcess.verifyAndGetUserId(any())).thenThrow(new JwtIdConversionException("user id가 long 형식이 아닙니다."));
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
@@ -176,8 +173,10 @@ class JwtAuthorizationFilterTest {
     public void not_found_user_id_fail_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
-        tokenProvider.userId = "1";
+
+        // stub
+        when(tokenProcess.verifyAndGetUserId(any())).thenReturn(1L);
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
 
         // when
         ResultActions result = mockMvc.perform(get(optionalUrl)
@@ -195,9 +194,8 @@ class JwtAuthorizationFilterTest {
     public void verify_token_success_test() throws Exception {
         // given
         String optionalUrl = "/optional_login/test";
-        tokenProvider.token = "correctToken";
-        tokenProvider.userId = "1";
 
+        when(tokenProcess.verifyAndGetUserId(any())).thenReturn(1L);
         when(userRepository.findById(any())).thenReturn(Optional.of(User.builder().id(1L).email("test@test.com").role(UserRole.USER).build()));
 
         // when
@@ -215,15 +213,6 @@ class JwtAuthorizationFilterTest {
                 arguments(" ", "correctToken"),
                 arguments("wrongHeader", "correctToken"),
                 arguments(JwtSetting.JWT_HEADER, "")
-        );
-    }
-
-    private static Stream<Arguments> verificationFailureTokenProvider() {
-        return Stream.of(
-                arguments(TOKEN_PREFIX),
-                arguments(TOKEN_PREFIX + " "),
-                arguments("Bearer" + "correctToken"),
-                arguments(TOKEN_PREFIX + "wrongToken")
         );
     }
 }
