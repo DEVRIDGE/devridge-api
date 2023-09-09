@@ -15,20 +15,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TokenProcessTest {
 
     private TokenProcess tokenProcess;
+    private FakeTokenProvider tokenProvider;
 
     @BeforeEach
     public void setUp() {
         FakeTimeProvider fakeTimeProvider = new FakeTimeProvider(LocalDateTime.of(2023, 9, 7, 13, 20, 30));
-        FakeTokenProvider tokenProvider = new FakeTokenProvider("success_token");
+        tokenProvider = new FakeTokenProvider();
         tokenProcess = new TokenProcess(fakeTimeProvider, tokenProvider);
     }
-
 
     @DisplayName("Access 토큰을 생성하고 토큰과 만료일을 반환한다.")
     @Test
     public void create_access_token() {
         // given
         User user = User.builder().id(1L).email("test@test.com").build();
+        tokenProvider.token = "success_token";
 
         // when
         TokenDto result = tokenProcess.createAccessToken(user);
@@ -41,6 +42,9 @@ class TokenProcessTest {
     @DisplayName("Refresh 토큰을 생성하고 토큰과 만료일을 반환한다.")
     @Test
     public void create_refresh_token() {
+        // given
+        tokenProvider.token = "success_token";
+
         // when
         TokenDto result = tokenProcess.createRefreshToken();
 

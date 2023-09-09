@@ -3,13 +3,22 @@ package io.devridge.api.mock;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.util.jwt.TokenProvider;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class FakeTokenProvider implements TokenProvider {
     public String token;
+    public Long userId;
+    public LocalDateTime currentAt;
+    public LocalDateTime expiredAt;
+    public String error;
 
-    public FakeTokenProvider(String token) {
-        this.token = token;
+    public void init() {
+        this.token = null;
+        this.userId = null;
+        this.currentAt = null;
+        this.expiredAt = null;
+        this.error = null;
     }
 
     @Override
