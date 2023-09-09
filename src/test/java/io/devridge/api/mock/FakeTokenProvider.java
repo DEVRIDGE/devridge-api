@@ -15,15 +15,6 @@ public class FakeTokenProvider implements TokenProvider {
     public String userId;
     public LocalDateTime currentAt;
     public LocalDateTime expiredAt;
-    public String error;
-
-    public void init() {
-        this.token = null;
-        this.userId = null;
-        this.currentAt = null;
-        this.expiredAt = null;
-        this.error = null;
-    }
 
     @Override
     public String createAccessToken(User user, Date expiredAt) {
@@ -55,6 +46,12 @@ public class FakeTokenProvider implements TokenProvider {
 
     @Override
     public boolean isTokenValid(String token) {
-        return false;
+        if (!token.equals(this.token)) {
+            return false;
+        }
+        if (expiredAt != null && currentAt != null && currentAt.isAfter(expiredAt)) {
+           return false;
+        }
+        return true;
     }
 }
