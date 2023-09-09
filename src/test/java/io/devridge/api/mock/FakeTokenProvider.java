@@ -45,13 +45,12 @@ public class FakeTokenProvider implements TokenProvider {
     }
 
     @Override
-    public boolean isTokenValid(String token) {
+    public void validateToken(String token) {
         if (!token.equals(this.token)) {
-            return false;
+            throw new JwtVerifyException("검증에 실패하였습니다.");
         }
         if (expiredAt != null && currentAt != null && currentAt.isAfter(expiredAt)) {
-           return false;
+            throw new JwtExpiredException("토큰이 만료되었습니다.");
         }
-        return true;
     }
 }

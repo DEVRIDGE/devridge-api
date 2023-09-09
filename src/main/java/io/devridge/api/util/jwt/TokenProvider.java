@@ -12,5 +12,5 @@ public interface TokenProvider {
 
     Long verifyAndGetUserId(String token);
 
-    boolean isTokenValid(String token);
+    void validateToken(String token);
 }
