@@ -36,7 +36,7 @@ public class FakeTokenProvider implements TokenProvider {
     }
 
     @Override
-    public Long verify(String token) {
+    public Long verifyAndGetUserId(String token) {
         if (!token.equals(this.token)) {
             throw new JwtVerifyException("검증에 실패하였습니다.");
         }
@@ -51,5 +51,10 @@ public class FakeTokenProvider implements TokenProvider {
         } catch (NumberFormatException e) {
             throw new JwtIdConversionException("long 값으로 변환할 수 없습니다.");
         }
+    }
+
+    @Override
+    public boolean isTokenValid(String token) {
+        return false;
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +28,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         User user = loginUser.getUser();
 
         String accessToken = tokenService.createAccessToken(user);
-        String refreshToken = tokenService.createRefreshTokenAndSave(user);
+        String refreshToken = tokenService.getOrUpdateRefreshToken(user);
 
         setRefreshTokenCookie(response, refreshToken);
         String targetUrl = getTargetUrl(accessToken);
