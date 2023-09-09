@@ -8,6 +8,7 @@ import io.devridge.api.domain.user.UserRepository;
 import io.devridge.api.handler.ex.UserNotFoundException;
 import io.devridge.api.util.jwt.TokenProvider;
 import io.devridge.api.util.jwt.exception.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,17 +27,12 @@ import static io.devridge.api.util.jwt.JwtSetting.JWT_HEADER;
 import static io.devridge.api.util.jwt.JwtSetting.TOKEN_PREFIX;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-
-    public JwtAuthorizationFilter(TokenProvider tokenProvider, UserRepository userRepository, AuthenticationEntryPoint authenticationEntryPoint) {
-        this.tokenProvider = tokenProvider;
-        this.userRepository = userRepository;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -51,11 +47,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 }
             }
             chain.doFilter(request, response);
-        } catch (JwtVerifyException | JwtExpiredException | JwtNotHaveIdException | JwtIdConversionException exception) {
-            log.error("Authentication error: {}", exception.getMessage());
+        }  catch (JwtVerifyException exception) {
+            log.error("JwtVerifyException = {}", exception.getMessage());
             authenticationEntryPoint.commence(request, response, new JwtVerifyAuthenticationException());
+        } catch (JwtExpiredException exception) {
+            log.error("JwtExpiredException = {}", exception.getMessage());
+            authenticationEntryPoint.commence(request, response, new JwtExpiredAuthenticationException());
+        } catch (JwtNotHaveIdException exception) {
+            log.error("JwtNotHaveIdException = {}", exception.getMessage());
+            authenticationEntryPoint.commence(request, response, new JwtNotHaveIdAuthenticationException());
+        } catch (JwtIdConversionException exception) {
+            log.error("JwtIdConversionException = {}", exception.getMessage());
+            authenticationEntryPoint.commence(request, response, new JwtIdConversionAuthenticationException());
         } catch (UserNotFoundException exception) {
-            log.error("User not found: {}", exception.getMessage());
+            log.error("UserNotFoundException = {}", exception.getMessage());
             authenticationEntryPoint.commence(request, response, new UserNotFoundAuthenticationException());
         }
     }
