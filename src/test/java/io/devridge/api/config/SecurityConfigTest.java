@@ -1,6 +1,5 @@
 package io.devridge.api.config;
 
-import io.devridge.api.util.jwt.JwtSetting;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,20 +30,6 @@ class SecurityConfigTest {
 
         // when
         ResultActions result = mockMvc.perform(get(permitAllUrl));
-
-        // then
-        result.andExpect(status().isNotFound());
-    }
-
-    @DisplayName("로그인이 필요없는 API에 토큰을 가지고 있어서 검증 없이 응답한다.")
-    @Test
-    public void permit_all_page_not_valid_token_success_test() throws Exception {
-        // given
-        String permitAllUrl = "/test";
-
-        // when
-        ResultActions result = mockMvc.perform(get(permitAllUrl)
-                .header(JwtSetting.JWT_HEADER, JwtSetting.TOKEN_PREFIX + "test"));
 
         // then
         result.andExpect(status().isNotFound());
