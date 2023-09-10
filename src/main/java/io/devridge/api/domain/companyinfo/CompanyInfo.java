@@ -34,4 +34,10 @@ public class CompanyInfo extends BaseTimeEntity {
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
+
+    public CompanyInfo(Job job, DetailedPosition detailedPosition, Company company) {
+        this.job = job;
+        this.detailedPosition = detailedPosition;
+        this.company = company;
+    }
 }

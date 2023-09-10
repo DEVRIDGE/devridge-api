@@ -23,6 +23,10 @@ public class Job extends BaseTimeEntity {
     @Column(name = "job_name")
     private String name;
 
+    public Job(String name) {
+        this.name = name;
+    }
+
     @Builder
     public Job(Long id, String name) {
         this.id = id;
