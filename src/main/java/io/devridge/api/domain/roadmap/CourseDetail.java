@@ -26,11 +26,6 @@ public class CourseDetail extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
-    public CourseDetail(String name, Course course) {
-        this.name = name;
-        this.course = course;
-    }
-
     @Builder
     public CourseDetail(Long id, String name, Course course) {
         this.id = id;
