@@ -19,9 +19,6 @@ public class Roadmap extends BaseTimeEntity {
     @Column(name = "roadmap_id")
     private Long id;
 
-    @Column(name = "roadmap_order")
-    private Integer order;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "roadmap_matching_flag")
     private MatchingStatus matchingFlag;
