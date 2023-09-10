@@ -58,4 +58,8 @@ public class TokenProcess {
             return false;
         }
     }
+
+    public void tokenValidOrThrowException(String token) {
+        tokenProvider.validateToken(token);
+    }
 }
