@@ -7,7 +7,6 @@ server:
     include-stacktrace: never
 
 spring:
-  # TODO 보안 필요
   jwt:
     secretKey: test123
   security:
@@ -20,10 +19,9 @@ spring:
             scope:
               - email
               - profile
-
   datasource:
-    driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test;MODE=MySQL
+    driver-class-name: org.h2.Driver
     username: sa
     password:
   h2:
@@ -33,18 +31,20 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: create
+    show-sql: true
     properties:
       hibernate:
         default_batch_fetch_size: 100
         format_sql: true
-    show-sql: true
-    output:
-      ansi:
-        enabled: always
+    defer-datasource-initialization: true
+  output:
+    ansi:
+      enabled: always
+  sql:
+    init:
+      mode: always
 
 logging:
   level:
     org.hibernate.type: TRACE
     io.devridge.api: DEBUG
-
-
