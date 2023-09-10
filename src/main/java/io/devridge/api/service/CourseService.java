@@ -5,7 +5,6 @@ import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.dto.CourseDetailResponseDto;
-import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseIndexList;
 import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
