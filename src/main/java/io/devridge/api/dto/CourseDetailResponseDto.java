@@ -14,18 +14,6 @@ public class CourseDetailResponseDto {
     public CourseDetailResponseDto(String title, List<CourseDetail> courseDetailList) {
         this.title = title;
 
-//        List<CourseDetailDto> DuplicatedList = courseDetailList.stream().map(cd -> new CourseDetailDto(cd)).collect(Collectors.toList());
-//        List<CourseDetailDto> notDuplicatedList = new ArrayList<>();
-//
-//        for(CourseDetailDto cd : DuplicatedList) { // 중복 제거
-//            if(!notDuplicatedList.contains(cd)){
-//                notDuplicatedList.add(cd);
-//            }
-//        }
-//
-//        notDuplicatedList = notDuplicatedList = notDuplicatedList.stream()
-//                                            .sorted(Comparator.comparing(CourseDetailDto::getName)).collect(Collectors.toList()); // 이름순 정렬
-//        this.courseDetails = notDuplicatedList;
         this.courseDetails = courseDetailList.stream()
                 .map(cd -> new CourseDetailDto(cd))
                 .sorted(Comparator.comparing(CourseDetailDto::getName))

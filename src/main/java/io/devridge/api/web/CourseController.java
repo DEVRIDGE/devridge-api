@@ -1,5 +1,6 @@
 package io.devridge.api.web;
 
+import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.service.CourseService;
@@ -24,22 +25,13 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseList));
     }
 
-//    @GetMapping("/courses/{courseId}")
-//    public ResponseEntity<ApiResponse<Object>> courseDetailList(@PathVariable Long courseId,
-//                                                                @RequestParam("company") Long companyId,
-//                                                                @RequestParam("job") Long jobId) {
-//        CourseDetailResponseDto courseDetailList = courseService.getCourseDetailList(courseId, companyId, jobId);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailList));
-//    }
-
     @GetMapping("/courses/{courseId}")
     public ResponseEntity<ApiResponse<Object>> courseDetailList(@PathVariable Long courseId,
                                                                 @RequestParam("company") Long companyId,
                                                                 @RequestParam("job") Long jobId,
                                                                 @RequestParam("detailedPosition") Long detailedPositionList) {
-//        CourseDetailResponseDto courseDetailList = courseService.getCourseDetailList(courseId, companyId, jobId);
+        CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(courseId, companyId, jobId, detailedPositionList);
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailResponseDto));
     }
 }
