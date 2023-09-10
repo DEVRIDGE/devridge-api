@@ -1,5 +1,6 @@
 package io.devridge.api.dto.course;
 
+import io.devridge.api.domain.companyinfo.CompanyInfo;
 import lombok.Getter;
 
 import java.util.*;
@@ -10,9 +11,9 @@ public class CourseListResponseDto {
     private final String jobName;
     private final List<CourseIndexList> courseList;
 
-    public CourseListResponseDto(CompanyJobInfo companyJobInfo, List<CourseIndexList> courseList) {
-        this.companyName = companyJobInfo.getCompanyName();
-        this.jobName = companyJobInfo.getJobName();
+    public CourseListResponseDto(CompanyInfo companyInfo, List<CourseIndexList> courseList) {
+        this.companyName = companyInfo.getCompany().getName();
+        this.jobName = companyInfo.getJob().getName();
         this.courseList = courseList;
     }
 }
