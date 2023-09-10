@@ -69,8 +69,8 @@ public class CourseService {
 
     /**
      * 프론트 요구사항
-     * 1. 컬렉션의 첫 번째 항목이 SKILL인 경우 빈 배열을 추가
-     * 2. 컬렉션의 이전 항목과 현재 항목이 모두 SKILL인 경우 빈 배열을 추가
+     * 1. 컬렉션의 첫 번째 항목이 SKILL인 경우 빈 리스트를 추가
+     * 2. 컬렉션의 이전 항목과 현재 항목이 모두 SKILL인 경우 빈 리스트 추가
      */
     private List<CourseIndexList> addEmptyListIfSkillNextSkill(Collection<List<CourseInfoDto>> courseListCollection) {
         List<CourseIndexList> courseListAddEmptyList = new ArrayList<>();
@@ -80,13 +80,14 @@ public class CourseService {
 
         for (List<CourseInfoDto> courseInfoList : courseListCollection) {
             CourseType currentCourseType = !courseInfoList.isEmpty() ? courseInfoList.get(0).getType() : null;
-
-            // 1. 컬렉션의 첫 번째 항목이 SKILL인 경우 빈 배열을 추가
-            if (isFirstItem && currentCourseType == CourseType.SKILL) {
-                courseListAddEmptyList.add(new CourseIndexList(index++, Collections.emptyList()));
+            // 처음에만 실행
+            if (isFirstItem) {
                 isFirstItem = false;
+                // 1. 컬렉션의 첫 번째 항목이 SKILL인 경우 빈 배열을 추가
+                if (currentCourseType == CourseType.SKILL) {
+                    courseListAddEmptyList.add(new CourseIndexList(index++, Collections.emptyList()));
+                }
             }
-
             // 2. 이전 항목이 SKILL이고 현재 항목이 SKILL인 경우 빈 배열을 추가
             if (previousCourseType == CourseType.SKILL && currentCourseType == CourseType.SKILL) {
                 courseListAddEmptyList.add(new CourseIndexList(index++, Collections.emptyList()));
