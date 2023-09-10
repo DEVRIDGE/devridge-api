@@ -4,8 +4,8 @@ import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
+import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
-import io.devridge.api.handler.ex.NotFoundCompanyInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +31,6 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
 
     @Mock
-    private CompanyJobRepository companyJobRepository;
-
-    @Mock
     private CompanyInfoRepository companyInfoRepository;
 
     @Mock
@@ -50,7 +47,7 @@ class CourseServiceTest {
         List<Roadmap> roadmapList = new ArrayList<>();
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -73,7 +70,7 @@ class CourseServiceTest {
         roadmapList.add(Roadmap.builder().course(course1).companyInfo(companyInfo).matchingFlag(MatchingStatus.NO).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -103,7 +100,7 @@ class CourseServiceTest {
         roadmapList.add(Roadmap.builder().course(course1).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -135,7 +132,7 @@ class CourseServiceTest {
         roadmapList.add(Roadmap.builder().course(course3).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -167,7 +164,7 @@ class CourseServiceTest {
         roadmapList.add(Roadmap.builder().course(course3).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -198,7 +195,7 @@ class CourseServiceTest {
         roadmapList.add(Roadmap.builder().course(course3).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(anyLong())).thenReturn(roadmapList);
 
         // when
@@ -218,11 +215,11 @@ class CourseServiceTest {
     @Test
     public void course_list_not_found_company_info_fail_test() {
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> courseService.getCourseList(1L, 1L, 1L))
-                .isInstanceOf(NotFoundCompanyInfo.class);
+                .isInstanceOf(CompanyInfoNotFoundException.class);
     }
 
     @DisplayName("코스, 회사, 직무, 서비스가 주어지면 CourseDetail 리스트를 정상적으로 반환한다")
@@ -233,7 +230,6 @@ class CourseServiceTest {
         Job job = Job.builder().id(1L).name("백엔드").build();
         DetailedPosition detailedPosition = DetailedPosition.builder().id(1L).name("Product").company(company).build();
         CompanyInfo companyInfo = CompanyInfo.builder().id(1L).job(job).detailedPosition(detailedPosition).company(company).build();
-
         Course course = Course.builder().id(1L).name("언어").job(job).build();
 
         //stub
@@ -276,7 +272,6 @@ class CourseServiceTest {
         Job job = Job.builder().id(1L).name("백엔드").build();
         DetailedPosition detailedPosition = DetailedPosition.builder().id(1L).name("Product").company(company).build();
         CompanyInfo companyInfo = CompanyInfo.builder().id(1L).company(company).job(job).detailedPosition(detailedPosition).build();
-
         Course course = Course.builder().id(1L).name("언어").job(job).build();
 
         //stub
@@ -293,16 +288,6 @@ class CourseServiceTest {
         Job job = Job.builder().id(1L).name("test job").build();
         DetailedPosition detailedPosition = DetailedPosition.builder().id(1L).name("test detailed position").build();
         return CompanyInfo.builder().id(1L).company(company).job(job).detailedPosition(detailedPosition).build();
-    }
-
-    private List<Course> makeCourseList(Job job) {
-        List<Course> courseList = new ArrayList<>();
-        courseList.add(Course.builder().id(1L).name("SKILL1").type(CourseType.SKILL).order(1).job(job).build());
-        courseList.add(Course.builder().id(3L).name("SKILL2").type(CourseType.SKILL).order(3).job(job).build());
-        courseList.add(Course.builder().id(2L).name("CS1").type(CourseType.CS).order(3).job(job).build());
-        courseList.add(Course.builder().id(4L).name("CS2").type(CourseType.CS).order(4).job(job).build());
-        courseList.add(Course.builder().id(5L).name("SKILL3").type(CourseType.SKILL).order(5).job(job).build());
-        return courseList;
     }
 
     private List<CourseDetail> makeCourseDetailList(Course course) {

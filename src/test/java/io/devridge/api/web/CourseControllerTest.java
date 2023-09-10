@@ -64,7 +64,7 @@ class CourseControllerTest {
         roadmapList.add(Roadmap.builder().course(course4).companyInfo(companyInfo).matchingFlag(MatchingStatus.NO).build());
 
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(company.getId(), job.getId(), detailedPosition.getId())).thenReturn(Optional.of(companyInfo));
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(company.getId(), job.getId(), detailedPosition.getId())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(companyInfo.getId())).thenReturn(roadmapList);
 
         // when
@@ -72,7 +72,7 @@ class CourseControllerTest {
                 get("/courses")
                         .param("company", Long.toString(1L))
                         .param("job", Long.toString(1L))
-                        .param("detailPosition", Long.toString(1L))
+                        .param("detailedPosition", Long.toString(1L))
         );
 
         // then
@@ -124,7 +124,7 @@ class CourseControllerTest {
                 get("/courses")
                         .param("company", companyId)
                         .param("job", jobId)
-                        .param("detailPosition", detailedId)
+                        .param("detailedPosition", detailedId)
         );
 
         // then
@@ -138,20 +138,20 @@ class CourseControllerTest {
     @Test
     public void courses_fail_test() throws Exception {
         // stub
-        when(companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
 
         // when
         ResultActions resultActions = mvc.perform(
                 get("/courses")
                         .param("company", "1")
                         .param("job", "1")
-                        .param("detailPosition", "1")
+                        .param("detailedPosition", "1")
         );
         
         // then
         resultActions.andExpect(status().isBadRequest());
         resultActions.andExpect(jsonPath("$.status").value("error"));
-        resultActions.andExpect(jsonPath("$.message").value("해당하는 회사 정보가 없습니다."));
+        resultActions.andExpect(jsonPath("$.message").value("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
         resultActions.andExpect(jsonPath("$.data").isEmpty());
     }
 
