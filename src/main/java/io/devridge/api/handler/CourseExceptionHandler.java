@@ -1,6 +1,7 @@
 package io.devridge.api.handler;
 
 import io.devridge.api.dto.common.ApiResponse;
+import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
@@ -30,6 +31,12 @@ public class CourseExceptionHandler {
     @ExceptionHandler(CourseDetailNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleCourseDetailNotFoundException(CourseDetailNotFoundException exception) {
         log.error("CourseDetailNotFoundException = {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
+    }
+
+    @ExceptionHandler(CompanyInfoNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCompanyInfoNotFoundException(CompanyInfoNotFoundException exception) {
+        log.error("CompanyInfoNotFoundExceptionException = {}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
     }
 }
