@@ -24,8 +24,10 @@ public class CourseController {
     public ResponseEntity<ApiResponse<Object>> getCourseList(
             @RequestParam("company") long companyId,
             @RequestParam("job") long jobId,
-            @RequestParam("detail_position") long detailPositionId) {
+            @RequestParam("detailPosition") long detailPositionId) {
+
         CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId, detailPositionId);
+
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseList));
     }
 
