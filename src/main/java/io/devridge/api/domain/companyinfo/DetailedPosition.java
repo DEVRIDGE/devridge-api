@@ -26,12 +26,7 @@ public class DetailedPosition extends BaseTimeEntity {
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
-
-    public DetailedPosition(String name, Company company) {
-        this.name = name;
-        this.company = company;
-    }
-
+    
     @Builder
     public DetailedPosition(Long id, String name, Company company) {
         this.id = id;

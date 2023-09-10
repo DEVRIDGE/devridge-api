@@ -39,18 +39,6 @@ public class CourseService {
         return new CourseListResponseDto(companyJobInfo, courses);
     }
 
-//    @Transactional(readOnly = true)
-//    public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId) {
-//        validateCompanyJob(companyId, jobId);
-//
-//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
-//        // TODO 쿼리수정
-//        List<CourseDetail> courseDetailList = null;
-//        //List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListByCourseIdAndCompanyIdAndJobId(courseId, companyId, jobId);
-//
-//        return new CourseDetailResponseDto(course.getName(), courseDetailList);
-//    }
-
     @Transactional(readOnly = true)
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId, long detailedPositionId) {
         validateCompanyInfo(companyId, jobId, detailedPositionId);

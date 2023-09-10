@@ -8,12 +8,11 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CourseDetailResponseDto {
-    private String title;
+    private String courseName;
     private List<CourseDetailDto> courseDetails;
 
     public CourseDetailResponseDto(String title, List<CourseDetail> courseDetailList) {
-        this.title = title;
-
+        this.courseName = title;
         this.courseDetails = courseDetailList.stream()
                 .map(cd -> new CourseDetailDto(cd))
                 .sorted(Comparator.comparing(CourseDetailDto::getName))
@@ -29,12 +28,6 @@ public class CourseDetailResponseDto {
             this.id = courseDetail.getId();
             this.name = courseDetail.getName();
         }
-//        public boolean equals(Object obj) { // 두 CourseDetailDto가 있을 때, id가 같으면 같은 객체로 판단함
-//            if(obj instanceof CourseDetailDto)
-//                return id==((CourseDetailDto)obj).getId();
-//            else
-//                return false;
-//        }
     }
 
 }

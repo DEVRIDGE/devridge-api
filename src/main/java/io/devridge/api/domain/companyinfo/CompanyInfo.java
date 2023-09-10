@@ -2,6 +2,7 @@ package io.devridge.api.domain.companyinfo;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,7 +36,10 @@ public class CompanyInfo extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
-    public CompanyInfo(Job job, DetailedPosition detailedPosition, Company company) {
+    @Builder
+    public CompanyInfo(Long id, String content, Job job, DetailedPosition detailedPosition, Company company) {
+        this.id = id;
+        this.content = content;
         this.job = job;
         this.detailedPosition = detailedPosition;
         this.company = company;
