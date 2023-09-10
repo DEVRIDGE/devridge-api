@@ -52,6 +52,7 @@ class CourseServiceTest {
 
         long companyId = 1L;
         long jobId = 1L;
+        long detailPositionId = 3L;
 
         // stub
         when(companyJobRepository.findCompanyJobInfo(companyId, jobId))
@@ -61,7 +62,7 @@ class CourseServiceTest {
                 .thenReturn(courseList);
 
         // when
-        CourseListResponseDto courseListResponseDto = courseService.getCourseList(companyId, jobId);
+        CourseListResponseDto courseListResponseDto = courseService.getCourseList(companyId, jobId, detailPositionId);
 
         // then
         assertThat(courseListResponseDto.getCourseList().size()).isEqualTo(5);
@@ -82,13 +83,14 @@ class CourseServiceTest {
         // given
         long companyId = 1L;
         long jobId = 2L;
+        long detailPositionId = 3L;
 
         // stub
         when(companyJobRepository.findCompanyJobInfo(companyId, jobId))
                 .thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> courseService.getCourseList(companyId, jobId))
+        assertThatThrownBy(() -> courseService.getCourseList(companyId, jobId, detailPositionId))
                 .isInstanceOf(CompanyJobNotFoundException.class);
     }
 

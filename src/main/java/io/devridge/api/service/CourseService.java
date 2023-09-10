@@ -1,5 +1,7 @@
 package io.devridge.api.service;
 
+import io.devridge.api.domain.companyinfo.CompanyInfo;
+import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.dto.CourseDetailResponseDto;
@@ -9,6 +11,7 @@ import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
+import io.devridge.api.handler.ex.NotFoundCompanyInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,17 +25,21 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CompanyJobRepository companyJobRepository;
+    private final CompanyInfoRepository companyInfoRepository;
+    private final RoadmapRepository roadmapRepository;
 
     @Transactional(readOnly = true)
-    public CourseListResponseDto getCourseList(long companyId, long jobId) {
-        CompanyJobInfo companyJobInfo = findCompanyAndJob(companyId, jobId);
+    public CourseListResponseDto getCourseList(long companyId, long jobId, long detailPositionId) {
+        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailPositionId);
+        List<Roadmap> roadmapList = roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(companyInfo.getId());
+        System.out.println("roadmapList.get(0).getCourse().getName() = " + roadmapList.get(0).getCourse().getName());
 
         List<Course> courseList = courseRepository.getCourseListByJob(jobId);
 
         Collection<List<CourseInfoDto>> courseListCollection = groupCourseAndMakeNewList(courseList);
         List<CourseIndexList> courses = addEmptyListIfSkillNextSkill(courseListCollection);
-
-        return new CourseListResponseDto(companyJobInfo, courses);
+        //return new CourseListResponseDto(companyJobInfo, courses);
+        return null;
     }
 
     @Transactional(readOnly = true)
@@ -47,9 +54,9 @@ public class CourseService {
         return new CourseDetailResponseDto(course.getName(), courseDetailList);
     }
 
-    private CompanyJobInfo findCompanyAndJob(long companyId, long jobId) {
-        return companyJobRepository.findCompanyJobInfo(companyId, jobId)
-                .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
+    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailPositionId)
+                .orElseThrow(NotFoundCompanyInfo::new);
     }
 
     private void validateCompanyJob(long companyId, long jobId) {

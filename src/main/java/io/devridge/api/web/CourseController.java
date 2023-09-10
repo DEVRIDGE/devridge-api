@@ -23,9 +23,9 @@ public class CourseController {
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<Object>> getCourseList(
             @RequestParam("company") long companyId,
-            @RequestParam("job") long jobId
-    ) {
-        CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId);
+            @RequestParam("job") long jobId,
+            @RequestParam("detail_position") long detailPositionId) {
+        CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId, detailPositionId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseList));
     }
 
