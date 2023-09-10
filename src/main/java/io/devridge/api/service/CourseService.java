@@ -2,17 +2,13 @@ package io.devridge.api.service;
 
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
-import io.devridge.api.domain.companyinfo.CompanyJobRepository;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.dto.CourseDetailResponseDto;
-import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.dto.course.CourseIndexList;
 import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
-import io.devridge.api.handler.ex.CompanyJobNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
-import io.devridge.api.handler.ex.NotFoundCompanyInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +22,6 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
-    private final CompanyJobRepository companyJobRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
 
@@ -51,8 +46,8 @@ public class CourseService {
     }
 
     private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
-        return companyInfoRepository.findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailPositionId)
-                .orElseThrow(NotFoundCompanyInfo::new);
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(companyId, jobId, detailPositionId)
+                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 
     private Collection<List<CourseInfoDto>> getCourseListCollection(CompanyInfo companyInfo) {
@@ -63,21 +58,10 @@ public class CourseService {
                 .values();
     }
 
-    private CompanyJobInfo findCompanyAndJob(long companyId, long jobId) {
-        return companyJobRepository.findCompanyJobInfo(companyId, jobId)
-                .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
-    }
-
-    private void validateCompanyJob(long companyId, long jobId) {
-        companyJobRepository.findByCompanyIdAndJobId(companyId, jobId)
-                .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
-    }
-
     private void validateCompanyInfo(long companyId, long jobId, long detailedPositionId) {
         companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
                 .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
-
 
     /**
      * 프론트 요구사항

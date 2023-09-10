@@ -16,7 +16,6 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
 //    List<CourseDetail> getCourseDetailListByCourseIdAndCompanyIdAndJobId(@Param("courseId")long courseId, @Param("companyId") long companyId, @Param("jobId") long jobId);
     CourseDetail findByName(String courseName);
 
-
     @Query("SELECT cd FROM CourseDetail cd " +
             "JOIN Course c ON c.id = cd.course.id " +
             "JOIN CompanyRequiredAbility cra ON cra.courseDetail.id = cd.id " +
