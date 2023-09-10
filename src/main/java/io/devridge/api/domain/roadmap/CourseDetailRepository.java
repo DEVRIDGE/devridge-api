@@ -22,5 +22,5 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "JOIN CompanyRequiredAbility cra ON cra.courseDetail.id = cd.id " +
             "JOIN CompanyInfo ci ON ci.id = cra.companyInfo.id " +
             "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailedPositionId AND c.id = :courseId")
-    List<CourseDetail> getCourseDetailList(@Param("courseId") Long courseId, @Param("companyId") Long companyId, @Param("jobId") Long jobId, @Param("detailedPostionId") Long detailedPositionId);
+    List<CourseDetail> getCourseDetailList(@Param("courseId") Long courseId, @Param("companyId") Long companyId, @Param("jobId") Long jobId, @Param("detailedPositionId") Long detailedPositionId);
 }
