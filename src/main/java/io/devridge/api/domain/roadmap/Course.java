@@ -34,7 +34,7 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
 
-    @Builder
+    @Builder()
     public Course(Long id, String name, CourseType type, int order, Job job) {
         this.id = id;
         this.name = name;

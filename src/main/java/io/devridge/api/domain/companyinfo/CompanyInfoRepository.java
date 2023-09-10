@@ -13,4 +13,5 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
             "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailPositionId")
     Optional<CompanyInfo> findCompanyInfoByCompanyIdAndJobIdAndDetailedPositionId(long companyId, long jobId, long detailPositionId);
 
+    Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionId(long companyId, long jobId, long detailedPositionId);
 }
