@@ -3,14 +3,19 @@ package io.devridge.api.config;
 import io.devridge.api.config.auth.OAuth2FailHandler;
 import io.devridge.api.config.auth.OAuth2SuccessHandler;
 import io.devridge.api.config.auth.OAuth2UserService;
+import io.devridge.api.config.filter.JwtAuthorizationFilter;
+import io.devridge.api.domain.user.UserRepository;
+import io.devridge.api.util.jwt.TokenProcess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -20,34 +25,39 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final Environment environment;
     private final OAuth2UserService oauth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailHandler oAuth2FailHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final TokenProcess tokenProcess;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         configureDevSettings(http);
 
-        return http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(config -> config.frameOptions().disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login(loginConfigurer -> {
-                    loginConfigurer.userInfoEndpoint().userService(oauth2UserService);
-                    loginConfigurer.successHandler(oAuth2SuccessHandler);
-                    loginConfigurer.failureHandler(oAuth2FailHandler);
-                })
-                .exceptionHandling(config -> {
-//                    config.authenticationEntryPoint(authenticationEntryPointResponseHandler);
-//                    config.accessDeniedHandler(this::accessDeniedResponseHandler);
-                })
-                .authorizeRequests(requests -> requests.anyRequest().permitAll())
+        http
+            .httpBasic().disable()
+            .formLogin().disable()
+            .cors().configurationSource(corsConfigurationSource()).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .oauth2Login()
+                .userInfoEndpoint().userService(oauth2UserService).and()
+                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailHandler).and()
+            .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler).and()
+            .authorizeRequests()
+                .antMatchers(AuthEndpoints.REQUIRED_STATIC_AUTH_URLS).authenticated()
+                .antMatchers(AuthEndpoints.REQUIRED_WILDCARD_AUTH_URLS).authenticated()
+                .anyRequest().permitAll().and()
+            .addFilterBefore(new JwtAuthorizationFilter(tokenProcess, userRepository, authenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
-                .build();
+
+        return http.build();
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
@@ -61,23 +71,11 @@ public class SecurityConfig {
         return source;
     }
 
-//    private void authenticationEntryPointResponseHandler(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
-//        log.error("request.getRequestURI() = {}, ", request.getRequestURI());
-//        log.error("AuthenticationException = {}", exception.getMessage());
-//        CommonResponseHandler.handleException(response, "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
-//    }
-//
-//    private void accessDeniedResponseHandler(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception) {
-//        log.error("request.getRequestURI() = {}, ", request.getRequestURI());
-//        log.error("AccessDeniedException = {}", exception.getMessage());
-//        CommonResponseHandler.handleException(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
-//    }
-
     private void configureDevSettings(HttpSecurity http) throws Exception {
         if (isProfileActive("dev") || isProfileActive("test")) {
             http
-                    .headers(config -> config.frameOptions().disable())
-                    .csrf(AbstractHttpConfigurer::disable);
+                .headers().frameOptions().disable().and()
+                .csrf().disable();
         }
     }
 

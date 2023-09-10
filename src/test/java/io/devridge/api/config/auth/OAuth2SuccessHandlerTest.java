@@ -9,7 +9,6 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,7 +53,7 @@ class OAuth2SuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(loginUser);
         when(loginUser.getUser()).thenReturn(user);
         when(tokenService.createAccessToken(user)).thenReturn("accessTestToken");
-        when(tokenService.createRefreshTokenAndSave(user)).thenReturn("refreshTestToken");
+        when(tokenService.getOrUpdateRefreshToken(user)).thenReturn("refreshTestToken");
 
         // when
         oAuth2SuccessHandler.onAuthenticationSuccess(request, response, authentication);

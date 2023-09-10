@@ -10,5 +10,7 @@ public interface TokenProvider {
 
     String createRefreshToken(Date now, Date expiredAt);
 
-    Long verify(String token);
+    Long verifyAndGetUserId(String token);
+
+    boolean isTokenValid(String token);
 }
