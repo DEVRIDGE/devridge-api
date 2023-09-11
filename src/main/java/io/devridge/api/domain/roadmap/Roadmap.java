@@ -3,6 +3,7 @@ package io.devridge.api.domain.roadmap;
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,9 +20,6 @@ public class Roadmap extends BaseTimeEntity {
     @Column(name = "roadmap_id")
     private Long id;
 
-    @Column(name = "roadmap_order")
-    private Integer order;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "roadmap_matching_flag")
     private MatchingStatus matchingFlag;
@@ -33,4 +31,12 @@ public class Roadmap extends BaseTimeEntity {
     @JoinColumn(name = "company_info_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CompanyInfo companyInfo;
+
+    @Builder
+    public Roadmap(Long id, MatchingStatus matchingFlag, Course course, CompanyInfo companyInfo) {
+        this.id = id;
+        this.matchingFlag = matchingFlag;
+        this.course = course;
+        this.companyInfo = companyInfo;
+    }
 }

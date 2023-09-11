@@ -19,9 +19,11 @@ public class CourseController {
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<Object>> getCourseList(
             @RequestParam("company") long companyId,
-            @RequestParam("job") long jobId
-    ) {
-        CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId);
+            @RequestParam("job") long jobId,
+            @RequestParam("detailedPosition") long detailPositionId) {
+
+        CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId, detailPositionId);
+
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseList));
     }
 
@@ -30,6 +32,7 @@ public class CourseController {
                                                                 @RequestParam("company") Long companyId,
                                                                 @RequestParam("job") Long jobId,
                                                                 @RequestParam("detailedPosition") Long detailedPositionList) {
+
         CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(courseId, companyId, jobId, detailedPositionList);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailResponseDto));
