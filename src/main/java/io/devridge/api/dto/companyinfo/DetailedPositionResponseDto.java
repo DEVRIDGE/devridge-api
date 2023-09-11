@@ -20,12 +20,10 @@ public class DetailedPositionResponseDto {
     public class DetailedPositionDto {
         private Long id;
         private String name;
-        private Company company;
 
         public DetailedPositionDto(DetailedPosition detailedPosition) {
             this.id = detailedPosition.getId();
             this.name = detailedPosition.getName();
-            this.company = detailedPosition.getCompany();
         }
     }
 }
