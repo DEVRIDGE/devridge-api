@@ -3,6 +3,8 @@ package io.devridge.api.service;
 import io.devridge.api.domain.token.Token;
 import io.devridge.api.domain.token.TokenRepository;
 import io.devridge.api.domain.user.User;
+import io.devridge.api.dto.token.ReissueTokenResponseDto;
+import io.devridge.api.handler.ex.NotHaveRefreshTokenException;
 import io.devridge.api.util.jwt.TokenDto;
 import io.devridge.api.util.jwt.TokenProcess;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,17 @@ public class TokenService {
                     return generateAndSaveNewRefreshToken(user, currentRefreshToken);
                 })
                 .orElseGet(() -> generateAndSaveNewRefreshToken(user, null));
+    }
+
+    @Transactional(readOnly = true)
+    public ReissueTokenResponseDto reissue(String token) {
+        Token refreshToken = tokenRepository.findByContent(token)
+                .orElseThrow(NotHaveRefreshTokenException::new);
+
+        tokenProcess.tokenValidOrThrowException(refreshToken.getContent());
+        TokenDto accessTokenDto = tokenProcess.createAccessToken(refreshToken.getUser());
+
+        return new ReissueTokenResponseDto(accessTokenDto);
     }
 
     private String generateAndSaveNewRefreshToken(User user, Token currentToken) {

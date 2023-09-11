@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class TokenProcessTest {
 
@@ -167,5 +166,42 @@ class TokenProcessTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @DisplayName("토큰 검증에 성공하면 아무 일도 일어나지 않는다.")
+    @Test
+    public void token_valid_or_throw_exception_success_test() {
+        // given
+        tokenProvider.token = "success_token";
+        tokenProvider.currentAt = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+        tokenProvider.expiredAt = LocalDateTime.of(2020, 1, 1, 0, 0, 1);
+
+        // when & then
+        assertThatCode(() -> tokenProcess.tokenValidOrThrowException("success_token"))
+                .doesNotThrowAnyException();
+    }
+
+    @DisplayName("토큰 검증에 실패하면 JwtVerifyException을 발생시킨다.")
+    @Test
+    public void token_verify_fail_test() {
+        // given
+        tokenProvider.token = "success_token";
+
+        // when & then
+        assertThatThrownBy(() -> tokenProcess.tokenValidOrThrowException("fail_token"))
+                .isInstanceOf(JwtVerifyException.class);
+    }
+
+    @DisplayName("토큰이 만료되면 JwtExpiredException을 발생시킨다.")
+    @Test
+    public void token_expired_fail_test() {
+        // given
+        tokenProvider.token = "success_token";
+        tokenProvider.currentAt = LocalDateTime.of(2020, 1, 1, 0, 0, 1);
+        tokenProvider.expiredAt = LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+
+        // when & then
+        assertThatThrownBy(() -> tokenProcess.tokenValidOrThrowException("success_token"))
+                .isInstanceOf(JwtExpiredException.class);
     }
 }

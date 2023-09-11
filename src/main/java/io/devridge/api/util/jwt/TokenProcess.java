@@ -1,8 +1,11 @@
 package io.devridge.api.util.jwt;
 
 import io.devridge.api.domain.user.User;
+import io.devridge.api.util.jwt.exception.JwtExpiredException;
+import io.devridge.api.util.jwt.exception.JwtVerifyException;
 import io.devridge.api.util.time.TimeProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -12,6 +15,7 @@ import java.util.Date;
 import static io.devridge.api.util.jwt.JwtSetting.ACCESS_TOKEN_VALID_TIME;
 import static io.devridge.api.util.jwt.JwtSetting.REFRESH_TOKEN_VALID_TIME;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class TokenProcess {
@@ -41,11 +45,21 @@ public class TokenProcess {
                 .build();
     }
 
-    public boolean isTokenValid(String token) {
-        return tokenProvider.isTokenValid(token);
-    }
-
     public Long verifyAndGetUserId(String token) {
         return tokenProvider.verifyAndGetUserId(token);
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            tokenProvider.validateToken(token);
+            return true;
+        } catch (JwtVerifyException | JwtExpiredException exception) {
+            log.error("isTokenValid exception = {}", exception.getMessage());
+            return false;
+        }
+    }
+
+    public void tokenValidOrThrowException(String token) {
+        tokenProvider.validateToken(token);
     }
 }

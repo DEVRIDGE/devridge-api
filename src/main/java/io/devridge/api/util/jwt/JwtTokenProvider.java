@@ -49,13 +49,8 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public boolean isTokenValid(String token) {
-        try {
-            decodingToken(token);
-            return true;
-        } catch (JwtExpiredException | JwtVerifyException exception) {
-            return false;
-        }
+    public void validateToken(String token) throws JwtVerifyException, JwtExpiredException {
+        decodingToken(token);
     }
 
     private DecodedJWT decodingToken(String token) {

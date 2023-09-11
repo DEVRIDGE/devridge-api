@@ -4,9 +4,12 @@ import io.devridge.api.domain.token.Token;
 import io.devridge.api.domain.token.TokenRepository;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.user.UserRole;
+import io.devridge.api.dto.token.ReissueTokenResponseDto;
+import io.devridge.api.handler.ex.NotHaveRefreshTokenException;
 import io.devridge.api.util.jwt.TokenDto;
 import io.devridge.api.util.jwt.TokenProcess;
-import io.devridge.api.util.time.TimeProvider;
+import io.devridge.api.util.jwt.exception.JwtExpiredException;
+import io.devridge.api.util.jwt.exception.JwtVerifyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +37,6 @@ public class TokenServiceTest {
     private TokenProcess tokenProcess;
 
     @Mock
-    private TimeProvider timeProvider;
-
-    @Mock
     private TokenRepository tokenRepository;
 
     @DisplayName("로그인에 필요한 access 토큰을 생성한다.")
@@ -40,7 +44,7 @@ public class TokenServiceTest {
     public void create_access_token_test() {
         // given
         User user = User.builder().email("test@test.com").role(UserRole.USER).build();
-        TokenDto tokenDto = TokenDto.builder().token("access_test_token").build();
+        TokenDto tokenDto = TokenDto.builder().token("new_access_token").build();
 
         // stub
         when(tokenProcess.createAccessToken(user)).thenReturn(tokenDto);
@@ -49,7 +53,7 @@ public class TokenServiceTest {
         String result = tokenService.createAccessToken(user);
 
         // then
-        assertThat(result).isEqualTo("access_test_token");
+        assertThat(result).isEqualTo("new_access_token");
     }
 
     @DisplayName("해당 유저의 refresh Token이 존재하지 않으면 새로운 refresh Token을 생성하고 저장한다.")
@@ -108,5 +112,69 @@ public class TokenServiceTest {
 
         // then
         assertThat(result).isEqualTo("old_refresh_token");
+    }
+
+    @DisplayName("정상적인 refresh token으로 access token을 재발행한다.")
+    @Test
+    public void reissue_access_token_having_correct_refresh_token() {
+        // given
+        User user = User.builder().email("test@test.com").role(UserRole.USER).build();
+        Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
+        TokenDto tokenDto = TokenDto.builder().token("new_access_token").expiredAt(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).build();
+
+        // stub
+        when(tokenRepository.findByContent(any())).thenReturn(Optional.of(oldRefreshToken));
+        when(tokenProcess.createAccessToken(any())).thenReturn(tokenDto);
+
+        // when
+        ReissueTokenResponseDto reissueTokenResponseDto = tokenService.reissue("success_refresh_token");
+
+        // then
+        assertThat(reissueTokenResponseDto.getAccessToken()).isEqualTo("new_access_token");
+        assertThat(reissueTokenResponseDto.getTokenType()).isEqualTo("Bearer");
+        assertThat(reissueTokenResponseDto.getExpiresIn()).isEqualTo(1800);
+        assertThat(reissueTokenResponseDto.getExpiredAt()).isEqualTo(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
+    }
+
+    @DisplayName("refresh token을 저장소에서 찾을 수 없을 때 예외를 발생시킨다.")
+    @Test
+    public void found_token_fail_test() {
+        // stub
+        when(tokenRepository.findByContent(any())).thenReturn(Optional.empty());
+        // when & then
+        assertThatThrownBy(() -> tokenService.reissue("fail_refresh_token"))
+                .isInstanceOf(NotHaveRefreshTokenException.class);
+    }
+
+    @DisplayName("refresh token 검증에 실패하면 예외를 발생시킨다.")
+    @Test
+    public void verify_token_fail_test() {
+        // given
+        User user = User.builder().email("test@test.com").role(UserRole.USER).build();
+        Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
+
+        // stub
+        when(tokenRepository.findByContent(any())).thenReturn(Optional.of(oldRefreshToken));
+        doThrow(new JwtVerifyException("토큰 검증 실패")).when(tokenProcess).tokenValidOrThrowException("old_refresh_token");
+
+        // when & then
+        assertThatThrownBy(() -> tokenService.reissue("old_refresh_token"))
+                .isInstanceOf(JwtVerifyException.class);
+    }
+
+    @DisplayName("refresh token이 만료되었으면 예외를 발생시킨다.")
+    @Test
+    public void expired_token_fail_test() {
+        // given
+        User user = User.builder().email("test@test.com").role(UserRole.USER).build();
+        Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
+
+        // stub
+        when(tokenRepository.findByContent(any())).thenReturn(Optional.of(oldRefreshToken));
+        doThrow(new JwtExpiredException("토큰 만료")).when(tokenProcess).tokenValidOrThrowException("old_refresh_token");
+
+        // when & then
+        assertThatThrownBy(() -> tokenService.reissue("old_refresh_token"))
+                .isInstanceOf(JwtExpiredException.class);
     }
 }
