@@ -57,7 +57,7 @@ class SecurityConfigTest {
         // then
         resultActions.andExpect(status().isUnauthorized());
         resultActions.andExpect(jsonPath("$.status").value("error"));
-        resultActions.andExpect(jsonPath("$.message").value("로그인 필요"));
+        resultActions.andExpect(jsonPath("$.message").value("Login required"));
         resultActions.andExpect(jsonPath("$.data").isEmpty());
     }
 }

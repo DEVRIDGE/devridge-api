@@ -35,11 +35,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             authException instanceof JwtIdConversionAuthenticationException ||
             authException instanceof JwtNotHaveIdAuthenticationException ||
             authException instanceof UserNotFoundAuthenticationException) {
-            return "토큰 검증 오류";
+            return "Token verification failed";
         } else if (authException instanceof JwtExpiredAuthenticationException) {
-            return "토큰 만료";
+            return "Token has expired";
         } else {
-            return "로그인 필요";
+            return "Login required";
         }
     }
 }

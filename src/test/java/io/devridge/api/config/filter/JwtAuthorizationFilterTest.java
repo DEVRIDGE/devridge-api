@@ -104,7 +104,7 @@ class JwtAuthorizationFilterTest {
         // then
         result.andExpect(status().isUnauthorized());
         result.andExpect(jsonPath("$.status").value("error"));
-        result.andExpect(jsonPath("$.message").value("토큰 검증 오류"));
+        result.andExpect(jsonPath("$.message").value("Token verification failed"));
         result.andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -124,7 +124,7 @@ class JwtAuthorizationFilterTest {
         // then
         result.andExpect(status().isUnauthorized());
         result.andExpect(jsonPath("$.status").value("error"));
-        result.andExpect(jsonPath("$.message").value("토큰 만료"));
+        result.andExpect(jsonPath("$.message").value("Token has expired"));
         result.andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -144,7 +144,7 @@ class JwtAuthorizationFilterTest {
         // then
         result.andExpect(status().isUnauthorized());
         result.andExpect(jsonPath("$.status").value("error"));
-        result.andExpect(jsonPath("$.message").value("토큰 검증 오류"));
+        result.andExpect(jsonPath("$.message").value("Token verification failed"));
         result.andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -164,7 +164,7 @@ class JwtAuthorizationFilterTest {
         // then
         result.andExpect(status().isUnauthorized());
         result.andExpect(jsonPath("$.status").value("error"));
-        result.andExpect(jsonPath("$.message").value("토큰 검증 오류"));
+        result.andExpect(jsonPath("$.message").value("Token verification failed"));
         result.andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -185,7 +185,7 @@ class JwtAuthorizationFilterTest {
         // then
         result.andExpect(status().isUnauthorized());
         result.andExpect(jsonPath("$.status").value("error"));
-        result.andExpect(jsonPath("$.message").value("토큰 검증 오류"));
+        result.andExpect(jsonPath("$.message").value("Token verification failed"));
         result.andExpect(jsonPath("$.data").isEmpty());
     }
 

@@ -17,18 +17,18 @@ public class TokenExceptionHandler {
     @ExceptionHandler(NotHaveRefreshTokenException.class)
     public ResponseEntity<ApiResponse<Object>> handleNotHaveRefreshTokenException(NotHaveRefreshTokenException exception) {
         log.error("NotHaveRefreshTokenException = {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("토큰 오류"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Token verification failed"));
     }
 
     @ExceptionHandler(JwtVerifyException.class)
     public ResponseEntity<ApiResponse<Object>> handleJwtVerifyException(JwtVerifyException exception) {
         log.error("JwtVerifyException = {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("토큰 오류"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Token verification failed"));
     }
 
     @ExceptionHandler(JwtExpiredException.class)
     public ResponseEntity<ApiResponse<Object>> handleJwtExpiredException(JwtExpiredException exception) {
         log.error("JwtExpiredException = {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("토큰 만료"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Token has expired"));
     }
 }
