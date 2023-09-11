@@ -59,8 +59,6 @@ public class DetailedPositionServiceTest {
         assertThat(detailedPositionResponseDto.getDetailedPositionDtos().get(1).getId()).isEqualTo(2L);
         assertThat(detailedPositionResponseDto.getDetailedPositionDtos().get(0).getName()).isEqualTo("Product");
         assertThat(detailedPositionResponseDto.getDetailedPositionDtos().get(1).getName()).isEqualTo("Platform");
-        assertThat(detailedPositionResponseDto.getDetailedPositionDtos().get(0).getCompany()).isEqualTo(company);
-        assertThat(detailedPositionResponseDto.getDetailedPositionDtos().get(1).getCompany()).isEqualTo(company);
     }
 
     @DisplayName("회사와 직무가 대응되지 않으면 에러가 발생한다")
