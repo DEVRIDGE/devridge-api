@@ -47,7 +47,7 @@ public class TestController {
         ResponseCookie cookie = ResponseCookie.from("test", "test123")
                 .domain("localhost")
                 .sameSite("None")
-                .secure(true)
+//                .secure(true)
                 .path("/")
                 .httpOnly(false)
                 .maxAge(expiresInSeconds)
