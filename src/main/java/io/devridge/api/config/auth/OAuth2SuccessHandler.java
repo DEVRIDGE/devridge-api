@@ -45,7 +45,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 //.domain(".devridge.dev")
                 .sameSite("None")
-                .secure(true)
+                //.secure(true)
                 .path("/")
                 .httpOnly(true)
                 .maxAge(expiresInSeconds)
