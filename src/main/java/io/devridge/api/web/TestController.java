@@ -47,9 +47,9 @@ public class TestController {
         ResponseCookie cookie = ResponseCookie.from("test", "test123")
                 .domain("localhost")
                 .sameSite("None")
-//                .secure(true)
+                .secure(true)
                 .path("/")
-                .httpOnly(false)
+                .httpOnly(true)
                 .maxAge(expiresInSeconds)
                 .build();
         // 응답에 쿠키 추가

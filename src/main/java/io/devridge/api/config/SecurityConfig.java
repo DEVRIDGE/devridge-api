@@ -72,7 +72,7 @@ public class SecurityConfig {
     }
 
     private void configureDevSettings(HttpSecurity http) throws Exception {
-        if (isProfileActive("dev") || isProfileActive("test")) {
+        if (isProfileActive("dev") || isProfileActive("test") || isProfileActive("prod")) {
             http
                 .headers().frameOptions().disable().and()
                 .csrf().disable();
