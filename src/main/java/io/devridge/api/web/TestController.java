@@ -49,7 +49,7 @@ public class TestController {
                 .sameSite("None")
                 .secure(true)
                 .path("/")
-                .httpOnly(true)
+                .httpOnly(false)
                 .maxAge(expiresInSeconds)
                 .build();
         // 응답에 쿠키 추가
