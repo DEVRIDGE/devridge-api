@@ -32,6 +32,12 @@ public class TestController {
                     log.info("cookieValue = {}", cookieValue);
                     // 쿠키 값을 처리하는 로직
                     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("쿠키값 있음", cookieValue));
+                } else if ("test".equals(cookie.getName())) {
+                    log.info("cookie.getName() = {}", cookie.getName());
+                    String cookieValue = cookie.getValue();
+                    log.info("cookieValue = {}", cookieValue);
+                    // 쿠키 값을 처리하는 로직
+                    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("쿠키값 있음", cookieValue));
                 }
             }
         }
