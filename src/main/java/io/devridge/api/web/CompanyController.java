@@ -27,6 +27,8 @@ public class CompanyController {
         if (cookies != null) {
             log.info("들어옴2");
             for (Cookie cookie : cookies) {
+                log.info("cookie.getName() = {}", cookie.getName());
+                log.info("cookie.getValue() = {}", cookie.getValue());
                 if ("refreshToken".equals(cookie.getName())) {
                     log.info("cookie.getName() = {}", cookie.getName());
                     String cookieValue = cookie.getValue();
