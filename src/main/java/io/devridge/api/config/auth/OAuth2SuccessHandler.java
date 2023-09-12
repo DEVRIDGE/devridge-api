@@ -43,7 +43,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         int expiresInDays = 7;
         int expiresInSeconds = expiresInDays * 24 * 60 * 60;
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                .domain(".devridge.dev")
+                //.domain(".devridge.dev")
                 .sameSite("None")
                 .secure(true)
                 .path("/")
