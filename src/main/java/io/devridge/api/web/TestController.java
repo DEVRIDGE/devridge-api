@@ -1,18 +1,23 @@
 package io.devridge.api.web;
 
 import io.devridge.api.dto.common.ApiResponse;
+import io.devridge.api.dto.token.ReissueTokenResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestController
-public class testController {
+public class TestController {
 
     @GetMapping("/token/check")
     public ResponseEntity<ApiResponse<Object>> aa(HttpServletRequest request) {
@@ -31,5 +36,25 @@ public class testController {
             }
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("헤더에서 토큰이 없습니다"));
+    }
+
+    @GetMapping("/token/apply/1")
+    public ResponseEntity<ApiResponse<Object>> applyToken1(HttpServletResponse response) {
+        // 쿠키 생성 및 설정
+        int expiresInDays = 7;
+        int expiresInSeconds = expiresInDays * 24 * 60 * 60;
+
+        ResponseCookie cookie = ResponseCookie.from("test", "test123")
+                .domain("localhost")
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(expiresInSeconds)
+                .build();
+        // 응답에 쿠키 추가
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("발급 완료"));
     }
 }
