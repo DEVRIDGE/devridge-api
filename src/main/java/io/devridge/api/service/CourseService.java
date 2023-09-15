@@ -1,5 +1,6 @@
 package io.devridge.api.service;
 
+import io.devridge.api.config.auth.LoginUser;
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.roadmap.*;
@@ -7,6 +8,7 @@ import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.course.CourseIndexList;
 import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
+import io.devridge.api.dto.course.RoadmapStatusDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +28,12 @@ public class CourseService {
     private final RoadmapRepository roadmapRepository;
 
     @Transactional(readOnly = true)
-    public CourseListResponseDto getCourseList(long companyId, long jobId, long detailPositionId) {
+    public CourseListResponseDto getCourseList(long companyId, long jobId, long detailPositionId, LoginUser loginUser) {
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailPositionId);
 
-        Collection<List<CourseInfoDto>> courseListCollection = getCourseListCollection(companyInfo);
+        Long userId = (loginUser != null) ? loginUser.getUser().getId() : null;
+        Collection<List<CourseInfoDto>> courseListCollection = getCourseListCollection(companyInfo, userId);
+
         List<CourseIndexList> courseList = addEmptyListIfSkillNextSkill(courseListCollection);
 
         return new CourseListResponseDto(companyInfo, courseList);
@@ -50,8 +54,8 @@ public class CourseService {
                 .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 
-    private Collection<List<CourseInfoDto>> getCourseListCollection(CompanyInfo companyInfo) {
-        List<Roadmap> roadmapList = roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(companyInfo.getId());
+    private Collection<List<CourseInfoDto>> getCourseListCollection(CompanyInfo companyInfo, Long userId) {
+        List<RoadmapStatusDto> roadmapList = roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoIdWithUserId(companyInfo.getId(), userId);
         return roadmapList.stream()
                 .map(CourseInfoDto::new)
                 .collect(Collectors.groupingBy(CourseInfoDto::getOrder, TreeMap::new, Collectors.toList()))
