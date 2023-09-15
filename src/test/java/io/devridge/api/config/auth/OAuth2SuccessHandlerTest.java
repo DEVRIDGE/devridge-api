@@ -64,6 +64,6 @@ class OAuth2SuccessHandlerTest {
         String setCookieHeader = headerCaptor.getValue();
         assertTrue(setCookieHeader.startsWith("refreshToken=refreshTestToken"));
 
-        verify(response).sendRedirect(OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=accessTestToken");
+        verify(response).sendRedirect(OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=accessTestToken&refreshToken=refreshTestToken");
     }
 }

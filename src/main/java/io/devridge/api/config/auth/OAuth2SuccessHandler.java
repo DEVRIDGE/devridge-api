@@ -31,12 +31,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = tokenService.getOrUpdateRefreshToken(user);
 
         setRefreshTokenCookie(response, refreshToken);
-        String targetUrl = getTargetUrl(accessToken);
+        String targetUrl = getTargetUrl(accessToken, refreshToken);
         response.sendRedirect(targetUrl);
     }
 
-    private String getTargetUrl(String accessToken) {
-        return OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=" + accessToken;
+    private String getTargetUrl(String accessToken, String refreshToken) {
+        // TODO 추후 수정해야함 (REFRESH 부분 제거)
+        return OAUTH2_LOGIN_AFTER_PAGE + "?accessToken=" + accessToken + "&refreshToken=" + refreshToken;
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {

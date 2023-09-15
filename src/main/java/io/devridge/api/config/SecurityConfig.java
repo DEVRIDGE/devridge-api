@@ -56,7 +56,6 @@ public class SecurityConfig {
                 .anyRequest().permitAll().and()
             .addFilterBefore(new JwtAuthorizationFilter(tokenProcess, userRepository, authenticationEntryPoint), UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
 
@@ -65,14 +64,15 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("https://localhost:3000"));
+        // TODO 설정 추후 변경
+        configuration.setAllowedOrigins(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
     private void configureDevSettings(HttpSecurity http) throws Exception {
-        if (isProfileActive("dev") || isProfileActive("test") || isProfileActive("prod")) {
+        if (isProfileActive("dev") || isProfileActive("test")) {
             http
                 .headers().frameOptions().disable().and()
                 .csrf().disable();
