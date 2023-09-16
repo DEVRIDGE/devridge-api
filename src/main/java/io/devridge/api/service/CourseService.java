@@ -115,8 +115,7 @@ public class CourseService {
     private void checkIfCourseIsAllowedForUnauthenticatedUser(long courseId, CompanyInfo companyInfo) {
         boolean isAllowedCourse = roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(companyInfo.getId())
                 .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
-        if (!isAllowedCourse) {
-            throw new UnauthorizedCourseAccessException();
-        }
+
+        if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
     }
 }
