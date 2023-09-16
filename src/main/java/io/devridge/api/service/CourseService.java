@@ -30,7 +30,7 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public CourseListResponseDto getCourseList(long companyId, long jobId, long detailPositionId, LoginUser loginUser) {
-        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailPositionId);
+        CompanyInfo companyInfo = findCompanyInfoWithCourse(companyId, jobId, detailPositionId);
 
         Long userId = getLoginUserId(loginUser);
         Collection<List<CourseInfoDto>> courseListCollection = getCourseListCollection(companyInfo, userId);
@@ -57,12 +57,18 @@ public class CourseService {
         return new CourseDetailResponseDto(course.getName(), courseDetailList);
     }
 
+
     private Long getLoginUserId(LoginUser loginUser) {
         return (loginUser != null) ? loginUser.getUser().getId() : null;
     }
 
-    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
+    private CompanyInfo findCompanyInfoWithCourse(long companyId, long jobId, long detailPositionId) {
         return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(companyId, jobId, detailPositionId)
+                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
+    }
+
+    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailPositionId)
                 .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 
