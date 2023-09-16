@@ -20,9 +20,9 @@ public class CourseController {
 
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<Object>> getCourseList(
-            @RequestParam("company") long companyId,
-            @RequestParam("job") long jobId,
-            @RequestParam("detailedPosition") long detailPositionId,
+            @RequestParam("company") Long companyId,
+            @RequestParam("job") Long jobId,
+            @RequestParam("detailedPosition") Long detailPositionId,
             @AuthenticationPrincipal LoginUser loginUser) {
 
         CourseListResponseDto courseList = courseService.getCourseList(companyId, jobId, detailPositionId, loginUser);
@@ -31,12 +31,14 @@ public class CourseController {
     }
 
     @GetMapping("/courses/{courseId}")
-    public ResponseEntity<ApiResponse<Object>> courseDetailList(@PathVariable Long courseId,
-                                                                @RequestParam("company") Long companyId,
-                                                                @RequestParam("job") Long jobId,
-                                                                @RequestParam("detailedPosition") Long detailedPositionList) {
+    public ResponseEntity<ApiResponse<Object>> courseDetailList(
+            @PathVariable Long courseId,
+            @RequestParam("company") Long companyId,
+            @RequestParam("job") Long jobId,
+            @RequestParam("detailedPosition") Long detailPositionId,
+            @AuthenticationPrincipal LoginUser loginUser) {
 
-        CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(courseId, companyId, jobId, detailedPositionList);
+        CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(courseId, companyId, jobId, detailPositionId, loginUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseDetailResponseDto));
     }

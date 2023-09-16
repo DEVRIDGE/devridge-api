@@ -15,4 +15,6 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
             "WHERE r.companyInfo.id = :companyInfoId " +
             "ORDER BY c.order, CASE c.type WHEN 'SKILL' THEN 0 WHEN 'CS' THEN 1 ELSE 2 END")
     List<RoadmapStatusDto> getRoadmapsIncludingCoursesByCompanyInfoIdWithUserId(@Param("companyInfoId") Long companyInfoId, @Param("userId") Long userId);
+
+    List<Roadmap> findTop2ByCompanyInfoIdOrderByCourseOrder(Long companyInfoId);
 }
