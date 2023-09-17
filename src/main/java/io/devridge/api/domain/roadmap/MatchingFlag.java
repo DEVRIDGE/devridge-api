@@ -1,5 +1,5 @@
 package io.devridge.api.domain.roadmap;
 
-public enum MatchingStatus {
+public enum MatchingFlag {
     YES, NO
 }

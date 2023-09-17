@@ -22,7 +22,7 @@ public class Roadmap extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "roadmap_matching_flag")
-    private MatchingStatus matchingFlag;
+    private MatchingFlag matchingFlag;
 
     @JoinColumn(name = "course_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class Roadmap extends BaseTimeEntity {
     private CompanyInfo companyInfo;
 
     @Builder
-    public Roadmap(Long id, MatchingStatus matchingFlag, Course course, CompanyInfo companyInfo) {
+    public Roadmap(Long id, MatchingFlag matchingFlag, Course course, CompanyInfo companyInfo) {
         this.id = id;
         this.matchingFlag = matchingFlag;
         this.course = course;

@@ -2,6 +2,7 @@ package io.devridge.api.web;
 
 import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
+import io.devridge.api.dto.course.RoadmapStatusDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,7 +44,8 @@ class CourseControllerTest {
     @MockBean
     private CompanyInfoRepository companyInfoRepository;
 
-    @DisplayName("특정 회사, 직무, 상세 직무 기준으로 코스 목록을 응답한다")
+    // 로그인
+    @DisplayName("/courses 요청시 코스 리스트를 응답한다.")
     @Test
     public void course_list_success_test() throws Exception {
         // given
@@ -57,15 +59,15 @@ class CourseControllerTest {
         Course course3 = Course.builder().id(3L).name("CS1").type(CourseType.CS).order(3).job(job).build();
         Course course4 = Course.builder().id(4L).name("CS2").type(CourseType.CS).order(4).job(job).build();
 
-        List<Roadmap> roadmapList = new ArrayList<>();
-        roadmapList.add(Roadmap.builder().course(course1).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
-        roadmapList.add(Roadmap.builder().course(course2).companyInfo(companyInfo).matchingFlag(MatchingStatus.YES).build());
-        roadmapList.add(Roadmap.builder().course(course3).companyInfo(companyInfo).matchingFlag(MatchingStatus.NO).build());
-        roadmapList.add(Roadmap.builder().course(course4).companyInfo(companyInfo).matchingFlag(MatchingStatus.NO).build());
+        List<RoadmapStatusDto> roadmapStatusDtoList = new ArrayList<>();
+        roadmapStatusDtoList.add(RoadmapStatusDto.builder().matchingFlag(MatchingFlag.YES).course(course1).studyStatus(null).build());
+        roadmapStatusDtoList.add(RoadmapStatusDto.builder().matchingFlag(MatchingFlag.YES).course(course2).studyStatus(null).build());
+        roadmapStatusDtoList.add(RoadmapStatusDto.builder().matchingFlag(MatchingFlag.NO).course(course3).studyStatus(null).build());
+        roadmapStatusDtoList.add(RoadmapStatusDto.builder().matchingFlag(MatchingFlag.NO).course(course4).studyStatus(null).build());
 
         // stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(company.getId(), job.getId(), detailedPosition.getId())).thenReturn(Optional.of(companyInfo));
-        when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(companyInfo.getId())).thenReturn(roadmapList);
+        when(roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoIdWithUserId(anyLong(), isNull())).thenReturn(roadmapStatusDtoList);
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -115,10 +117,10 @@ class CourseControllerTest {
         resultActions.andExpect(jsonPath("$.data.courseList[4].courses[0].matchingFlag").value("NO"));
     }
 
-    @DisplayName("코스 리스트 조회시 잘못된 정보를 보내면 에러를 응답한다.")
+    @DisplayName("/courses 요청시 잘못된 요청을 하면 에러를 응답한다.")
     @ParameterizedTest
     @MethodSource("invalidACourseListArgument")
-    public void courses_list_request_fail_test(String companyId, String jobId, String detailedId) throws Exception {
+    public void request_courses_list_with_wrong_argument_response_error(String companyId, String jobId, String detailedId) throws Exception {
         // given & when
         ResultActions resultActions = mvc.perform(
                 get("/courses")
@@ -134,9 +136,9 @@ class CourseControllerTest {
         resultActions.andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("코스 리스트 조회시 회사정보가 존재하지 않으면 에러를 응답한다")
+    @DisplayName("/courses 요청시 회사 정보가 존재하지 않으면 에러를 응답한다.")
     @Test
-    public void courses_fail_test() throws Exception {
+    public void request_courses_list_with_not_have_company_info_response_error() throws Exception {
         // stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
 

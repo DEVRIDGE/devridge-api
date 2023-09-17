@@ -1,5 +1,6 @@
 package io.devridge.api.service;
 
+import io.devridge.api.config.auth.LoginUser;
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.roadmap.*;
@@ -7,8 +8,10 @@ import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.course.CourseIndexList;
 import io.devridge.api.dto.course.CourseInfoDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
+import io.devridge.api.dto.course.RoadmapStatusDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
+import io.devridge.api.handler.ex.UnauthorizedCourseAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,41 +29,49 @@ public class CourseService {
     private final RoadmapRepository roadmapRepository;
 
     @Transactional(readOnly = true)
-    public CourseListResponseDto getCourseList(long companyId, long jobId, long detailPositionId) {
-        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailPositionId);
+    public CourseListResponseDto getCourseList(long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
+        CompanyInfo companyInfo = findCompanyInfoWithCourse(companyId, jobId, detailedPositionId);
 
-        Collection<List<CourseInfoDto>> courseListCollection = getCourseListCollection(companyInfo);
+        Long userId = getLoginUserId(loginUser);
+        Collection<List<CourseInfoDto>> courseListCollection = getCourseListCollection(companyInfo, userId);
+
         List<CourseIndexList> courseList = addEmptyListIfSkillNextSkill(courseListCollection);
 
         return new CourseListResponseDto(companyInfo, courseList);
     }
 
     @Transactional(readOnly = true)
-    public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId, long detailedPositionId) {
-        validateCompanyInfo(companyId, jobId, detailedPositionId);
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
+    public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
+        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
 
+        checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
+
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
         List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailList(courseId, companyId, jobId, detailedPositionId);
 
         return new CourseDetailResponseDto(course.getName(), courseDetailList);
     }
 
-    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
-        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(companyId, jobId, detailPositionId)
+    private Long getLoginUserId(LoginUser loginUser) {
+        return (loginUser != null) ? loginUser.getUser().getId() : null;
+    }
+
+    private CompanyInfo findCompanyInfoWithCourse(long companyId, long jobId, long detailedPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(companyId, jobId, detailedPositionId)
                 .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 
-    private Collection<List<CourseInfoDto>> getCourseListCollection(CompanyInfo companyInfo) {
-        List<Roadmap> roadmapList = roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoId(companyInfo.getId());
+    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
+                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
+    }
+
+    private Collection<List<CourseInfoDto>> getCourseListCollection(CompanyInfo companyInfo, Long userId) {
+        List<RoadmapStatusDto> roadmapList = roadmapRepository.getRoadmapsIncludingCoursesByCompanyInfoIdWithUserId(companyInfo.getId(), userId);
         return roadmapList.stream()
                 .map(CourseInfoDto::new)
                 .collect(Collectors.groupingBy(CourseInfoDto::getOrder, TreeMap::new, Collectors.toList()))
                 .values();
-    }
-
-    private void validateCompanyInfo(long companyId, long jobId, long detailedPositionId) {
-        companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
-                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 
     /**
@@ -93,5 +104,18 @@ public class CourseService {
             previousCourseType = currentCourseType;
         }
         return courseListAddEmptyList;
+    }
+
+    /**
+     * 로그인을 하지 않은 경우 접근이 허가된 코스인지 체크하고 허가되지 않은 경우 예외 발생
+     */
+    private void checkCourseAccessForUser(Long userId, long courseId, CompanyInfo companyInfo) {
+        if (userId == null) { checkIfCourseIsAllowedForUnauthenticatedUser(courseId, companyInfo); }
+    }
+
+    private void checkIfCourseIsAllowedForUnauthenticatedUser(long courseId, CompanyInfo companyInfo) {
+        boolean isAllowedCourse = roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(companyInfo.getId())
+                .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
+        if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
     }
 }

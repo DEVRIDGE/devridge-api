@@ -1,3 +1,6 @@
+-- 유저
+INSERT INTO users(user_id, user_email, user_role, user_provider, user_name, created_at, updated_at) VALUES (1, 'devridge2023@gmail.com', 'USER', 'google', 'DEVRIDGE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
 -- 회사
 INSERT INTO company(company_id, company_name, created_at, updated_at) VALUES (1, '토스증권', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
@@ -44,6 +47,11 @@ INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, creat
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (2, 'C', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (3, 'C++', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (4, 'Python', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (5, '네트워크 임시1', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (6, '네트워크 임시2', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (7, '스프링', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (8, 'django', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
 
 -- 회사 요구 역량
 INSERT INTO company_required_ability(company_required_ability_id, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
@@ -57,3 +65,5 @@ INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, 
 VALUES (2, 1, '[자바의정석-기초편] ch1-1,2 자바란? 자바의 역사', 'https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp', 'https://img.youtube.com/vi/oJlCC1DutbA/0.jpg', '1400', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 
+-- 유저 학습 상태
+INSERT INTO user_roadmap(user_roadmap_id, roadmap_study_status, user_id, roadmap_id, created_at, updated_at) VALUES (1, 'IN_PROGRESS', 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
