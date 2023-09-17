@@ -43,20 +43,14 @@ public class CourseService {
     @Transactional(readOnly = true)
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
-        Long userId = getLoginUserId(loginUser);
-        /**
-         * 로그인을 하지 않은 경우 접근이 허가된 코스인지 체크하고 허가되지 않은 경우 예외 발생
-         */
-        if (userId == null) {
-            checkIfCourseIsAllowedForUnauthenticatedUser(courseId, companyInfo);
-        }
+
+        checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
 
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당하는 코스가 없습니다."));
         List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailList(courseId, companyId, jobId, detailedPositionId);
 
         return new CourseDetailResponseDto(course.getName(), courseDetailList);
     }
-
 
     private Long getLoginUserId(LoginUser loginUser) {
         return (loginUser != null) ? loginUser.getUser().getId() : null;
@@ -112,10 +106,16 @@ public class CourseService {
         return courseListAddEmptyList;
     }
 
+    /**
+     * 로그인을 하지 않은 경우 접근이 허가된 코스인지 체크하고 허가되지 않은 경우 예외 발생
+     */
+    private void checkCourseAccessForUser(Long userId, long courseId, CompanyInfo companyInfo) {
+        if (userId == null) { checkIfCourseIsAllowedForUnauthenticatedUser(courseId, companyInfo); }
+    }
+
     private void checkIfCourseIsAllowedForUnauthenticatedUser(long courseId, CompanyInfo companyInfo) {
         boolean isAllowedCourse = roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(companyInfo.getId())
                 .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
-
         if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
     }
 }
