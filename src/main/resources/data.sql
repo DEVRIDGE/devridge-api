@@ -47,6 +47,11 @@ INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, creat
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (2, 'C', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (3, 'C++', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (4, 'Python', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (5, '네트워크 임시1', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (6, '네트워크 임시2', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (7, '스프링', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (8, 'django', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
 
 -- 회사 요구 역량
 INSERT INTO company_required_ability(company_required_ability_id, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
