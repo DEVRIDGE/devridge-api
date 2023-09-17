@@ -28,9 +28,9 @@ public class CourseVideoService {
     private final RoadmapRepository roadmapRepository;
 
     @Transactional(readOnly = true)
-    public CourseVideoResponseDto getCourseVideoList(long courseDetailId, long companyId, long jobId, long detailPositionId, LoginUser loginUser) {
+    public CourseVideoResponseDto getCourseVideoList(long courseDetailId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
-        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailPositionId);
+        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
 
         checkCourseAccessForUser(getLoginUserId(loginUser), courseDetail.getCourse().getId(), companyInfo);
 
@@ -39,8 +39,8 @@ public class CourseVideoService {
         return new CourseVideoResponseDto(courseDetail.getCourse().getName(), courseDetail.getName(), courseVideoList);
     }
 
-    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailPositionId) {
-        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailPositionId)
+    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
                 .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
     }
 

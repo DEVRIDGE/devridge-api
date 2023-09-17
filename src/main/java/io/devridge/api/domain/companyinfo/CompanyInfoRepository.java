@@ -10,8 +10,8 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
     @Query("SELECT ci FROM CompanyInfo ci " +
             "JOIN FETCH ci.company c " +
             "JOIN FETCH ci.job j " +
-            "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailPositionId")
-    Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(long companyId, long jobId, long detailPositionId);
+            "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailedPositionId")
+    Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(long companyId, long jobId, long detailedPositionId);
 
     Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionId(long companyId, long jobId, long detailedPositionId);
 }
