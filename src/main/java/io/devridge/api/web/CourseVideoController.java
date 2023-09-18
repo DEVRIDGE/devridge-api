@@ -23,10 +23,10 @@ public class CourseVideoController {
             @RequestParam("courseDetail") Long courseDetailId,
             @RequestParam("company") Long companyId,
             @RequestParam("job") Long jobId,
-            @RequestParam("detailedPosition") Long detailPositionId,
+            @RequestParam("detailedPosition") Long detailedPositionId,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseDetailId, companyId, jobId, detailPositionId, loginUser);
+        CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseDetailId, companyId, jobId, detailedPositionId, loginUser);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
     }
 }
