@@ -66,4 +66,4 @@ VALUES (2, 1, '[자바의정석-기초편] ch1-1,2 자바란? 자바의 역사',
 
 
 -- 유저 학습 상태
-INSERT INTO user_roadmap(user_roadmap_id, roadmap_study_status, user_id, roadmap_id, created_at, updated_at) VALUES (1, 'IN_PROGRESS', 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO user_roadmap(user_roadmap_id, roadmap_study_status, user_id, roadmap_id, created_at, updated_at) VALUES (1, 'STUDYING', 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
