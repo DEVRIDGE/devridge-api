@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 public class UserStudyStatusDto {
-    private LoginStatus loginStatus;
-    private StudyStatus studyStatus;
+    private final LoginStatus loginStatus;
+    private final StudyStatus studyStatus;
 
     @Builder
     public UserStudyStatusDto(LoginStatus loginStatus, StudyStatus studyStatus) {

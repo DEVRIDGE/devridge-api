@@ -359,8 +359,6 @@ class CourseServiceTest {
         CompanyInfo companyInfo = CompanyInfo.builder().id(1L).build();
         Course course = Course.builder().id(1L).name("언어").build();
         Roadmap roadmap = Roadmap.builder().id(1L).course(course).companyInfo(companyInfo).build();
-        List<CourseDetailWithAbilityDto> courseDetailList = new ArrayList<>();
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(1L).courseDetailName("C").build());
         UserRoadmap userRoadmap = UserRoadmap.builder().id(1L).user(loginUser.getUser()).studyStatus(StudyStatus.STUDYING).roadmap(roadmap).build();
 
         //stub

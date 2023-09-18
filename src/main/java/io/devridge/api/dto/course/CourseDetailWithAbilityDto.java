@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public class CourseDetailWithAbilityDto {
 
-    private Long courseDetailId;
-    private String courseDetailName;
-    private Long companyRequiredAbilityId;
+    private final Long courseDetailId;
+    private final String courseDetailName;
+    private final Long companyRequiredAbilityId;
 
     @Builder
     public CourseDetailWithAbilityDto(Long courseDetailId, String courseDetailName, Long companyRequiredAbilityId) {
