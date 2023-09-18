@@ -45,7 +45,7 @@ public class CourseService {
         Roadmap roadmap = getRoadmapWithCourseByCompanyInfo(courseId, companyInfo);
         checkCourseAccessForUser(getLoginUserId(loginUser), roadmap.getId(), companyInfo);
 
-        List<CourseDetailWithAbilityDto> courseDetailList = getFilteredOrAllCourseDetails(companyId, jobId, detailedPositionId, courseId);
+        List<CourseDetailWithAbilityDto> courseDetailList = getFilteredOrAllCourseDetails(companyInfo, courseId);
 
         return new CourseDetailResponseDto(roadmap.getCourse().getName(), getUserStudyStatus(loginUser, roadmap), courseDetailList);
     }
@@ -131,8 +131,8 @@ public class CourseService {
                 .orElseThrow(RoadmapNotMatchCourseAndCompanyInfoException::new);
     }
 
-    private List<CourseDetailWithAbilityDto> getFilteredOrAllCourseDetails(Long companyId, Long jobId, Long detailedPositionId, Long courseId) {
-        List<Long> filteredCourseDetailIds = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyId, jobId, detailedPositionId);
+    private List<CourseDetailWithAbilityDto> getFilteredOrAllCourseDetails(CompanyInfo companyInfo, Long courseId) {
+        List<Long> filteredCourseDetailIds = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyInfo.getId());
         List<CourseDetailWithAbilityDto> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, filteredCourseDetailIds);
 
         List<CourseDetailWithAbilityDto> filteredList = courseDetailList.stream()

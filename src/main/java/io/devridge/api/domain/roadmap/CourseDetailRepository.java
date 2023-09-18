@@ -10,9 +10,8 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
 
     @Query("SELECT cra.courseDetail.id " +
             "FROM CompanyRequiredAbility cra " +
-            "JOIN cra.companyInfo ci " +
-            "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailedPositionId")
-    List<Long> getMatchingCourseDetailIdsForCompanyAbility(Long companyId, Long jobId, Long detailedPositionId);
+            "WHERE cra.companyInfo.id = :companyInfoId")
+    List<Long> getMatchingCourseDetailIdsForCompanyAbility(Long companyInfoId);
 
     @Query("SELECT new io.devridge.api.dto.course.CourseDetailWithAbilityDto(cd.id, cd.name, cra.id) " +
             "FROM CourseDetail cd " +
