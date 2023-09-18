@@ -1,109 +1,88 @@
 package io.devridge.api.domain.roadmap;
 
+import io.devridge.api.config.JpaConfig;
 import io.devridge.api.domain.companyinfo.*;
-import org.assertj.core.api.Assertions;
+import io.devridge.api.dto.course.CourseDetailWithAbilityDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-@SpringBootTest
+@ActiveProfiles("test")
+@Import(JpaConfig.class)
+@DataJpaTest
 class CourseDetailRepositoryTest {
-    @Autowired
-    private CompanyRepository companyRepository;
-    @Autowired
-    private JobRepository jobRepository;
-    @Autowired
-    private DetailedPositionRepository detailedPositionRepository;
+
     @Autowired
     private CompanyInfoRepository companyInfoRepository;
-
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
     private CourseDetailRepository courseDetailRepository;
     @Autowired
     private CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
+    @Autowired
+    private EntityManager em;
 
+    @DisplayName("코스 상세와 회사 요구 역량이 매칭되는 코스 상세 id 리스트를 반환한다.")
     @Test
-    @DisplayName("코스, 회사, 직무, 서비스 정보가 주어지면 해당하는 CourseDetail 리스트를 반환한다")
-    void getCourseDetailList_exist_test() {
-        //given
-        Company company = companyRepository.save(Company.builder().name("토스").build());
-        Job job = jobRepository.save(Job.builder().name("백엔드").build());
-        DetailedPosition detailedPosition = detailedPositionRepository.save(DetailedPosition.builder().name("Product").company(company).build());
-        CompanyInfo companyInfo = companyInfoRepository.save(CompanyInfo.builder().job(job).detailedPosition(detailedPosition).company(company).build());
+    void get_matching_course_detail_ids_for_company_ability() {
+        // given
+        Course course1 = courseRepository.save(Course.builder().build());
+        Course course2 = courseRepository.save(Course.builder().build());
+        CourseDetail courseDetail1 = courseDetailRepository.save(CourseDetail.builder().course(course1).build());
+        courseDetailRepository.save(CourseDetail.builder().course(course1).build());
+        CourseDetail courseDetail3 = courseDetailRepository.save(CourseDetail.builder().course(course2).build());
+        courseDetailRepository.save(CourseDetail.builder().course(course2).build());
+        CompanyInfo companyInfo = companyInfoRepository.save(CompanyInfo.builder().id(1L).build());
+        companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().companyInfo(companyInfo).courseDetail(courseDetail1).build());
+        companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().companyInfo(companyInfo).courseDetail(courseDetail3).build());
+        em.flush();
+        em.clear();
 
-        Course course = courseRepository.save(Course.builder().name("언어").job(job).build());
-        CourseDetail courseDetailJava = courseDetailRepository.save(CourseDetail.builder().name("Java").course(course).build());
-        CourseDetail courseDetailKotlin = courseDetailRepository.save(CourseDetail.builder().name("Kotlin").course(course).build());
-        CompanyRequiredAbility companyRequiredAbilityJava = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("자바").companyInfo(companyInfo).courseDetail(courseDetailJava).build());
-        CompanyRequiredAbility companyRequiredAbilityKotlin = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("코틀린").companyInfo(companyInfo).courseDetail(courseDetailKotlin).build());
+        // when
+        List<Long> resultList = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyInfo.getId());
 
-        //when
-        List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailList(course.getId(), company.getId(), job.getId(), detailedPosition.getId());
-
-        //then
-        Assertions.assertThat(courseDetailList.get(0).getCourse().getName()).isEqualTo("언어");
-        Assertions.assertThat(courseDetailList.get(0).getName()).isEqualTo("Java");
-        Assertions.assertThat(courseDetailList.get(1).getCourse().getId()).isEqualTo(course.getId());
-        Assertions.assertThat(courseDetailList.get(1).getName()).isEqualTo("Kotlin");
-
+        // then
+        assertThat(resultList.size()).isEqualTo(2);
+        assertThat(resultList.get(0)).isEqualTo(courseDetail1.getId());
+        assertThat(resultList.get(1)).isEqualTo(courseDetail3.getId());
     }
 
+    @DisplayName("코스 상세 목록에서 회사 요구 역량과 매칭되는 값에는 회사 요구 역량 값이 있고 아닌 경우는 없다. 정렬의 경우 이름 오름차순으로 정렬된다.")
     @Test
-    @DisplayName("코스, 회사, 직무, 서비스 정보에 대응되는 정보가 없을때 빈 리스트를 반환한다")
-    void getCourseDetailList_not_exist_test() {
-        //given
-        Long notExistingCompanyId = 9999L;
-        Company company = companyRepository.save(Company.builder().name("토스").build());
-        Job job = jobRepository.save(Job.builder().name("백엔드").build());
-        DetailedPosition detailedPosition = detailedPositionRepository.save(DetailedPosition.builder().name("Product").company(company).build());
-        CompanyInfo companyInfo = companyInfoRepository.save(CompanyInfo.builder().job(job).detailedPosition(detailedPosition).company(company).build());
+    void get_course_detail_list_with_ability_by_course_id_order_by_name() {
+        // given
+        Course course1 = courseRepository.save(Course.builder().build());
+        Course course2 = courseRepository.save(Course.builder().build());
+        CourseDetail courseDetail1 = courseDetailRepository.save(CourseDetail.builder().name("Java").course(course1).build());
+        CourseDetail courseDetail2 = courseDetailRepository.save(CourseDetail.builder().course(course1).name("C++").build());
+        CourseDetail courseDetail3 = courseDetailRepository.save(CourseDetail.builder().name("Mysql").course(course2).build());
+        courseDetailRepository.save(CourseDetail.builder().course(course2).name("MongoDB").build());
+        CompanyInfo companyInfo = companyInfoRepository.save(CompanyInfo.builder().build());
+        CompanyRequiredAbility companyRequiredAbility = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().companyInfo(companyInfo).courseDetail(courseDetail1).build());
+        companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().companyInfo(companyInfo).courseDetail(courseDetail3).build());
+        em.flush();
+        em.clear();
+        List<Long> filteredCourseDetailIds = List.of(courseDetail1.getId(), courseDetail3.getId());
 
-        Course course = courseRepository.save(Course.builder().name("언어").job(job).build());
-        CourseDetail courseDetailJava = courseDetailRepository.save(CourseDetail.builder().name("Java").course(course).build());
-        CourseDetail courseDetailKotlin = courseDetailRepository.save(CourseDetail.builder().name("Kotlin").course(course).build());
-        CompanyRequiredAbility companyRequiredAbilityJava = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("자바").companyInfo(companyInfo).courseDetail(courseDetailJava).build());
-        CompanyRequiredAbility companyRequiredAbilityKotlin = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("코틀린").companyInfo(companyInfo).courseDetail(courseDetailKotlin).build());
+        // when
+        List<CourseDetailWithAbilityDto> resultList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(course1.getId(), filteredCourseDetailIds);
 
-        //when
-        List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailList(course.getId(), notExistingCompanyId, job.getId(), detailedPosition.getId());
-
-        //then
-        Assertions.assertThat(courseDetailList).isEmpty();
-
-    }
-
-    @Test
-    @DisplayName("코스, 회사, 직무, 서비스 정보가 주어졌을때, CourseDetail 에 매칭되지 않은 회사요구역량이 존재하면, 회사요구역량에 대응되는 CourseDetail 리스트만 반환한다")
-    void getCourseDetailList_not_matched_company_required_ability_test() {
-        //given
-        Company company = companyRepository.save(Company.builder().name("토스").build());
-        Job job = jobRepository.save(Job.builder().name("백엔드").build());
-        DetailedPosition detailedPosition = detailedPositionRepository.save(DetailedPosition.builder().name("Product").company(company).build());
-        CompanyInfo companyInfo = companyInfoRepository.save(CompanyInfo.builder().job(job).detailedPosition(detailedPosition).company(company).build());
-
-        Course course = courseRepository.save(Course.builder().name("언어").job(job).build());
-        CourseDetail courseDetailJava = courseDetailRepository.save(CourseDetail.builder().name("Java").course(course).build());
-        CourseDetail courseDetailKotlin = courseDetailRepository.save(CourseDetail.builder().name("Kotlin").course(course).build());
-        CompanyRequiredAbility companyRequiredAbilityJava = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("자바").companyInfo(companyInfo).courseDetail(courseDetailJava).build());
-        CompanyRequiredAbility companyRequiredAbilityKotlin = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("코틀린").companyInfo(companyInfo).courseDetail(courseDetailKotlin).build());
-        CompanyRequiredAbility companyRequiredAbilityPython = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("파이썬").companyInfo(companyInfo).build());
-        CompanyRequiredAbility companyRequiredAbilityRuby = companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder().name("파이썬").companyInfo(companyInfo).build());
-
-        //when
-        List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailList(course.getId(), company.getId(), job.getId(), detailedPosition.getId());
-
-        //then
-        Assertions.assertThat(courseDetailList.get(0).getCourse().getName()).isEqualTo("언어");
-        Assertions.assertThat(courseDetailList.get(0).getName()).isEqualTo("Java");
-        Assertions.assertThat(courseDetailList.get(1).getCourse().getId()).isEqualTo(course.getId());
-        Assertions.assertThat(courseDetailList.get(1).getName()).isEqualTo("Kotlin");
+        // then
+        assertThat(resultList.size()).isEqualTo(2);
+        assertThat(resultList.get(0).getCourseDetailId()).isEqualTo(courseDetail2.getId());
+        assertThat(resultList.get(0).getCourseDetailName()).isEqualTo("C++");
+        assertThat(resultList.get(0).getCompanyRequiredAbilityId()).isNull();
+        assertThat(resultList.get(1).getCourseDetailId()).isEqualTo(courseDetail1.getId());
+        assertThat(resultList.get(1).getCourseDetailName()).isEqualTo("Java");
+        assertThat(resultList.get(1).getCompanyRequiredAbilityId()).isEqualTo(companyRequiredAbility.getId());
     }
 }

@@ -256,7 +256,7 @@ class CourseServiceTest {
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong(), anyLong(), anyLong())).thenReturn(new ArrayList<>());
+        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
         when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyList())).thenReturn(courseDetailList);
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -296,7 +296,7 @@ class CourseServiceTest {
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong(), anyLong(), anyLong())).thenReturn(matchingCourseDetailIds);
+        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(matchingCourseDetailIds);
         when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyList())).thenReturn(courseDetailList);
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -329,7 +329,7 @@ class CourseServiceTest {
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong(), anyLong(), anyLong())).thenReturn(new ArrayList<>());
+        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
         when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyList())).thenReturn(courseDetailList);
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -364,7 +364,7 @@ class CourseServiceTest {
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong(), anyLong(), anyLong())).thenReturn(new ArrayList<>());
+        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
         when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyList())).thenReturn(new ArrayList<>());
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.of(userRoadmap));
 
@@ -394,7 +394,7 @@ class CourseServiceTest {
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(allowRoadmap));
         when(roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(anyLong())).thenReturn(roadmapList);
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong(), anyLong(), anyLong())).thenReturn(new ArrayList<>());
+        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
         when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyList())).thenReturn(courseDetailList);
 
         //when
