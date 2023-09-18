@@ -4,6 +4,7 @@ import io.devridge.api.domain.token.Token;
 import io.devridge.api.domain.token.TokenRepository;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.user.UserRole;
+import io.devridge.api.dto.token.ReissueTokenRequestDto;
 import io.devridge.api.dto.token.ReissueTokenResponseDto;
 import io.devridge.api.handler.ex.NotHaveRefreshTokenException;
 import io.devridge.api.util.jwt.TokenDto;
@@ -118,6 +119,7 @@ public class TokenServiceTest {
     @Test
     public void reissue_access_token_having_correct_refresh_token() {
         // given
+        ReissueTokenRequestDto reissueTokenRequestDto = ReissueTokenRequestDto.builder().token("success_refresh_token").build();
         User user = User.builder().email("test@test.com").role(UserRole.USER).build();
         Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
         TokenDto tokenDto = TokenDto.builder().token("new_access_token").expiredAt(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).build();
@@ -127,7 +129,7 @@ public class TokenServiceTest {
         when(tokenProcess.createAccessToken(any())).thenReturn(tokenDto);
 
         // when
-        ReissueTokenResponseDto reissueTokenResponseDto = tokenService.reissue("success_refresh_token");
+        ReissueTokenResponseDto reissueTokenResponseDto = tokenService.reissue(reissueTokenRequestDto);
 
         // then
         assertThat(reissueTokenResponseDto.getAccessToken()).isEqualTo("new_access_token");
@@ -139,10 +141,14 @@ public class TokenServiceTest {
     @DisplayName("refresh token을 저장소에서 찾을 수 없을 때 예외를 발생시킨다.")
     @Test
     public void found_token_fail_test() {
+        // given
+        ReissueTokenRequestDto reissueTokenRequestDto = ReissueTokenRequestDto.builder().token("fail_refresh_token").build();
+
         // stub
         when(tokenRepository.findByContent(any())).thenReturn(Optional.empty());
+
         // when & then
-        assertThatThrownBy(() -> tokenService.reissue("fail_refresh_token"))
+        assertThatThrownBy(() -> tokenService.reissue(reissueTokenRequestDto))
                 .isInstanceOf(NotHaveRefreshTokenException.class);
     }
 
@@ -150,6 +156,7 @@ public class TokenServiceTest {
     @Test
     public void verify_token_fail_test() {
         // given
+        ReissueTokenRequestDto reissueTokenRequestDto = ReissueTokenRequestDto.builder().token("old_refresh_token").build();
         User user = User.builder().email("test@test.com").role(UserRole.USER).build();
         Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
 
@@ -158,7 +165,7 @@ public class TokenServiceTest {
         doThrow(new JwtVerifyException("토큰 검증 실패")).when(tokenProcess).tokenValidOrThrowException("old_refresh_token");
 
         // when & then
-        assertThatThrownBy(() -> tokenService.reissue("old_refresh_token"))
+        assertThatThrownBy(() -> tokenService.reissue(reissueTokenRequestDto))
                 .isInstanceOf(JwtVerifyException.class);
     }
 
@@ -166,6 +173,7 @@ public class TokenServiceTest {
     @Test
     public void expired_token_fail_test() {
         // given
+        ReissueTokenRequestDto reissueTokenRequestDto = ReissueTokenRequestDto.builder().token("old_refresh_token").build();
         User user = User.builder().email("test@test.com").role(UserRole.USER).build();
         Token oldRefreshToken = Token.builder().content("old_refresh_token").user(user).build();
 
@@ -174,7 +182,7 @@ public class TokenServiceTest {
         doThrow(new JwtExpiredException("토큰 만료")).when(tokenProcess).tokenValidOrThrowException("old_refresh_token");
 
         // when & then
-        assertThatThrownBy(() -> tokenService.reissue("old_refresh_token"))
+        assertThatThrownBy(() -> tokenService.reissue(reissueTokenRequestDto))
                 .isInstanceOf(JwtExpiredException.class);
     }
 }

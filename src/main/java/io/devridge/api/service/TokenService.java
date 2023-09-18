@@ -3,6 +3,7 @@ package io.devridge.api.service;
 import io.devridge.api.domain.token.Token;
 import io.devridge.api.domain.token.TokenRepository;
 import io.devridge.api.domain.user.User;
+import io.devridge.api.dto.token.ReissueTokenRequestDto;
 import io.devridge.api.dto.token.ReissueTokenResponseDto;
 import io.devridge.api.handler.ex.NotHaveRefreshTokenException;
 import io.devridge.api.util.jwt.TokenDto;
@@ -36,8 +37,8 @@ public class TokenService {
     }
 
     @Transactional(readOnly = true)
-    public ReissueTokenResponseDto reissue(String token) {
-        Token refreshToken = tokenRepository.findByContent(token)
+    public ReissueTokenResponseDto reissue(ReissueTokenRequestDto reissueTokenRequestDto) {
+        Token refreshToken = tokenRepository.findByContent(reissueTokenRequestDto.getToken())
                 .orElseThrow(NotHaveRefreshTokenException::new);
 
         tokenProcess.tokenValidOrThrowException(refreshToken.getContent());

@@ -40,6 +40,7 @@ public class SecurityConfig {
 
         http
             .httpBasic().disable()
+            .csrf().disable()
             .formLogin().disable()
             .cors().configurationSource(corsConfigurationSource()).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -74,8 +75,7 @@ public class SecurityConfig {
     private void configureDevSettings(HttpSecurity http) throws Exception {
         if (isProfileActive("dev") || isProfileActive("test")) {
             http
-                .headers().frameOptions().disable().and()
-                .csrf().disable();
+                .headers().frameOptions().disable();
         }
     }
 

@@ -3,6 +3,7 @@ package io.devridge.api.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.devridge.api.domain.token.Token;
 import io.devridge.api.domain.token.TokenRepository;
+import io.devridge.api.dto.token.ReissueTokenRequestDto;
 import io.devridge.api.util.jwt.TokenDto;
 import io.devridge.api.util.jwt.TokenProcess;
 import io.devridge.api.util.jwt.exception.JwtExpiredException;
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -53,8 +53,7 @@ class TokenControllerTest {
         Token token = Token.builder().id(1L).content("correctToken").build();
         TokenDto tokenDto = TokenDto.builder().token("newAccessToken").expiredAt(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).build();
 
-        Map<String, String> tokenMap = Map.of("token", "correctToken");
-        String requestBody = om.writeValueAsString(tokenMap);
+        String requestBody = om.writeValueAsString(ReissueTokenRequestDto.builder().token("correctToken").build());
 
 
         // stub
@@ -81,8 +80,7 @@ class TokenControllerTest {
     @Test
     public void token_reissue_token_found_fail_test() throws Exception {
         // given
-        Map<String, String> tokenMap = Map.of("token", "correctToken");
-        String requestBody = om.writeValueAsString(tokenMap);
+        String requestBody = om.writeValueAsString(ReissueTokenRequestDto.builder().token("correctToken").build());
 
         // stub
         when(tokenRepository.findByContent(any())).thenReturn(Optional.empty());
@@ -105,8 +103,7 @@ class TokenControllerTest {
     @Test
     public void token_reissue_token_valid_fail_test() throws Exception {
         // given
-        Map<String, String> tokenMap = Map.of("token", "correctToken");
-        String requestBody = om.writeValueAsString(tokenMap);
+        String requestBody = om.writeValueAsString(ReissueTokenRequestDto.builder().token("correctToken").build());
         Token token = Token.builder().id(1L).content("correctToken").build();
 
         // stub
@@ -132,8 +129,7 @@ class TokenControllerTest {
     @Test
     public void token_reissue_token_expired_fail_test() throws Exception {
         // given
-        Map<String, String> tokenMap = Map.of("token", "correctToken");
-        String requestBody = om.writeValueAsString(tokenMap);
+        String requestBody = om.writeValueAsString(ReissueTokenRequestDto.builder().token("correctToken").build());
         Token token = Token.builder().id(1L).content("correctToken").build();
 
         // stub

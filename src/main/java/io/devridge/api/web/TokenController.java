@@ -1,6 +1,7 @@
 package io.devridge.api.web;
 
 import io.devridge.api.dto.common.ApiResponse;
+import io.devridge.api.dto.token.ReissueTokenRequestDto;
 import io.devridge.api.dto.token.ReissueTokenResponseDto;
 import io.devridge.api.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class TokenController {
     private final TokenService tokenService;
 
     @PostMapping("/token/reissue")
-    public ResponseEntity<ApiResponse<ReissueTokenResponseDto>> reissueToken(@RequestBody String token) {
-        ReissueTokenResponseDto accessTokenDto = tokenService.reissue(token);
+    public ResponseEntity<ApiResponse<ReissueTokenResponseDto>> reissueToken(@RequestBody ReissueTokenRequestDto reissueTokenRequestDto) {
+        ReissueTokenResponseDto accessTokenDto = tokenService.reissue(reissueTokenRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("발급 완료", accessTokenDto));
     }
 }
