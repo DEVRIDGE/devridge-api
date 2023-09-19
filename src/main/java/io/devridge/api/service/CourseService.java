@@ -131,6 +131,10 @@ public class CourseService {
                 .orElseThrow(RoadmapNotMatchCourseAndCompanyInfoException::new);
     }
 
+    /**
+     * 회사 정보와 매칭되는 해당 코스의 상세 목록을 가져오고 해당 내용을 전달 합니다
+     * 만약 매칭되는 상세 목록이 없다면 해당 코스의 모든 상세 목록을 전달 합니다.
+     */
     private List<CourseDetailWithAbilityDto> getFilteredOrAllCourseDetails(CompanyInfo companyInfo, Long courseId) {
         List<Long> filteredCourseDetailIds = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyInfo.getId());
         List<CourseDetailWithAbilityDto> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, filteredCourseDetailIds);
