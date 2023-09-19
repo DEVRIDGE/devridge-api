@@ -19,10 +19,10 @@ public class CourseExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
     }
 
-    @ExceptionHandler(CourseNotFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleCourseNotFoundException(CourseNotFoundException exception) {
-        log.error("CourseNotFoundException = {}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
+    @ExceptionHandler(RoadmapNotMatchCourseAndCompanyInfoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleRoadmapNotMatchCourseAndCompanyInfoException(RoadmapNotMatchCourseAndCompanyInfoException exception) {
+        log.error("RoadmapNotMatchCourseAndCompanyInfoException = {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("해당하는 코스가 없습니다."));
     }
 
     @ExceptionHandler(CourseDetailNotFoundException.class)

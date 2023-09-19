@@ -1,6 +1,9 @@
 package io.devridge.api.dto;
 
-import io.devridge.api.domain.roadmap.CourseDetail;
+import io.devridge.api.domain.user.LoginStatus;
+import io.devridge.api.domain.user.StudyStatus;
+import io.devridge.api.dto.course.CourseDetailWithAbilityDto;
+import io.devridge.api.dto.course.UserStudyStatusDto;
 import lombok.Getter;
 
 import java.util.*;
@@ -8,26 +11,28 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CourseDetailResponseDto {
-    private String courseName;
-    private List<CourseDetailDto> courseDetails;
+    private final String courseName;
+    private final LoginStatus loginStatus;
+    private final StudyStatus studyStatus;
+    private final List<CourseDetailDto> courseDetails;
 
-    public CourseDetailResponseDto(String title, List<CourseDetail> courseDetailList) {
+    public CourseDetailResponseDto(String title, UserStudyStatusDto userStudyStatusDto, List<CourseDetailWithAbilityDto> courseDetailList) {
         this.courseName = title;
+        this.loginStatus = userStudyStatusDto.getLoginStatus();
+        this.studyStatus = userStudyStatusDto.getStudyStatus();
         this.courseDetails = courseDetailList.stream()
-                .map(cd -> new CourseDetailDto(cd))
-                .sorted(Comparator.comparing(CourseDetailDto::getName))
-                .collect(Collectors.toList());  // 이름순 정렬
+                .map(CourseDetailDto::new)
+                .collect(Collectors.toList());
     }
 
     @Getter
     public class CourseDetailDto {
-        private Long id;
-        private String name;
+        private final Long id;
+        private final String name;
 
-        public CourseDetailDto(CourseDetail courseDetail) {
-            this.id = courseDetail.getId();
-            this.name = courseDetail.getName();
+        public CourseDetailDto(CourseDetailWithAbilityDto courseDetailWithAbilityDto) {
+            this.id = courseDetailWithAbilityDto.getCourseDetailId();
+            this.name = courseDetailWithAbilityDto.getCourseDetailName();
         }
     }
-
 }

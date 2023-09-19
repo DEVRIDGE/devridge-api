@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
 
@@ -17,4 +18,9 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
     List<RoadmapStatusDto> getRoadmapsIncludingCoursesByCompanyInfoIdWithUserId(@Param("companyInfoId") Long companyInfoId, @Param("userId") Long userId);
 
     List<Roadmap> findTop2ByCompanyInfoIdOrderByCourseOrder(Long companyInfoId);
+
+    @Query("SELECT r FROM Roadmap r " +
+            "JOIN FETCH r.course c " +
+            "WHERE r.course.id = :courseId AND r.companyInfo.id = :companyInfoId")
+    Optional<Roadmap> findRoadmapWithCourseByCourseIdAndCompanyInfoId(Long courseId, Long companyInfoId);
 }
