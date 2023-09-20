@@ -2,5 +2,5 @@ package io.devridge.api.domain.video;
 
 public enum VideoSource {
 
-    YOUTUBE
+    YOUTUBE, KMOOC, KOCW
 }
