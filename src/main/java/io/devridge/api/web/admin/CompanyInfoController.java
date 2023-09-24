@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/admin")
 public class CompanyInfoController {
 
     private final CompanyInfoService companyInfoService;
     private final CompanyRequiredAbilityService companyRequiredAbilityService;
 
-    @PostMapping("/companyinfo/save")
+    @PostMapping("/companyinfo")
     public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@RequestBody CompanyInfoForm companyInfoForm) {
 
         companyInfoService.transferCompanyInfoToAssociatedTable(companyInfoForm);
@@ -29,7 +31,7 @@ public class CompanyInfoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("회사 정보가 성공적으로 저장되었습니다."));
     }
 
-    @PostMapping("/companyinfo/requiredability/save")
+    @PostMapping("/companyinfo/requiredability")
     public ResponseEntity<ApiResponse<Object>> saveCompanyRequiredAbility(@RequestBody CompanyRequiredAbilityForm companyRequiredAbilityForm) {
 
         companyRequiredAbilityService.saveCompanyRequiredAbilities(companyRequiredAbilityForm);
