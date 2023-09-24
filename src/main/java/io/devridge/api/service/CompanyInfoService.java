@@ -39,7 +39,7 @@ public class CompanyInfoService {
             targetCompany = foundCompany.get();
         }
 
-        //직무를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
+        //직무를 저장한다. 이미 존재하면 이미 있는 직무를 가져온다.
         Job targetJob;
         Optional<Job> foundJob = jobService.findByName(companyInfoDto.getJobName());
         if(foundJob.isEmpty()) {
@@ -52,16 +52,21 @@ public class CompanyInfoService {
         }
 
 
-        //TODO 서비스 종류를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
-//        DetailedPosition targetDetailedPosition;
-//        Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoDto.getDetailedPositionName(), targetCompany.getId());
-//        if(foundDetailedPosition.isEmpty()) {
-//            DetailedPosition
-//        } else {
-//
-//        }
+        //TODO 서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
+        DetailedPosition targetDetailedPosition;
+        Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoDto.getDetailedPositionName(), targetCompany.getId());
+        if(foundDetailedPosition.isEmpty()) {
+            DetailedPosition newDetailedPosition = DetailedPosition.builder()
+                    .name(companyInfoDto.getDetailedPositionName())
+                    .company(targetCompany)
+                    .build();
+            targetDetailedPosition = newDetailedPosition;
+        } else {
+            targetDetailedPosition = foundDetailedPosition.get();
+        }
 
         //회사와 직무를 연관시킨다.
+
 
         //직무와 서비스종류를 연관시킨다.
 

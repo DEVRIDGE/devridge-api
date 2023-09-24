@@ -30,6 +30,10 @@ public class DetailedPositionService {
         return detailedPositionRepository.findByNameAndCompanyId(detailedPositionName, companyId);
     }
 
+    public DetailedPosition save(DetailedPosition detailedPosition) {
+        return detailedPositionRepository.save(detailedPosition);
+    }
+
     private void validateCompanyJob(long companyId, long jobId) {
         companyJobRepository.findByCompanyIdAndJobId(companyId, jobId)
                 .orElseThrow(() -> new CompanyJobNotFoundException("회사와 직무에 일치 하는 정보가 없습니다."));
