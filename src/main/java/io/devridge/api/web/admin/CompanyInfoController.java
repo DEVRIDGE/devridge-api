@@ -1,7 +1,7 @@
 package io.devridge.api.web.admin;
 
-import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.dto.common.ApiResponse;
+import io.devridge.api.dto.companyinfo.CompanyInfoDto;
 import io.devridge.api.service.CompanyInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,9 @@ public class CompanyInfoController {
     private final CompanyInfoService companyInfoService;
     
     @PostMapping("/companyinfo/save")
-    public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@RequestBody CompanyInfo companyInfo) {
+    public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@RequestBody CompanyInfoDto companyInfoDto) {
 
+        companyInfoService.transferCompanyInfoToAssociatedTable(companyInfoDto);
 
 
 
