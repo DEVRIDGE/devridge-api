@@ -21,5 +21,17 @@
         </div>
     </form>
 </div>
+<script>
+    const queryString = new URLSearchParams(window.location.search);
+    const errorValue = queryString.get('error');
+    if (errorValue) {
+        if (errorValue === 'loginFail') alert('로그인 인증에 실패했습니다..');
+        else if (errorValue === 'needLogin') alert("로그인이 필요합니다.")
+        else if (errorValue === 'accessDenied') alert("권한이 없습니다.")
+        const newURL = window.location.href.split('?')[0];
+        window.location.href = newURL;
+    }
+</script>
+
 </body>
 </html>
