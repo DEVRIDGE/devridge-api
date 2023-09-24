@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,7 @@ public class CompanyInfoController {
     private final CompanyRequiredAbilityService companyRequiredAbilityService;
 
     @PostMapping("/companyinfo")
-    public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@RequestBody CompanyInfoForm companyInfoForm) {
+    public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@Validated @RequestBody CompanyInfoForm companyInfoForm) {
 
         companyInfoService.transferCompanyInfoToAssociatedTable(companyInfoForm);
 
@@ -32,7 +33,7 @@ public class CompanyInfoController {
     }
 
     @PostMapping("/companyinfo/requiredability")
-    public ResponseEntity<ApiResponse<Object>> saveCompanyRequiredAbility(@RequestBody CompanyRequiredAbilityForm companyRequiredAbilityForm) {
+    public ResponseEntity<ApiResponse<Object>> saveCompanyRequiredAbility(@Validated @RequestBody CompanyRequiredAbilityForm companyRequiredAbilityForm) {
 
         companyRequiredAbilityService.saveCompanyRequiredAbilities(companyRequiredAbilityForm);
 
