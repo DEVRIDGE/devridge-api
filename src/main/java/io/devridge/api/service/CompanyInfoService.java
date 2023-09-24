@@ -1,8 +1,6 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.companyinfo.Company;
-import io.devridge.api.domain.companyinfo.CompanyInfo;
-import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
+import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.dto.companyinfo.CompanyInfoDto;
 import io.devridge.api.handler.ex.ExistingCompanyInfoException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ public class CompanyInfoService {
 
     private final CompanyInfoRepository companyInfoRepository;
     private final CompanyService companyService;
+    private final JobService jobService;
+    private final DetailedPositionService detailedPositionService;
 
     /**
      * CompanyInfo가 전달되면 회사정보 테이블에 CompanyInfo가 저장되고
@@ -40,8 +40,26 @@ public class CompanyInfoService {
         }
 
         //직무를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
+        Job targetJob;
+        Optional<Job> foundJob = jobService.findByName(companyInfoDto.getJobName());
+        if(foundJob.isEmpty()) {
+            Job newJob = Job.builder()
+                    .name(companyInfoDto.getJobName())
+                    .build();
+            targetJob = jobService.save(newJob);
+        } else {
+            targetJob = foundJob.get();
+        }
 
-        //서비스 종류를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
+
+        //TODO 서비스 종류를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
+//        DetailedPosition targetDetailedPosition;
+//        Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoDto.getDetailedPositionName(), targetCompany.getId());
+//        if(foundDetailedPosition.isEmpty()) {
+//            DetailedPosition
+//        } else {
+//
+//        }
 
         //회사와 직무를 연관시킨다.
 

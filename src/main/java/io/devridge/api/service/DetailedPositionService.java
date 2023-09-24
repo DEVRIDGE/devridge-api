@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,10 @@ public class DetailedPositionService {
         List<DetailedPosition> detailedPositionList = detailedPositionRepository.findByCompanyIdAndJobId(companyId, jobId);
 
         return new DetailedPositionResponseDto(detailedPositionList);
+    }
+
+    public Optional<DetailedPosition> findByNameAndCompanyId(String detailedPositionName, Long companyId) {
+        return detailedPositionRepository.findByNameAndCompanyId(detailedPositionName, companyId);
     }
 
     private void validateCompanyJob(long companyId, long jobId) {
