@@ -33,6 +33,28 @@ public class CompanyInfoService {
     public void transferCompanyInfoToAssociatedTable(CompanyInfoDto companyInfoDto) {
 
         //회사를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
+        Company targetCompany = getCompany(companyInfoDto);
+
+        //직무를 저장한다. 이미 존재하면 이미 있는 직무를 가져온다.
+        Job targetJob = getJob(companyInfoDto);
+
+
+        //서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
+        DetailedPosition targetDetailedPosition = getDetailedPosition(companyInfoDto, targetCompany);
+
+        //회사와 직무를 연관시킨다.
+        associateCompanyJob(targetCompany, targetJob);
+
+        //직무와 서비스종류를 연관시킨다.
+        associateJobDetailedPosition(targetJob, targetDetailedPosition);
+
+        //서비스 종류와 회사는 위에서 서비스 종류를 저장할 때 연관되었으므로 없어도 된다.
+
+        //회사정보를 저정한다. 이미 해당하는 회사, 직무, 서비스 종류의 회사 정보가 있으면 예외가 발생한다.
+        saveCompanyInfo(companyInfoDto, targetCompany, targetJob, targetDetailedPosition);
+    }
+
+    private Company getCompany(CompanyInfoDto companyInfoDto) {
         Company targetCompany;
         Optional<Company> foundCompany = companyService.findByName(companyInfoDto.getCompanyName());
         if(foundCompany.isEmpty()) {
@@ -43,8 +65,10 @@ public class CompanyInfoService {
         } else {
             targetCompany = foundCompany.get();
         }
+        return targetCompany;
+    }
 
-        //직무를 저장한다. 이미 존재하면 이미 있는 직무를 가져온다.
+    private Job getJob(CompanyInfoDto companyInfoDto) {
         Job targetJob;
         Optional<Job> foundJob = jobService.findByName(companyInfoDto.getJobName());
         if(foundJob.isEmpty()) {
@@ -55,9 +79,10 @@ public class CompanyInfoService {
         } else {
             targetJob = foundJob.get();
         }
+        return targetJob;
+    }
 
-
-        //서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
+    private DetailedPosition getDetailedPosition(CompanyInfoDto companyInfoDto, Company targetCompany) {
         DetailedPosition targetDetailedPosition;
         Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoDto.getDetailedPositionName(), targetCompany.getId());
         if(foundDetailedPosition.isEmpty()) {
@@ -69,8 +94,10 @@ public class CompanyInfoService {
         } else {
             targetDetailedPosition = foundDetailedPosition.get();
         }
+        return targetDetailedPosition;
+    }
 
-        //회사와 직무를 연관시킨다.
+    private void associateCompanyJob(Company targetCompany, Job targetJob) {
         if(companyJobService.findByCompanyIdAndJobId(targetCompany.getId(), targetJob.getId()).isEmpty()) {
             CompanyJob newCompanyJob = CompanyJob.builder()
                     .company(targetCompany)
@@ -79,8 +106,9 @@ public class CompanyInfoService {
 
             companyJobService.save(newCompanyJob);
         }
+    }
 
-        //직무와 서비스종류를 연관시킨다.
+    private void associateJobDetailedPosition(Job targetJob, DetailedPosition targetDetailedPosition) {
         if(jobDetailedPositionService.findByJobIdAndDetailedPositionId(targetJob.getId(), targetDetailedPosition.getId()).isEmpty()) {
             JobDetailedPosition newJobDetailedPosition = JobDetailedPosition.builder()
                     .job(targetJob)
@@ -89,10 +117,9 @@ public class CompanyInfoService {
 
             jobDetailedPositionService.save(newJobDetailedPosition);
         }
+    }
 
-        //서비스 종류와 회사는 위에서 서비스 종류를 저장할 때 연관되었으므로 없어도 된다.
-
-        //회사정보를 저정한다.
+    private void saveCompanyInfo(CompanyInfoDto companyInfoDto, Company targetCompany, Job targetJob, DetailedPosition targetDetailedPosition) {
         Optional<CompanyInfo> foundCompanyInfo = companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(targetCompany.getId(), targetJob.getId(), targetDetailedPosition.getId());
 
         if(foundCompanyInfo.isPresent()) {
