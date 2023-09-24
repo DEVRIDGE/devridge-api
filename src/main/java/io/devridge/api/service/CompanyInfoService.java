@@ -18,6 +18,7 @@ public class CompanyInfoService {
     private final CompanyService companyService;
     private final JobService jobService;
     private final DetailedPositionService detailedPositionService;
+    private final CompanyJobService companyJobService;
 
     /**
      * CompanyInfo가 전달되면 회사정보 테이블에 CompanyInfo가 저장되고
@@ -66,7 +67,14 @@ public class CompanyInfoService {
         }
 
         //회사와 직무를 연관시킨다.
+        if(companyJobService.findByCompanyIdAndJobId(targetCompany.getId(), targetJob.getId()).isEmpty()) {
+            CompanyJob newCompanyJob = CompanyJob.builder()
+                    .company(targetCompany)
+                    .job(targetJob)
+                    .build();
 
+            companyJobService.save(newCompanyJob);
+        }
 
         //직무와 서비스종류를 연관시킨다.
 
