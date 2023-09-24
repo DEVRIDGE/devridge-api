@@ -1,7 +1,6 @@
 package io.devridge.api.service;
 
 import io.devridge.api.domain.companyinfo.*;
-import io.devridge.api.dto.companyinfo.CompanyInfoForm;
 import io.devridge.api.dto.companyinfo.CompanyRequiredAbilityForm;
 import io.devridge.api.handler.ex.CompanyNotFoundException;
 import io.devridge.api.handler.ex.DetailedPositionNotFoundException;

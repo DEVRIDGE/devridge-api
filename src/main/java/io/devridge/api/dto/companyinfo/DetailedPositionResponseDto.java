@@ -1,8 +1,6 @@
 package io.devridge.api.dto.companyinfo;
 
-import io.devridge.api.domain.companyinfo.Company;
 import io.devridge.api.domain.companyinfo.DetailedPosition;
-import io.devridge.api.domain.companyinfo.Job;
 import lombok.Getter;
 
 import java.util.List;

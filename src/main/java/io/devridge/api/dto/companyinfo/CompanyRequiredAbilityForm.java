@@ -1,7 +1,6 @@
 package io.devridge.api.dto.companyinfo;
 
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.List;
 

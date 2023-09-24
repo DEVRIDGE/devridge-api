@@ -1,6 +1,5 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.companyinfo.DetailedPosition;
 import io.devridge.api.domain.companyinfo.JobDetailedPosition;
 import io.devridge.api.domain.companyinfo.JobDetailedPositionRepository;
 import lombok.RequiredArgsConstructor;
