@@ -1,5 +1,5 @@
 -- 유저
-INSERT INTO users(user_id, user_email, user_role, user_provider, user_name, created_at, updated_at) VALUES (1, 'devridge2023@gmail.com', 'USER', 'google', 'DEVRIDGE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO users(user_id, user_email, user_password, user_role, user_provider, user_name, created_at, updated_at) VALUES (1, 'devridge2023@gmail.com', '$2a$10$R7Epiqggi7d4XtU8bJDDeOod6le0i3VdRf.WjBrTaE65uUZHbvek2', 'USER', 'google', 'DEVRIDGE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 -- 회사
 INSERT INTO company(company_id, company_name, created_at, updated_at) VALUES (1, '토스증권', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
