@@ -15,10 +15,14 @@ import java.util.Optional;
 public class CompanyInfoService {
 
     private final CompanyInfoRepository companyInfoRepository;
+
     private final CompanyService companyService;
     private final JobService jobService;
     private final DetailedPositionService detailedPositionService;
+
     private final CompanyJobService companyJobService;
+    private final JobDetailedPositionService jobDetailedPositionService;
+
 
     /**
      * CompanyInfo가 전달되면 회사정보 테이블에 CompanyInfo가 저장되고
@@ -53,7 +57,7 @@ public class CompanyInfoService {
         }
 
 
-        //TODO 서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
+        //서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
         DetailedPosition targetDetailedPosition;
         Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoDto.getDetailedPositionName(), targetCompany.getId());
         if(foundDetailedPosition.isEmpty()) {
@@ -77,18 +81,30 @@ public class CompanyInfoService {
         }
 
         //직무와 서비스종류를 연관시킨다.
+        if(jobDetailedPositionService.findByJobIdAndDetailedPositionId(targetJob.getId(), targetDetailedPosition.getId()).isEmpty()) {
+            JobDetailedPosition newJobDetailedPosition = JobDetailedPosition.builder()
+                    .job(targetJob)
+                    .detailedPosition(targetDetailedPosition)
+                    .build();
 
-        //서비스 종류와 회사를 연관시킨다.
+            jobDetailedPositionService.save(newJobDetailedPosition);
+        }
 
-        //회사 정보를 저정한다.
-//        saveCompanyInfo(companyInfo);
+        //서비스 종류와 회사는 위에서 서비스 종류를 저장할 때 연관되었으므로 없어도 된다.
 
-    }
+        //회사정보를 저정한다.
+        Optional<CompanyInfo> foundCompanyInfo = companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(targetCompany.getId(), targetJob.getId(), targetDetailedPosition.getId());
 
-    public void saveCompanyInfo(CompanyInfo companyInfo) {
+        if(foundCompanyInfo.isPresent()) {
+            throw new ExistingCompanyInfoException();
+        }
 
-        CompanyInfo companyInfo1 = companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyInfo.getCompany().getId(), companyInfo.getJob().getId(), companyInfo.getDetailedPosition().getId()).orElseThrow(() -> new ExistingCompanyInfoException());
-
-        companyInfoRepository.save(companyInfo);
+        CompanyInfo newCompanyInfo = CompanyInfo.builder()
+                .company(targetCompany)
+                .job(targetJob)
+                .detailedPosition(targetDetailedPosition)
+                .content(companyInfoDto.getContent())
+                .build();
+        companyInfoRepository.save(newCompanyInfo);
     }
 }
