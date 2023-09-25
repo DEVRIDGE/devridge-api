@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 페이지</title>
+</head>
+<body>
+<div style="width: 300px; margin: 0 auto;">
+    <h2>로그인</h2>
+    <form action="#" method="post" th:action="@{/admin/login}">
+        <div>
+            <label for="email">아이디:</label>
+            <input type="text" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button type="submit">로그인</button>
+        </div>
+    </form>
+</div>
+<script>
+    const queryString = new URLSearchParams(window.location.search);
+    const errorValue = queryString.get('error');
+    if (errorValue) {
+        if (errorValue === 'loginFail') alert('로그인 인증에 실패했습니다..');
+        else if (errorValue === 'needLogin') alert("로그인이 필요합니다.")
+        else if (errorValue === 'accessDenied') alert("권한이 없습니다.")
+        const newURL = window.location.href.split('?')[0];
+        window.location.href = newURL;
+    }
+</script>
+
+</body>
+</html>
