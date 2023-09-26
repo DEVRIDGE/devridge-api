@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AdminViewController {
 
+    @GetMapping
+    public String adminMain() {
+        return "main";
+    }
 
     @GetMapping("/login")
     public String login() {

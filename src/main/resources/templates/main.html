@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+</head>
+<body>
+<div style="width: 300px; margin: 0 auto;">
+    <div>회사</div> <input type="text" id="companyName" />
+    <div>직무</div> <input type="text" id="jobName" />
+    <div>상세직무(플랫폼 등)</div> <input type="text" id="detailedPositionName" />
+    <div>추가 내용(content)</div> <input type="text" id="content" />
+    <div style="display: flex; align-content: center; justify-content: flex-end;">
+        <button id="companyButton">회사 저장</button>
+    </div>
+    <br />
+    <br />
+    <div>요구스킬(콤마(,)로구분)</div>
+    <textarea id="requiredSkillTextarea" style="width: 180px; height: 300px;"></textarea>
+    <div style="display: flex; align-content: center; justify-content: flex-end;">
+        <button id="requiredSkillButton">스킬 저장</button>
+    </div>
+</div>
+
+<script>
+const companyButton = document.getElementById('companyButton');
+const requiredSkillButton = document.getElementById('requiredSkillButton')
+const companyNameDom = document.getElementById('companyName');
+const jobNameDom = document.getElementById('jobName');
+const detailedPositionNameDom = document.getElementById('detailedPositionName');
+const contentDom = document.getElementById('content');
+
+const requiredSkillTextarea = document.getElementById('requiredSkillTextarea');
+
+const fetchCompanyInfo = async () => {
+    if(!companyNameDom.value) {
+        alert('회사명을 입력해주세요.');
+        return;
+    } else if(!jobNameDom.value) {
+        alert('직무명을 입력해주세요.');
+        return;
+    } else if(!detailedPositionNameDom.value) {
+        alert('상세직무명을 입력해주세요.');
+        return;
+    }
+
+    let data = {
+        companyName: companyNameDom.value,
+        jobName: jobNameDom.value,
+        detailedPositionName: detailedPositionNameDom.value,
+        content: contentDom.value
+    };
+
+    try {
+        const response = await fetch('/admin/companyinfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+
+        if(response.status === 201) {
+            alert("성공적으로 저장완료")
+        } else {
+            if(responseData.message === "DB에 이미 존재하는 회사 정보입니다.") {
+                alert("DB에 이미 존재하는 회사 정보입니다.")
+            } else {
+                alert('데이터 저장에 실패했습니다.');
+            }
+        }
+        console.log(responseData);
+    } catch (error) {
+        console.error('Error:', error);
+        alert("실패")
+    }
+}
+
+const fetchRequiredSkill = async () => {
+    if(!companyNameDom.value) {
+        alert('회사명을 입력해주세요.');
+        return;
+    } else if(!jobNameDom.value) {
+        alert('직무명을 입력해주세요.');
+        return;
+    } else if(!detailedPositionNameDom.value) {
+        alert('상세직무명을 입력해주세요.');
+        return;
+    } else if(!requiredSkillTextarea.value) {
+        alert('요구스킬을 입력해주세요.');
+        return;
+    }
+
+    let skillsText = requiredSkillTextarea.value;
+
+    let skillsArray = skillsText.split(',').map(skill => skill.trim());
+
+    let data = {
+        companyName: companyNameDom.value,
+        jobName: jobNameDom.value,
+        detailedPositionName: detailedPositionNameDom.value,
+        companyRequiredAbilityList: skillsArray
+    };
+
+    try {
+        const response = await fetch('/admin/companyinfo/requiredability', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+
+        if(response.status === 201) {
+            alert("성공적으로 저장완료")
+        } else {
+            alert('데이터 저장에 실패했습니다.');
+        }
+        console.log(responseData);
+    } catch (error) {
+        console.error('Error:', error);
+        alert("실패")
+    }
+}
+
+
+companyButton.addEventListener("click", fetchCompanyInfo);
+requiredSkillButton.addEventListener("click", fetchRequiredSkill)
+</script>
+
+</body>
+</html>
