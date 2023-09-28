@@ -18,4 +18,7 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "LEFT JOIN CompanyRequiredAbility cra ON cd.id = cra.courseDetail.id AND cra.courseDetail.id IN :filteredCourseDetailIds " +
             "WHERE cd.course.id = :courseId ORDER BY cd.name")
     List<CourseDetailWithAbilityDto> getCourseDetailListWithAbilityByCourseIdOrderByName(Long courseId, List<Long> filteredCourseDetailIds);
+
+
+    List<CourseDetail> findByCourseIdOrderByName(Long courseId);
 }
