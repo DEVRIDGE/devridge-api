@@ -1,6 +1,7 @@
 package io.devridge.api.domain.roadmap;
 
 import io.devridge.api.domain.BaseTimeEntity;
+import io.devridge.api.dto.admin.CourseDetailInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,9 @@ public class CourseDetail extends BaseTimeEntity {
         this.id = id;
         this.name = name;
         this.course = course;
+    }
+
+    public void changeCourseDetailInfo(CourseDetailInfo courseDetailInfo) {
+        this.name = courseDetailInfo.getName();
     }
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회사 정보 리스트</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}" />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+<body>
+    <ul style="display: flex; align-items: center; justify-content: center; margin: 0 auto; margin-bottom: 50px;">
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin">
+                회사정보 및 요구역량
+            </a>
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin/course">
+                코스
+            </a>
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc; color: red; font-weight: bold;">
+                요구역량 묶기
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin/companyInfo">
+                로드맵 생성
+            </a>
+        </li>
+    </ul>
+
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+        <h2 style="font-size: 30px; font-weight: bold;" th:text="요구역량_묶기"></h2>
+    </div>
+
+    <div style="width: 100vw; display: flex; align-items: center; justify-content: center;">
+        <div>
+            - 하단에는 아직 courseDetailId가 지정되지않는 요구역량들이 보입니다.
+            <div style="margin: 20px 0; padding: 15px; border: solid 5px #ccc; display: flex; align-items: center; justify-content: space-around">
+                <button id="createBtn">요구역량 묶기</button>
+            </div>
+            <table style="border-collapse: collapse; width: 100%;">
+                <thead>
+                <tr>
+                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">회사</th>
+                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">직무</th>
+                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">상세 직무</th>
+                    <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">요구역량</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="companyRequiredAbility : ${companyRequiredAbilityList}">
+                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${companyRequiredAbility.companyInfo.company.name}"></td>
+                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${companyRequiredAbility.companyInfo.job.name}"></td>
+                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${companyRequiredAbility.companyInfo.detailedPosition.name}"></td>
+                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${companyRequiredAbility.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        const createBtn = document.getElementById('createBtn');
+        createBtn.addEventListener("click", async () => {
+            if(confirm("요구역량과 courseDetail을 묶으시겠습니까?")) {
+                const response = await fetch("/admin/api/requiredAbility", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if(response.status === 200) {
+                    alert("묶기 성공");
+                    location.reload();
+                } else {
+                    alert("묶기 실패")
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>
