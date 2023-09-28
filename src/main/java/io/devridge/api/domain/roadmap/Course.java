@@ -2,6 +2,7 @@ package io.devridge.api.domain.roadmap;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.companyinfo.Job;
+import io.devridge.api.dto.admin.CourseInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,5 +42,11 @@ public class Course extends BaseTimeEntity {
         this.type = type;
         this.order = order;
         this.job = job;
+    }
+
+    public void changeCourseInfo(CourseInfo courseInfo) {
+        this.name = courseInfo.getName();
+        this.type = CourseType.valueOf(courseInfo.getType());
+        this.order = courseInfo.getOrder();
     }
 }
