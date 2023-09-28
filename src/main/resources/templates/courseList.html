@@ -44,17 +44,20 @@
     const editBtn = async (e, courseId) => {
         const currentNode = e.currentTarget;
         const tr = currentNode.parentElement.parentElement;
-        const skillRadio = tr.children[1].children[0];
-        const csRadio = tr.children[1].children[1];
-
-        const courseName = tr.children[0].children[0].value;
-        const courseOrder = tr.children[2].children[0].value;
+        const courseName = tr.children[1].children[0].value;
+        const skillRadio = tr.children[2].children[0];
+        const csRadio = tr.children[2].children[1];
+        const courseOrder = tr.children[3].children[0].value;
         let courseType;
         if(skillRadio.checked) {
             courseType = 'SKILL'
         } else if(csRadio.checked) {
             courseType = 'CS'
         }
+
+        console.log(courseName)
+        console.log(courseType)
+        console.log(courseOrder)
 
         if(!courseName || !courseOrder || !courseType) {
             alert('빈곳이 있습니다.')
