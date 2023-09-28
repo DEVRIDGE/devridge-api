@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>코스 리스트</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}" />
+</head>
+<body>
+    <ul style="display: flex; align-items: center; justify-content: center; margin: 0 auto; margin-bottom: 50px;">
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin">
+                회사정보 및 요구역량
+            </a>
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc; color: red; font-weight: bold;">
+            코스
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin/requiredability">
+                요구역량 묶기
+            </a>
+        </li>
+        <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+            <a href="/admin/companyInfo">
+                로드맵 생성
+            </a>
+        </li>
+    </ul>
+
+    <div style="width: 300px; margin: 0 auto;">
+        <h2 style="font-size: 30px; font-weight: bold; margin-bottom: 10px;">코스 리스트</h2>
+        <div style="display: flex; align-items: center;">
+            <p>직무 선택 : </p>
+            <select id="selectBox">
+                <option value="">선택</option>
+                <option th:each="job : ${jobList}" th:value="${job.id}" th:text="${job.name}"></option>
+            </select>
+        </div>
+    </div>
+    <div style="width: 100vw; display: flex; align-items: center; justify-content: center;">
+        <div id="courseList"></div>
+    </div>
+<script>
+    const editBtn = async (e, courseId) => {
+        const currentNode = e.currentTarget;
+        const tr = currentNode.parentElement.parentElement;
+        const skillRadio = tr.children[1].children[0];
+        const csRadio = tr.children[1].children[1];
+
+        const courseName = tr.children[0].children[0].value;
+        const courseOrder = tr.children[2].children[0].value;
+        let courseType;
+        if(skillRadio.checked) {
+            courseType = 'SKILL'
+        } else if(csRadio.checked) {
+            courseType = 'CS'
+        }
+
+        if(!courseName || !courseOrder || !courseType) {
+            alert('빈곳이 있습니다.')
+            return;
+        }
+
+        if(confirm("수정하시겠습니까?")) {
+            const response = await fetch("/admin/api/course", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: courseId,
+                    name: courseName,
+                    type: courseType,
+                    order: courseOrder
+                }),
+            });
+            if(response.status === 200) {
+                alert("변경 성공");
+                location.reload();
+            } else {
+                alert("변경 실패")
+            }
+        }
+    }
+
+    const createBtn = async () => {
+        const courseName = document.getElementById("newCourseName").value;
+        const courseOrder = document.getElementById("newCourseOrder").value;
+        const skillRadio = document.getElementById("newTypeSkill");
+        const csRadio = document.getElementById("newTypeCs");
+        let courseType;
+        if(skillRadio.checked) {
+            courseType = 'SKILL'
+        } else if(csRadio.checked) {
+            courseType = 'CS'
+        }
+
+        if(!courseName || !courseOrder || !courseType) {
+            alert('빈곳이 있습니다.')
+            return;
+        }
+
+        if(confirm("등록하시겠습니까?")) {
+            const response = await fetch("/admin/api/course", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    jobId: document.getElementById("selectBox").value,
+                    name: courseName,
+                    type: courseType,
+                    order: courseOrder
+                }),
+            });
+            if(response.status === 200) {
+                alert("등록 성공");
+                location.reload();
+            } else {
+                alert("등록 실패")
+            }
+        }
+    }
+
+    const makeEmptyHtml = () => {
+        const courseListDom = document.getElementById("courseList");
+        courseListDom.innerHTML = "";
+    }
+    const enterDetailBtn = (courseId) => {
+        location.href = "/admin/course/" + courseId;
+    }
+
+    const makeCourseList = (courseList) => {
+        const courseListDom = document.getElementById("courseList");
+        let html = "";
+
+        html += `
+        <div style="margin: 30px 0; padding: 15px; border: solid 5px #ccc; display: flex; align-items: center; justify-content: space-around">
+            <div><input id="newCourseName" type="text" placeholder="코스 이름" /></div>
+            <div>
+                <input id="newTypeSkill" type="radio" name="courseSkillCreate" value="SKILL">SKILL
+                <input id="newTypeCs" type="radio" name="courseSkillCreate" value="CS">CS
+            </div>
+             <div><input id="newCourseOrder" type="number" placeholder="순서" /></div>
+            <button onclick="createBtn()">등록</button>
+        </div>`
+
+        html += `<table style="border-collapse: collapse; width: 100%;">`;
+        html += `
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">상세보기</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 200px; ">코스 이름</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">코스 타입</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">코스 순서</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">비고</th>
+            </tr>
+        </thead>
+        <tbody>`;
+        for (let i = 0; i < courseList.length; i++) {
+            html += `
+        <tr>
+            <td style="border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; padding: 5px; width: 100px; display: flex; justify-content: center;">
+                <button onclick="enterDetailBtn(${courseList[i].id})">보기</button>
+            </td>
+            <td style="border: 1px solid #ccc; padding: 5px; width: 200px;"><input type="text" value="${courseList[i].name}" /></td>
+            <td style="border: 1px solid #ccc; padding: 5px; width: 200px;">`
+
+            if(courseList[i].type === 'SKILL') {
+                 html +=`
+            <input type="radio" name="courseSkill${i}" value="SKILL" checked="checked">SKILL
+                <input type="radio" name="courseSkill${i}" value="CS">CS`
+            } else if(courseList[i].type === 'CS') {
+                html +=`
+            <input type="radio" name="courseSkill${i}" value="SKILL">SKILL
+                <input type="radio" name="courseSkill${i}" value="CS" checked="checked">CS`
+            }
+            html+=
+            `</td>
+            <td style="border: 1px solid #ccc; padding: 5px; width: 100px;"><input type="number" value="${courseList[i].order}" /></td>
+            <td style="border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; padding: 5px; width: 100px; display: flex; justify-content: center;">
+                <button onclick="editBtn(event, ${courseList[i].id})">수정</button>
+            </td>
+        </tr>`;
+        }
+        html += `</tbody></table>`;
+
+        courseListDom.innerHTML = html;
+    }
+
+    const courseListFetch = async (jobId) => {
+        let currentLocation = window.location.protocol + "//" + window.location.host + window.location.pathname
+
+        if (jobId) {
+            const response = await fetch("/admin/api/courses?jobId=" + jobId);
+            const result = await response.json();
+            makeCourseList(result.data.courseDtoList)
+            currentLocation += "?job=" + jobId;
+        } else {
+            makeEmptyHtml();
+        }
+        window.history.replaceState({}, document.title, currentLocation);
+    }
+
+    const selectBox = document.getElementById('selectBox');
+    selectBox.addEventListener('change', (e) => courseListFetch(e.target.value));
+
+    const getQueryParam = (name) => {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        const results = regex.exec(window.location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    const jobValue = getQueryParam("job");
+    if(jobValue) {
+        for (let option of selectBox.options) {
+            if (option.value === jobValue) {
+                option.selected = true;
+                courseListFetch(jobValue);
+                const currentLocation = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, currentLocation);
+                break;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
