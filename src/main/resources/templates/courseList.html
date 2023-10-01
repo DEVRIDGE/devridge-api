@@ -55,10 +55,6 @@
             courseType = 'CS'
         }
 
-        console.log(courseName)
-        console.log(courseType)
-        console.log(courseOrder)
-
         if(!courseName || !courseOrder || !courseType) {
             alert('빈곳이 있습니다.')
             return;
@@ -85,6 +81,26 @@
             }
         }
     }
+
+    const deleteBtn = async (courseId, courseName) => {
+        if(confirm(courseName + " 코스를 삭제하시겠습니까?")) {
+            if(confirm("정말 삭제하시겠습니까?")) {
+                const response = await fetch("/admin/api/course/" + courseId, {
+                    method: "DELETE"
+                });
+                if (response.status === 200) {
+                    alert("삭제 성공");
+                    location.reload();
+                } else if (response.status === 400) {
+                    let result = await response.json();
+                    alert(result.message);
+                } else {
+                    alert("삭제 실패")
+                }
+            }
+        }
+    }
+
 
     const createBtn = async () => {
         const courseName = document.getElementById("newCourseName").value;
@@ -183,6 +199,7 @@
             <td style="border: 1px solid #ccc; padding: 5px; width: 100px;"><input type="number" value="${courseList[i].order}" /></td>
             <td style="border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; padding: 5px; width: 100px; display: flex; justify-content: center;">
                 <button onclick="editBtn(event, ${courseList[i].id})">수정</button>
+                <button onclick="deleteBtn(${courseList[i].id}, '${courseList[i].name}')">삭제</button>
             </td>
         </tr>`;
         }
