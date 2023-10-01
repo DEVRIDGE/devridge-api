@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,7 +36,13 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
 
-    @Builder()
+    @OneToMany(mappedBy = "course", orphanRemoval = true)
+    private List<CourseDetail> courseDetailList;
+
+    @OneToMany(mappedBy = "course", orphanRemoval = true)
+    private List<Roadmap> roadmapList;
+
+    @Builder
     public Course(Long id, String name, CourseType type, int order, Job job) {
         this.id = id;
         this.name = name;
