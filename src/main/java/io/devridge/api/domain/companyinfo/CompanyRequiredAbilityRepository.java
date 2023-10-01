@@ -20,13 +20,8 @@ public interface CompanyRequiredAbilityRepository extends JpaRepository<CompanyR
             "JOIN FETCH c.company " +
             "JOIN FETCH c.job " +
             "JOIN FETCH c.detailedPosition " +
-            "WHERE cra.courseDetail IS NULL")
-    List<CompanyRequiredAbility> findAllByCourseDetailIsNullFetch();
-
-    @Query("SELECT cra " +
-            "FROM CompanyRequiredAbility cra " +
-            "WHERE cra.courseDetail IS NULL")
-    List<CompanyRequiredAbility> findAllByCourseDetailIsNull();
+            "WHERE cra.courseDetail IS NULL and c.job.id = :jobId")
+    List<CompanyRequiredAbility> findAllByCourseDetailIsNullFetch(@Param("jobId") Long jobId);
 
     List<CompanyRequiredAbility> findByCourseDetailId(Long courseDetailId);
 }

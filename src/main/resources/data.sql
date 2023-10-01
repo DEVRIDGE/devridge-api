@@ -56,6 +56,7 @@ INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, creat
 -- 회사 요구 역량
 INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 1, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 1, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 2, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 -- 영상 정보
  INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_like_cnt, course_video_source, created_at, updated_at)

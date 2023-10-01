@@ -64,9 +64,8 @@ public class AdminViewController {
     }
     @GetMapping("/requiredability")
     public String requiredAbility(Model model) {
-        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch();
-        model.addAttribute("companyRequiredAbilityList", companyRequiredAbilityList);
+        List<Job> jobList = jobRepository.findAll();
+        model.addAttribute("jobList", jobList);
         return "requiredAbilityList";
     }
-
 }

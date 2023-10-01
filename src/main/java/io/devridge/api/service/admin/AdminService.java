@@ -97,8 +97,8 @@ public class AdminService {
     }
 
     @Transactional
-    public void matchRequiredAbilityWithCourseDetailId() {
-        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNull();
+    public void matchRequiredAbilityWithCourseDetailId(Long jobId) {
+        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
 
         for (CompanyRequiredAbility companyRequiredAbility : companyRequiredAbilityList) {
             CompanyInfo companyInfo = companyInfoRepository.findById(companyRequiredAbility.getCompanyInfo().getId()).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 기업 정보를 찾을 수 없습니다."));

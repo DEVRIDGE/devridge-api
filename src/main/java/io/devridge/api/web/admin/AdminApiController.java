@@ -1,5 +1,7 @@
 package io.devridge.api.web.admin;
 
+import io.devridge.api.domain.companyinfo.CompanyRequiredAbility;
+import io.devridge.api.domain.companyinfo.CompanyRequiredAbilityRepository;
 import io.devridge.api.domain.companyinfo.Job;
 import io.devridge.api.domain.companyinfo.JobRepository;
 import io.devridge.api.domain.roadmap.*;
@@ -25,6 +27,8 @@ public class AdminApiController {
     private final CourseDetailRepository courseDetailRepository;
     private final AdminService adminService;
     private final JobRepository jobRepository;
+    private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
+
 
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<CourseListDto>> getCourseList(@RequestParam("jobId") Long jobId) {
@@ -56,7 +60,7 @@ public class AdminApiController {
 
     @DeleteMapping("/course/{courseId}")
     public ResponseEntity<ApiResponse<Object>> deleteCourse(@PathVariable Long courseId) {
-        
+
         adminService.deleteCourse(courseId);
 
         return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
@@ -95,10 +99,17 @@ public class AdminApiController {
         return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
     }
 
-    @PatchMapping("/requiredAbility")
-    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility() {
+    @GetMapping("/requiredAbility/{jobId}")
+    public ResponseEntity<ApiResponse<Object>> getRequiredAbilityWithNotHaveCourseId(@PathVariable Long jobId) {
+        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
 
-        adminService.matchRequiredAbilityWithCourseDetailId();
+        return ResponseEntity.status(200).body(ApiResponse.success("요청 성공", companyRequiredAbilityList));
+    }
+
+    @PatchMapping("/requiredAbility/{jobId}")
+    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility(@PathVariable Long jobId) {
+
+        adminService.matchRequiredAbilityWithCourseDetailId(jobId);
         return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
     }
 }
