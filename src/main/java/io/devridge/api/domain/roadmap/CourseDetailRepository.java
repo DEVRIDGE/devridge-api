@@ -21,4 +21,6 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
 
 
     List<CourseDetail> findByCourseIdOrderByName(Long courseId);
+
+    List<CourseDetail> findByCourseId(Long courseId);
 }

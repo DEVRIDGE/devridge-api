@@ -2,12 +2,15 @@ package io.devridge.api.service.admin;
 
 import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
+import io.devridge.api.domain.video.CourseVideo;
+import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.admin.CompanyInfoIdDto;
 import io.devridge.api.dto.admin.CourseDetailInfo;
 import io.devridge.api.dto.admin.CourseInfo;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
+import io.devridge.api.handler.ex.DeleteFailedExistVideoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ public class AdminService {
     private final CompanyInfoRepository companyInfoRepository;
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final RoadmapRepository roadmapRepository;
+    private final CourseVideoRepository courseVideoRepository;
 
     @Transactional
     public void changeCourse(CourseInfo courseInfo) {
@@ -37,6 +41,31 @@ public class AdminService {
         courseDetail.changeCourseDetailInfo(courseDetailInfo);
     }
 
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
+        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseId(course.getId());
+        for (CourseDetail courseDetail : courseDetailList) {
+            checkCourseVideoAndRequiredAbilityNull(courseDetail.getId());
+        }
+        courseDetailRepository.deleteAll(courseDetailList);
+        courseRepository.delete(course);
+    }
+
+    @Transactional
+    public void deleteCourseDetail(Long courseDetailId) {
+        checkCourseVideoAndRequiredAbilityNull(courseDetailId);
+        courseDetailRepository.deleteById(courseDetailId);
+    }
+
+    private void checkCourseVideoAndRequiredAbilityNull(Long courseDetailId) {
+        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailId(courseDetailId);
+        if(!courseVideoList.isEmpty()) {
+            throw new DeleteFailedExistVideoException();
+        }
+        companyRequiredAbilityRepository.findByCourseDetailId(courseDetailId)
+                .forEach(companyRequiredAbility -> companyRequiredAbility.changeCourseDetail(null));
+    }
 
     @Transactional
     public void makeRoadmap() {

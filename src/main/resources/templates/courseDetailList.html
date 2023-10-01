@@ -50,6 +50,7 @@
                     <td style="border: 1px solid #ccc; padding: 5px; width: 200px;"><input type="text" th:value="${courseDetail.name}"/></td>
                     <td style="border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; padding: 5px; width: 100px; display: flex; justify-content: center;">
                         <button class="editBtn" th:data-detail-id="${courseDetail.id}">수정</button>
+                        <button class="deleteBtn" th:data-detail-id="${courseDetail.id}" th:data-detail-name="${courseDetail.name}">삭제</button>
                     </td>
                 </tr>
                 </tbody>
@@ -57,6 +58,25 @@
         </div>
     </div>
     <script>
+        const deleteFetch = async (courseDetailId, courseDetailName) => {
+            if(confirm(courseDetailName + " 코스 상세 를 삭제하시겠습니까?")) {
+                if(confirm("정말 삭제하시겠습니까?")) {
+                    const response = await fetch("/admin/api/courseDetail/" + courseDetailId, {
+                        method: "DELETE"
+                    });
+                    if (response.status === 200) {
+                        alert("삭제 성공");
+                        location.reload();
+                    } else if (response.status === 400) {
+                        let result = await response.json();
+                        alert(result.message);
+                    } else {
+                        alert("삭제 실패")
+                    }
+                }
+            }
+        }
+
         const createBtn = document.getElementById("createBtn");
         createBtn.addEventListener("click", async () => {
             const newCourseDetailName = document.getElementById("newCourseDetailName");
@@ -124,6 +144,16 @@
                     })
                 }
             })
+        }
+
+        const deleteBtns = document.querySelectorAll(".deleteBtn")
+        for(let i = 0; i < deleteBtns.length; i++) {
+            deleteBtns[i].addEventListener("click", (e) => {
+                const selectedDom = e.currentTarget;
+                const detailId = selectedDom.getAttribute("data-detail-id");
+                const detailName = selectedDom.getAttribute("data-detail-name");
+                deleteFetch(detailId, detailName)
+            });
         }
     </script>
 </body>

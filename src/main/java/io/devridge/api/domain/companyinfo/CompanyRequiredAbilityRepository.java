@@ -27,4 +27,6 @@ public interface CompanyRequiredAbilityRepository extends JpaRepository<CompanyR
             "FROM CompanyRequiredAbility cra " +
             "WHERE cra.courseDetail IS NULL")
     List<CompanyRequiredAbility> findAllByCourseDetailIsNull();
+
+    List<CompanyRequiredAbility> findByCourseDetailId(Long courseDetailId);
 }

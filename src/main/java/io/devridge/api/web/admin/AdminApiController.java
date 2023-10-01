@@ -26,7 +26,6 @@ public class AdminApiController {
     private final AdminService adminService;
     private final JobRepository jobRepository;
 
-
     @GetMapping("/courses")
     public ResponseEntity<ApiResponse<CourseListDto>> getCourseList(@RequestParam("jobId") Long jobId) {
         List<Course> courseList = courseRepository.getCourseListByJob(jobId);
@@ -55,6 +54,14 @@ public class AdminApiController {
         return ResponseEntity.status(200).body(ApiResponse.success("수정되었습니다."));
     }
 
+    @DeleteMapping("/course/{courseId}")
+    public ResponseEntity<ApiResponse<Object>> deleteCourse(@PathVariable Long courseId) {
+        
+        adminService.deleteCourse(courseId);
+
+        return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
+    }
+
     @PostMapping("/courseDetail")
     public ResponseEntity<ApiResponse<Object>> createCourse(@RequestBody @Valid CourseDetailCreateInfo courseDetailCreateInfo) {
         Course course = courseRepository.findById(courseDetailCreateInfo.getCourseId()).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
@@ -62,6 +69,7 @@ public class AdminApiController {
                 .name(courseDetailCreateInfo.getName())
                 .course(course)
                 .build();
+
         courseDetailRepository.save(courseDetail);
 
         return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
@@ -71,6 +79,12 @@ public class AdminApiController {
     public ResponseEntity<ApiResponse<Object>> editCourseDetail(@RequestBody @Valid CourseDetailInfo courseDetailInfo) {
         adminService.changeCourseDetail(courseDetailInfo);
         return ResponseEntity.status(200).body(ApiResponse.success("수정되었습니다."));
+    }
+
+    @DeleteMapping("/courseDetail/{courseDetailId}")
+    public ResponseEntity<ApiResponse<Object>> deleteCourseDetail(@PathVariable Long courseDetailId) {
+        adminService.deleteCourseDetail(courseDetailId);
+        return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
     }
 
     @PostMapping("/companyInfo")
