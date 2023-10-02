@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JobService {
     private final JobRepository jobRepository;
-
+    private final CompanyService companyService;
     public Optional<Job> findByName(String jobName) {
         return jobRepository.findByName(jobName);
     }
@@ -21,8 +21,11 @@ public class JobService {
         return jobRepository.save(job);
     }
 
-    public JobResponseDto jobList() {
-        List<Job> jobList = jobRepository.findAll();
+    public JobResponseDto jobListByCompanyId(Long companyId) {
+
+        companyService.throwsExceptionIfCompanyNotFound(companyId);
+
+        List<Job> jobList = jobRepository.findByCompanyId(companyId);
 
         return new JobResponseDto(jobList);
     }
