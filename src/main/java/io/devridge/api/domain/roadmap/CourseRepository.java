@@ -12,4 +12,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> getCourseListByJob(@Param("jobId") long jobId);
 
     List<Course> findByJobId(Long jobId);
+
+    List<Course> findByJobIdOrderByOrder(Long jobId);
 }
