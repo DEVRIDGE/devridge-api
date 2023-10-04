@@ -2,10 +2,7 @@ package io.devridge.api.domain.video;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.roadmap.CourseDetail;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -27,6 +24,9 @@ public class CourseVideo extends BaseTimeEntity {
     @Column(name = "course_video_url")
     private String url;
 
+    @Column(name = "course_video_owner")
+    private String owner;
+
     @Column(name = "course_video_thumbnail")
     private String thumbnail;
 
@@ -41,9 +41,12 @@ public class CourseVideo extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
 
-    public CourseVideo(String title, String url, String thumbnail, Integer likeCnt, VideoSource source, CourseDetail courseDetail) {
+    @Builder
+    public CourseVideo(Long id, String title, String url, String owner, String thumbnail, Integer likeCnt, VideoSource source, CourseDetail courseDetail) {
+        this.id = id;
         this.title = title;
         this.url = url;
+        this.owner = owner;
         this.thumbnail = thumbnail;
         this.likeCnt = likeCnt;
         this.source = source;
@@ -56,4 +59,5 @@ public class CourseVideo extends BaseTimeEntity {
         this.title = title;
         this.courseDetail = courseDetail;
     }
+
 }
