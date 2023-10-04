@@ -137,7 +137,7 @@ public class CourseService {
      */
     private List<CourseDetailWithAbilityDto> getFilteredOrAllCourseDetails(CompanyInfo companyInfo, Long courseId) {
         List<Long> filteredCourseDetailIds = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyInfo.getId());
-        List<CourseDetailWithAbilityDto> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, filteredCourseDetailIds);
+        List<CourseDetailWithAbilityDto> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, companyInfo.getId(), filteredCourseDetailIds);
 
         List<CourseDetailWithAbilityDto> filteredList = courseDetailList.stream()
                 .filter(dto -> dto.getCompanyRequiredAbilityId() != null)
