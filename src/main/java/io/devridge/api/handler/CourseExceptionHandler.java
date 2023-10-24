@@ -42,4 +42,10 @@ public class CourseExceptionHandler {
         log.error("UnauthorizedCourseAccessException = {}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Login required"));
     }
+
+    @ExceptionHandler(DeleteFailedExistVideoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDeleteFailedExistVideoException(DeleteFailedExistVideoException exception) {
+        log.error("DeleteFailedExistVideoException = {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
+    }
 }

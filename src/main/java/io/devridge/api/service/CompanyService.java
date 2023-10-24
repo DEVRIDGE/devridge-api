@@ -4,6 +4,7 @@ package io.devridge.api.service;
 import io.devridge.api.domain.companyinfo.Company;
 import io.devridge.api.domain.companyinfo.CompanyRepository;
 import io.devridge.api.dto.CompanyResponseDto;
+import io.devridge.api.handler.ex.CompanyNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,10 @@ public class CompanyService {
 
     public Optional<Company> findByName(String name) {
         return companyRepository.findByName(name);
+    }
+
+    public void throwsExceptionIfCompanyNotFound(Long companyId) {
+        companyRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException());
     }
 
     public Company save(Company company) {

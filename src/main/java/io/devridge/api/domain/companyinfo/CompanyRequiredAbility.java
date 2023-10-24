@@ -38,4 +38,8 @@ public class CompanyRequiredAbility extends BaseTimeEntity {
         this.companyInfo = companyInfo;
         this.courseDetail = courseDetail;
     }
+
+    public void changeCourseDetail(CourseDetail courseDetail) {
+        this.courseDetail = courseDetail;
+    }
 }

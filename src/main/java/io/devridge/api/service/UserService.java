@@ -1,9 +1,11 @@
 package io.devridge.api.service;
 
+import io.devridge.api.config.auth.LoginUser;
 import io.devridge.api.config.auth.OAuth2Attribute;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.user.UserRepository;
 import io.devridge.api.domain.user.UserRole;
+import io.devridge.api.dto.UserInfoForChannelTalkResponseDto;
 import io.devridge.api.handler.ex.UnmatchedEmailAndProviderException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,10 @@ public class UserService {
         return userRepository.findByEmail(oAuth2Attribute.getEmail())
                 .map(user -> checkProviderAndReturnUser(user, oAuth2Attribute.getProvider()))
                 .orElseGet(() -> registerUser(oAuth2Attribute));
+    }
+
+    public UserInfoForChannelTalkResponseDto getUserInfoForChannelTalk(LoginUser loginUser) {
+        return new UserInfoForChannelTalkResponseDto(loginUser.getUser());
     }
 
     private User checkProviderAndReturnUser(User user, String provider) {

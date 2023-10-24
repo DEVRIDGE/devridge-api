@@ -2,6 +2,7 @@ package io.devridge.api.domain.roadmap;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.companyinfo.Job;
+import io.devridge.api.dto.admin.CourseInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,12 +36,24 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
 
-    @Builder()
+    @OneToMany(mappedBy = "course", orphanRemoval = true)
+    private List<CourseDetail> courseDetailList;
+
+    @OneToMany(mappedBy = "course", orphanRemoval = true)
+    private List<Roadmap> roadmapList;
+
+    @Builder
     public Course(Long id, String name, CourseType type, int order, Job job) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.order = order;
         this.job = job;
+    }
+
+    public void changeCourseInfo(CourseInfo courseInfo) {
+        this.name = courseInfo.getName();
+        this.type = CourseType.valueOf(courseInfo.getType());
+        this.order = courseInfo.getOrder();
     }
 }

@@ -74,7 +74,7 @@ class CourseDetailRepositoryTest {
         List<Long> filteredCourseDetailIds = List.of(courseDetail1.getId(), courseDetail3.getId());
 
         // when
-        List<CourseDetailWithAbilityDto> resultList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(course1.getId(), filteredCourseDetailIds);
+        List<CourseDetailWithAbilityDto> resultList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(course1.getId(), companyInfo.getId(), filteredCourseDetailIds);
 
         // then
         assertThat(resultList.size()).isEqualTo(2);

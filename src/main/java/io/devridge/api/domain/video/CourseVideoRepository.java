@@ -7,4 +7,6 @@ import java.util.List;
 public interface CourseVideoRepository extends JpaRepository<CourseVideo, Long> {
 
     List<CourseVideo> findByCourseDetailIdOrderByLikeCntDesc(Long courseDetailId);
+
+    List<CourseVideo> findByCourseDetailId(Long courseDetailId);
 }

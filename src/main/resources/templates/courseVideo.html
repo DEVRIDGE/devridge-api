@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>코스 상세 리스트</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}" />
+</head>
+<body>
+<ul style="display: flex; align-items: center; justify-content: center; margin: 0 auto; margin-bottom: 50px;">
+    <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+        <a href="/admin">
+            회사정보 및 요구역량
+        </a>
+    </li>
+    <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+        <a href="/admin/course">
+            코스
+        </a>
+    </li>
+    <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+        <a href="/admin/requiredability">
+            요구역량 묶기
+        </a>
+    </li>
+    <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc;">
+        <a href="/admin/companyInfo">
+            로드맵 생성
+        </a>
+    </li>
+    <li style="padding: 10px 20px; width: 200px; height: 50px; border :solid 1px #ccc; color: red; font-weight: bold;">
+        영상
+    </li>
+</ul>
+    <div style="width: 100vw; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        <form th:action="@{'/admin/api/video/' + ${courseDetailId}}" method="post" style="margin: 20px 0; padding: 15px; border: solid 5px #ccc; display: flex; align-items: center; justify-content: space-around">
+            <div>
+                <input id="course" name="name" type="text" placeholder="이름" required />
+            </div>
+            <div>
+                <input name="url" type="text" placeholder="URL" required />
+            </div>
+            <div>
+                <input name="owner" type="text" placeholder="소유자" required />
+            </div>
+            <div>
+                <input name="likes" type="number" placeholder="좋아요 수" required />
+            </div>
+            <button id="createBtn" type="submit">등록</button>
+        </form>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead>
+            <tr>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">영상 이름</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">링크</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">소유자</th>
+                <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">비고</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="courseVideo : ${courseVideoList}">
+                <td style="border: 1px solid #ccc; padding: 5px; width: 200px;"><input type="text" th:value="${courseVideo.title}"/></td>
+                <td style="border: 1px solid #ccc; padding: 5px; width: 200px;"><a th:href="${courseVideo.url}" target="_blank" th:text="${courseVideo.title}"></a>
+                </a></td>
+                <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${courseVideo.owner}">
+                <td style="border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; padding: 5px; width: 100px; display: flex; justify-content: center;">
+                    <button class="deleteBtn" th:data-detail-id="${courseVideo.id}" th:data-detail-name="${courseVideo.title}">삭제</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const deleteFetch = async (courseDetailId, courseDetailName) => {
+            if(confirm(courseDetailName + " 코스 상세 를 삭제하시겠습니까?")) {
+                if(confirm("정말 삭제하시겠습니까?")) {
+                    const response = await fetch("/admin/api/video/" + courseDetailId, {
+                        method: "DELETE"
+                    });
+                    if (response.status === 200) {
+                        alert("삭제 성공");
+                        location.reload();
+                    } else if (response.status === 400) {
+                        let result = await response.json();
+                        alert(result.message);
+                    } else {
+                        alert("삭제 실패")
+                    }
+                }
+            }
+        }
+        const deleteBtns = document.querySelectorAll(".deleteBtn")
+        for(let i = 0; i < deleteBtns.length; i++) {
+            deleteBtns[i].addEventListener("click", (e) => {
+                const selectedDom = e.currentTarget;
+                const detailId = selectedDom.getAttribute("data-detail-id");
+                const detailName = selectedDom.getAttribute("data-detail-name");
+                deleteFetch(detailId, detailName)
+            });
+        }
+    </script>
+</body>
+</html>
