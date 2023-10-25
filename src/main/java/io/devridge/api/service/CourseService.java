@@ -43,6 +43,7 @@ public class CourseService {
     public CourseDetailResponseDto getCourseDetailList(long courseId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
         Roadmap roadmap = getRoadmapWithCourseByCompanyInfo(courseId, companyInfo);
+
         checkCourseAccessForUser(getLoginUserId(loginUser), roadmap.getId(), companyInfo);
 
         List<CourseDetailWithAbilityDto> courseDetailList = getFilteredOrAllCourseDetails(companyInfo, courseId);

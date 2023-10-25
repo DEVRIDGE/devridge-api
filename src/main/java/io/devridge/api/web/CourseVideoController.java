@@ -20,13 +20,14 @@ public class CourseVideoController {
 
     @GetMapping("/videos")
     public ResponseEntity<ApiResponse<Object>> courseVideoList(
+            @RequestParam("courseId") Long courseId,
             @RequestParam("courseDetail") Long courseDetailId,
             @RequestParam("company") Long companyId,
             @RequestParam("job") Long jobId,
             @RequestParam("detailedPosition") Long detailedPositionId,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseDetailId, companyId, jobId, detailedPositionId, loginUser);
+        CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseId, courseDetailId, companyId, jobId, detailedPositionId, loginUser);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
     }
 }

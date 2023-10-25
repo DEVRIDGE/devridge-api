@@ -43,20 +43,32 @@ INSERT INTO roadmap(roadmap_id, company_info_id, roadmap_matching_flag, course_i
 INSERT INTO roadmap(roadmap_id, company_info_id, roadmap_matching_flag, course_id, created_at, updated_at) VALUES (5, 1, 'YES', 5, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 -- 코스 상세
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (1, 'Java', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (2, 'C', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (3, 'C++', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (4, 'Python', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (5, '네트워크 임시1', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (6, '네트워크 임시2', 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (7, '스프링', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO course_detail(course_detail_id, course_detail_name, course_id, created_at, updated_at) VALUES (8, 'django', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (1, 'Java', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (2, 'C', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (3, 'C++', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (4, 'Python', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (5, '네트워크 임시1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (6, '네트워크 임시2', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (7, '스프링', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_detail(course_detail_id, course_detail_name, created_at, updated_at) VALUES (8, 'django', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+-- 코스 상세_코스
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (1, 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (2, 1, 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (3, 1, 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (4, 1, 4, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (5, 2, 5, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (6, 2, 6, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (7, 3, 7, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, created_at, updated_at) VALUES (8, 3, 8, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+
 
 
 -- 회사 요구 역량
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 1, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 1, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 2, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 1, 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 1, 8, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 2, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 -- 영상 정보
  INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_like_cnt, course_video_source, created_at, updated_at)
