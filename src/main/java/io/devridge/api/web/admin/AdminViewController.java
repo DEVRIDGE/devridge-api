@@ -51,15 +51,15 @@ public class AdminViewController {
         return "courseList";
     }
 
-    @GetMapping("/course/{courseId}")
-    public String courseDetailList(@PathVariable Long courseId, Model model) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
-        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseIdOrderByName(courseId);
-        model.addAttribute("course", course);
-        model.addAttribute("courseDetailList", courseDetailList);
-
-        return "courseDetailList";
-    }
+//    @GetMapping("/course/{courseId}")
+//    public String courseDetailList(@PathVariable Long courseId, Model model) {
+//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
+//        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseIdOrderByName(courseId);
+//        model.addAttribute("course", course);
+//        model.addAttribute("courseDetailList", courseDetailList);
+//
+//        return "courseDetailList";
+//    }
 
     @GetMapping("/companyInfo")
     public String companyInfo(Model model) {
@@ -90,13 +90,13 @@ public class AdminViewController {
         return "courseVideoCourse";
     }
 
-    @GetMapping("/video/{jobId}/{courseId}")
-    public String courseVideoCourse(@PathVariable Long jobId, @PathVariable Long courseId, Model model) {
-        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseId(courseId);
-        model.addAttribute("jobId", jobId);
-        model.addAttribute("courseDetailList", courseDetailList);
-        return "courseVideoCourseDetail";
-    }
+//    @GetMapping("/video/{jobId}/{courseId}")
+//    public String courseVideoCourse(@PathVariable Long jobId, @PathVariable Long courseId, Model model) {
+//        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseId(courseId);
+//        model.addAttribute("jobId", jobId);
+//        model.addAttribute("courseDetailList", courseDetailList);
+//        return "courseVideoCourseDetail";
+//    }
 
     @GetMapping("/video/detail/{courseDetailId}")
     public String courseVideoCourse1(@PathVariable Long courseDetailId, Model model) {

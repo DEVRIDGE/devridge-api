@@ -77,7 +77,6 @@ public class AdminApiController {
         Course course = courseRepository.findById(courseDetailCreateInfo.getCourseId()).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
         CourseDetail courseDetail = CourseDetail.builder()
                 .name(courseDetailCreateInfo.getName())
-                .course(course)
                 .build();
 
         courseDetailRepository.save(courseDetail);
@@ -97,13 +96,13 @@ public class AdminApiController {
         return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
     }
 
-    @PostMapping("/companyInfo")
-    public ResponseEntity<ApiResponse<Object>> createCourse() {
-
-        adminService.makeRoadmap();
-
-        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
-    }
+//    @PostMapping("/companyInfo")
+//    public ResponseEntity<ApiResponse<Object>> createCourse() {
+//
+//        adminService.makeRoadmap();
+//
+//        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
+//    }
 
     @GetMapping("/requiredAbility/{jobId}")
     public ResponseEntity<ApiResponse<Object>> getRequiredAbilityWithNotHaveCourseId(@PathVariable Long jobId) {

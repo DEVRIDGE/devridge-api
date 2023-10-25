@@ -3,9 +3,7 @@ package io.devridge.api.service;
 import io.devridge.api.config.auth.LoginUser;
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
-import io.devridge.api.domain.roadmap.CourseDetail;
-import io.devridge.api.domain.roadmap.CourseDetailRepository;
-import io.devridge.api.domain.roadmap.RoadmapRepository;
+import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.CourseVideoResponseDto;
@@ -26,17 +24,22 @@ public class CourseVideoService {
     private final CourseVideoRepository courseVideoRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
+    private final CourseToDetailRepository courseToDetailRepository;
 
+    /**
+     * 코스 ID 추가 - 코스와 코스 디테일 n:n 변화로 인한 파라미터 추가
+     */
     @Transactional(readOnly = true)
-    public CourseVideoResponseDto getCourseVideoList(long courseDetailId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
-        CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
-        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
+    public CourseVideoResponseDto getCourseVideoList(long courseId, long courseDetailId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
+        CourseToDetail courseToDetail = courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(courseId, courseDetailId)
+                .orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
 
-        checkCourseAccessForUser(getLoginUserId(loginUser), courseDetail.getCourse().getId(), companyInfo);
+        CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
+        checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
 
         List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
 
-        return new CourseVideoResponseDto(courseDetail.getCourse().getName(), courseDetail.getName(), courseVideoList);
+        return new CourseVideoResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseVideoList);
     }
 
     private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {

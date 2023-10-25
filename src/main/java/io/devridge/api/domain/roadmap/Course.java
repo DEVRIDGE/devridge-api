@@ -37,9 +37,6 @@ public class Course extends BaseTimeEntity {
     private Job job;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true)
-    private List<CourseDetail> courseDetailList;
-
-    @OneToMany(mappedBy = "course", orphanRemoval = true)
     private List<Roadmap> roadmapList;
 
     @Builder

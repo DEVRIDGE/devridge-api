@@ -23,15 +23,10 @@ public class CourseDetail extends BaseTimeEntity {
     @Column(name = "course_detail_name")
     private String name;
 
-    @JoinColumn(name = "course_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
-
     @Builder
-    public CourseDetail(Long id, String name, Course course) {
+    public CourseDetail(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.course = course;
     }
 
     public void changeCourseDetailInfo(CourseDetailInfo courseDetailInfo) {
