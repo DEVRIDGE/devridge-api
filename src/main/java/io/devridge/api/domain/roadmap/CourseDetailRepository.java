@@ -14,6 +14,8 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "WHERE cicra.companyInfo.id = :companyInfoId")
     List<Long> getMatchingCourseDetailIdsForCompanyAbility(Long companyInfoId);
 
+    List<CourseDetail> findByNameOrderById(String name);
+
     @Query("SELECT new io.devridge.api.dto.course.CourseDetailWithAbilityDto(cd.id, cd.name, cra.id) " +
             "FROM CourseDetail cd " +
             "LEFT JOIN CourseToDetail ctd ON cd.id = ctd.courseDetail.id " +

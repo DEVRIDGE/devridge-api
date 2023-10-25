@@ -28,6 +28,12 @@ public class AdminService {
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final RoadmapRepository roadmapRepository;
     private final CourseVideoRepository courseVideoRepository;
+    private final CourseToDetailRepository courseToDetailRepository;
+
+    @Transactional
+    public void test() {
+
+    }
 
     @Transactional
     public void changeCourse(CourseInfo courseInfo) {
