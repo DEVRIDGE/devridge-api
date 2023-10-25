@@ -104,19 +104,19 @@ public class AdminApiController {
 //        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
 //    }
 
-    @GetMapping("/requiredAbility/{jobId}")
-    public ResponseEntity<ApiResponse<Object>> getRequiredAbilityWithNotHaveCourseId(@PathVariable Long jobId) {
-        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
+//    @GetMapping("/requiredAbility/{jobId}")
+//    public ResponseEntity<ApiResponse<Object>> getRequiredAbilityWithNotHaveCourseId(@PathVariable Long jobId) {
+//        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
+//
+//        return ResponseEntity.status(200).body(ApiResponse.success("요청 성공", companyRequiredAbilityList));
+//    }
 
-        return ResponseEntity.status(200).body(ApiResponse.success("요청 성공", companyRequiredAbilityList));
-    }
-
-    @PatchMapping("/requiredAbility/{jobId}")
-    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility(@PathVariable Long jobId) {
-
-        adminService.matchRequiredAbilityWithCourseDetailId(jobId);
-        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
-    }
+//    @PatchMapping("/requiredAbility/{jobId}")
+//    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility(@PathVariable Long jobId) {
+//
+//        adminService.matchRequiredAbilityWithCourseDetailId(jobId);
+//        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
+//    }
 
     @DeleteMapping("/video/{videoId}")
     public ResponseEntity<ApiResponse<Object>> courseVideoDelete(@PathVariable Long videoId) {

@@ -96,21 +96,21 @@ public class AdminService {
 //        }
 //    }
 
-    @Transactional
-    public void matchRequiredAbilityWithCourseDetailId(Long jobId) {
-        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
-
-        for (CompanyRequiredAbility companyRequiredAbility : companyRequiredAbilityList) {
-            CompanyInfo companyInfo = companyInfoRepository.findById(companyRequiredAbility.getCompanyInfo().getId()).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 기업 정보를 찾을 수 없습니다."));
-            List<Course> courseList = courseRepository.findByJobId(companyInfo.getJob().getId());
-            String abilityName = processStringCutting(companyRequiredAbility.getName());
-
+//    @Transactional
+//    public void matchRequiredAbilityWithCourseDetailId(Long jobId) {
+//        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
+//
+//        for (CompanyRequiredAbility companyRequiredAbility : companyRequiredAbilityList) {
+//            CompanyInfo companyInfo = companyInfoRepository.findById(companyRequiredAbility.getCompanyInfo().getId()).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 기업 정보를 찾을 수 없습니다."));
+//            List<Course> courseList = courseRepository.findByJobId(companyInfo.getJob().getId());
+//            String abilityName = processStringCutting(companyRequiredAbility.getName());
+//
 //            Long matchCourseDetailId = courseDetailCompareAbilityName(courseList, abilityName);
 //            if(matchCourseDetailId != null) {
 //                companyRequiredAbility.changeCourseDetail(CourseDetail.builder().id(matchCourseDetailId).build());
 //            }
-        }
-    }
+//        }
+//    }
 
 //    private Long courseDetailCompareAbilityName(List<Course> courseList, String abilityName) {
 //        for (Course course : courseList) {
