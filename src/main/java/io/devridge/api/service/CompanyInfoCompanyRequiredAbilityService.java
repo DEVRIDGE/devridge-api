@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CompanyInfoCompanyRequiredAbilityService {
-    private CompanyInfoCompanyRequiredAbilityRepository companyInfoCompanyRequiredAbilityRepository;
+    private final CompanyInfoCompanyRequiredAbilityRepository companyInfoCompanyRequiredAbilityRepository;
 
     public Optional<CompanyInfoCompanyRequiredAbility> findByCompanyInfoIdAndCompanyRequiredAbilityId(Long companyInfoId, Long companyRequiredAbilityId) {
         return companyInfoCompanyRequiredAbilityRepository.findByCompanyInfoIdAndCompanyRequiredAbilityId(companyInfoId, companyRequiredAbilityId);
