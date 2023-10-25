@@ -24,18 +24,13 @@ public class CompanyRequiredAbility extends BaseTimeEntity {
     @Column(name = "company_required_ability_name")
     private String name;
 
-//    @JoinColumn(name = "company_info_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private CompanyInfo companyInfo;
-
     @JoinColumn(name = "course_detail_id")
     @OneToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
 
     @Builder
-    public CompanyRequiredAbility(Long id, String name, /*CompanyInfo companyInfo,*/ CourseDetail courseDetail) {
+    public CompanyRequiredAbility(Long id, String name, CourseDetail courseDetail) {
         this.name = name;
-//        this.companyInfo = companyInfo;
         this.courseDetail = courseDetail;
     }
 

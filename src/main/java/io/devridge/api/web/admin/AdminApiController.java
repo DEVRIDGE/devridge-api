@@ -36,12 +36,12 @@ public class AdminApiController {
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final CourseVideoRepository courseVideoRepository;
 
-    @GetMapping("/courses")
-    public ResponseEntity<ApiResponse<CourseListDto>> getCourseList(@RequestParam("jobId") Long jobId) {
-        List<Course> courseList = courseRepository.getCourseListByJob(jobId);
-
-        return ResponseEntity.status(200).body(ApiResponse.success(new CourseListDto(courseList)));
-    }
+//    @GetMapping("/courses")
+//    public ResponseEntity<ApiResponse<CourseListDto>> getCourseList(@RequestParam("jobId") Long jobId) {
+//        List<Course> courseList = courseRepository.getCourseListByJob(jobId);
+//
+//        return ResponseEntity.status(200).body(ApiResponse.success(new CourseListDto(courseList)));
+//    }
 
     @PostMapping("/course")
     public ResponseEntity<ApiResponse<Object>> createCourse(@RequestBody @Valid CourseCreateInfo courseCreateInfo) {
