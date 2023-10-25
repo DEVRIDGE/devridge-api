@@ -13,8 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class CompanyInfoCompanyRequiredAbility extends BaseTimeEntity
-{
+public class CompanyInfoCompanyRequiredAbility extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_info_company_required_ability_id")

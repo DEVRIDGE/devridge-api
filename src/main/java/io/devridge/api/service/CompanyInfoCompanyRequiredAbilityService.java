@@ -1,9 +1,8 @@
 package io.devridge.api.service;
 
-import io.devridge.api.domain.companyinfo.CompanyInfo;
+
 import io.devridge.api.domain.companyinfo.CompanyInfoCompanyRequiredAbility;
 import io.devridge.api.domain.companyinfo.CompanyInfoCompanyRequiredAbilityRepository;
-import io.devridge.api.domain.companyinfo.CompanyRequiredAbility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
