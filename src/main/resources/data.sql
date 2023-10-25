@@ -66,9 +66,14 @@ INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, c
 
 
 -- 회사 요구 역량
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 1, 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 1, 8, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
-INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, company_info_id, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 2, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 8, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+INSERT INTO company_info_company_required_ability(company_info_company_required_ability_id, company_info_id, company_required_ability_id, created_at, updated_at) VALUES (1, 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_info_company_required_ability(company_info_company_required_ability_id, company_info_id, company_required_ability_id, created_at, updated_at) VALUES (2, 1, 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_info_company_required_ability(company_info_company_required_ability_id, company_info_id, company_required_ability_id, created_at, updated_at) VALUES (3, 1, 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
 
 -- 영상 정보
  INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_like_cnt, course_video_source, created_at, updated_at)

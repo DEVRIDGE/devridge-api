@@ -20,7 +20,7 @@ public class CourseVideoController {
 
     @GetMapping("/videos")
     public ResponseEntity<ApiResponse<Object>> courseVideoList(
-            @RequestParam("courseId") Long courseId,
+            @RequestParam("course") Long courseId,
             @RequestParam("courseDetail") Long courseDetailId,
             @RequestParam("company") Long companyId,
             @RequestParam("job") Long jobId,
