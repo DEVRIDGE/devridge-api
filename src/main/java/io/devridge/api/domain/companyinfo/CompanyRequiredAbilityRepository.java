@@ -9,11 +9,14 @@ import java.util.Optional;
 
 public interface CompanyRequiredAbilityRepository extends JpaRepository<CompanyRequiredAbility, Long> {
 
-    Optional<CompanyRequiredAbility> findByNameAndCompanyInfoId(String companyRequiredAbilityName, Long companyInfoId);
+    Optional<CompanyRequiredAbility> findByName(String companyRequiredAbilityName);
 
+
+    //TODO CompanyRequiredAbilityIds를 CompanyInfoCompanyRequiredAbility에서 사용하도록 해야함
     @Query("SELECT cra.courseDetail.id FROM CompanyRequiredAbility cra WHERE cra.companyInfo.id = :companyInfoId AND cra.courseDetail IS NOT NULL")
     List<Long> findIdsByCompanyInfoId(@Param("companyInfoId") Long companyInfoId);
 
+    //TODO CompanyRequiredAbility가 아니라 CompanyInfoCompanyRequiredAbility 쓰도록 쿼리 바꿔야함
     @Query("SELECT cra " +
             "FROM CompanyRequiredAbility cra " +
             "JOIN FETCH cra.companyInfo c " +

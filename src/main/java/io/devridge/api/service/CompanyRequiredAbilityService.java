@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,6 +21,7 @@ public class CompanyRequiredAbilityService {
     private final CompanyService companyService;
     private final JobService jobService;
     private final DetailedPositionService detailedPositionService;
+    private final CompanyInfoCompanyRequiredAbilityService companyInfoCompanyRequiredAbilityService;
 
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
 
@@ -33,19 +35,45 @@ public class CompanyRequiredAbilityService {
         CompanyInfo foundCompanyInfo = companyInfoService.validateCompanyInfo(company.getId(), job.getId(), detailedPosition.getId()); // 회사 정보가 존재하는지 검증
 
 
-        // 해당 회사 정보에 대해서 입력으로 들어온 요구 역량들을 저장한다. 다만, 요구 기술과 대응되는 courseDetail에는 null이 들어간 상태로 저장된다.
         saveCompanyRequiredAbilities(companyRequiredAbilityList, foundCompanyInfo);
+
     }
 
     private void saveCompanyRequiredAbilities(List<String> companyRequiredAbilityList, CompanyInfo foundCompanyInfo) {
-        for(String requiredAbilityName : companyRequiredAbilityList) {
-            if(companyRequiredAbilityRepository.findByNameAndCompanyInfoId(requiredAbilityName, foundCompanyInfo.getId()).isEmpty()) {
-                CompanyRequiredAbility newCompanyRequiredAbility = CompanyRequiredAbility.builder()
-                        .companyInfo(foundCompanyInfo)
-                        .name(requiredAbilityName)
-                        .build();
-                companyRequiredAbilityRepository.save(newCompanyRequiredAbility);
-            }
+        for (String companyRequiredAbilityName : companyRequiredAbilityList) {
+            CompanyRequiredAbility companyRequiredAbility = null;
+            companyRequiredAbility = getCompanyRequiredAbility(companyRequiredAbilityName);
+
+            saveCompanyInfoCompanyRequiredAbility(foundCompanyInfo, companyRequiredAbility);
+        }
+    }
+
+    private CompanyRequiredAbility getCompanyRequiredAbility(String companyRequiredAbilityName) {
+        CompanyRequiredAbility targetCompanyRequiredAbility;
+        Optional<CompanyRequiredAbility> companyRequiredAbility = companyRequiredAbilityRepository.findByName(companyRequiredAbilityName);
+
+        if(companyRequiredAbility.isEmpty()) { // 입력받은 회사 요구 역량이 기존에 존재하지 않을 경우 새로 저장한다.
+            CompanyRequiredAbility newCompanyRequiredAbility = CompanyRequiredAbility.builder()
+                    .name(companyRequiredAbilityName)
+                    .courseDetail(null)
+                    .build();
+            targetCompanyRequiredAbility = companyRequiredAbilityRepository.save(newCompanyRequiredAbility);
+        }
+        else {
+            targetCompanyRequiredAbility = companyRequiredAbility.get();
+        }
+        return targetCompanyRequiredAbility;
+    }
+
+    private void saveCompanyInfoCompanyRequiredAbility(CompanyInfo foundCompanyInfo, CompanyRequiredAbility companyRequiredAbility) {
+        Optional<CompanyInfoCompanyRequiredAbility> companyInfoCompanyRequiredAbility = companyInfoCompanyRequiredAbilityService.findByCompanyInfoIdAndCompanyRequiredAbilityId(foundCompanyInfo.getId(), companyRequiredAbility.getId());
+        if(companyInfoCompanyRequiredAbility.isEmpty()) { // CompanyInfoCompanyRequiredAbility에 기존에 존재하지 않는 데이터만 저장한다
+            CompanyInfoCompanyRequiredAbility newCompanyInfoCompanyRequiredAbility = CompanyInfoCompanyRequiredAbility.builder()
+                    .companyInfo(foundCompanyInfo)
+                    .companyRequiredAbility(companyRequiredAbility)
+                    .build();
+
+            companyInfoCompanyRequiredAbilityService.save(newCompanyInfoCompanyRequiredAbility);
         }
     }
 }
