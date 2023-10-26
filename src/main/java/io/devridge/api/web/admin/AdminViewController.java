@@ -2,23 +2,18 @@ package io.devridge.api.web.admin;
 
 import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.Course;
-import io.devridge.api.domain.roadmap.CourseDetail;
 import io.devridge.api.domain.roadmap.CourseDetailRepository;
 import io.devridge.api.domain.roadmap.CourseRepository;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.dto.admin.CompanyInfoDto;
-import io.devridge.api.handler.ex.CourseNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -68,12 +63,7 @@ public class AdminViewController {
 
         return "companyInfoList";
     }
-    @GetMapping("/requiredability")
-    public String requiredAbility(Model model) {
-        List<Job> jobList = jobRepository.findAll();
-        model.addAttribute("jobList", jobList);
-        return "requiredAbilityList";
-    }
+
 
     @GetMapping("/video")
     public String courseVideo(Model model) {

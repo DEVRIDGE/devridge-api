@@ -38,28 +38,33 @@
     </div>
 
     <div style="width: 100vw; display: flex; align-items: center; justify-content: center;">
-        <div>
-            - 하단에는 아직 courseDetailId가 지정되지않는 요구역량들이 보입니다.
-            <p>직무 선택 : </p>
-            <select id="selectBox">
-                <option value="">선택</option>
-                <option th:each="job : ${jobList}" th:value="${job.id}" th:text="${job.name}"></option>
-            </select>
-            <div id="requiredListWrap">
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <button style="margin-bottom: 20px;"onclick="requiredApply()">요구역량 묶기 버튼</button>
+            <p style="margin-bottom: 20px;">- 하단에는 아직 courseDetailId가 지정되지않는 요구역량들이 보입니다.</p>
 
+            <div id="requiredListWrap">
+                <table style="border-collapse: collapse; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">요구역량 ID</th>
+                            <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">요구역량 명칭</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="requiredSkill : ${requiredSkillList}">
+                            <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${requiredSkill.id}"></td>
+                            <td style="border: 1px solid #ccc; padding: 5px; width: 200px;" th:text="${requiredSkill.name}"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
     </div>
     <script>
-        const selectBox = document.getElementById('selectBox');
-        const makeEmptyHtml = () => {
-            const requiredListWrap = document.getElementById("requiredListWrap");
-            requiredListWrap.innerHTML = "";
-        }
-        const requiredApply = async (jobId) => {
+        const requiredApply = async () => {
             if(confirm("요구역량과 courseDetail을 묶으시겠습니까?")) {
-                const response = await fetch("/admin/api/requiredAbility/" + jobId, {
+                const response = await fetch("/admin/api/requiredAbility", {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
@@ -73,79 +78,6 @@
                 }
             }
         }
-
-
-        const makeRequiredList = (requiredList, jobId) => {
-            const requiredListWrap = document.getElementById("requiredListWrap");
-            let html = "";
-            html += `
-            <div style="margin: 20px 0; padding: 15px; border: solid 5px #ccc; display: flex; align-items: center; justify-content: space-around">
-                <button onclick="requiredApply(${jobId})">요구역량 묶기</button>
-            </div>
-            <table style="border-collapse: collapse; width: 100%;">
-                <thead>
-                <tr>
-                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">회사</th>
-                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">직무</th>
-                    <th style="border: 1px solid #ccc; padding: 5px; width: 200px;">상세 직무</th>
-                    <th style="border: 1px solid #ccc; padding: 5px; width: 100px;">요구역량</th>
-                </tr>
-                </thead>
-                <tbody>`
-
-            for (let i = 0; i < requiredList.length; i++) {
-                html += `
-                <tr>
-                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;">${requiredList[i].companyInfo.company.name}</td>
-                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;">${requiredList[i].companyInfo.job.name}</td>
-                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;">${requiredList[i].companyInfo.detailedPosition.name}</td>
-                    <td style="border: 1px solid #ccc; padding: 5px; width: 200px;">${requiredList[i].name}</td>
-                </tr>`
-            }
-            html += `
-                </tbody>
-            </table>`
-            requiredListWrap.innerHTML = html;
-        }
-
-        const requiredListFetch = async (jobId) => {
-            console.log(jobId);
-            let currentLocation = window.location.protocol + "//" + window.location.host + window.location.pathname
-
-            if (jobId) {
-                const response = await fetch("/admin/api/requiredAbility/" + jobId);
-                const result = await response.json();
-                console.log(result)
-                makeRequiredList(result.data, jobId)
-                currentLocation += "?job=" + jobId;
-            } else {
-                makeEmptyHtml();
-            }
-            window.history.replaceState({}, document.title, currentLocation);
-        }
-
-        const getQueryParam = (name) => {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-            const results = regex.exec(window.location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
-        const jobValue = getQueryParam("job");
-        if(jobValue) {
-            for (let option of selectBox.options) {
-                if (option.value === jobValue) {
-                    option.selected = true;
-                    requiredListFetch(jobValue);
-                    const currentLocation = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.replaceState({}, document.title, currentLocation);
-                    break;
-                }
-            }
-        }
-
-
-        selectBox.addEventListener('change', (e) => requiredListFetch(e.target.value));
     </script>
 </body>
 </html>

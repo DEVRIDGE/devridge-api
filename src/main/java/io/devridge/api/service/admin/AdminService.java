@@ -4,10 +4,8 @@ import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
-import io.devridge.api.dto.admin.CompanyInfoIdDto;
 import io.devridge.api.dto.admin.CourseDetailInfo;
 import io.devridge.api.dto.admin.CourseInfo;
-import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.CourseNotFoundException;
 import io.devridge.api.handler.ex.DeleteFailedExistVideoException;
@@ -15,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -102,21 +99,7 @@ public class AdminService {
 //        }
 //    }
 
-//    @Transactional
-//    public void matchRequiredAbilityWithCourseDetailId(Long jobId) {
-//        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
-//
-//        for (CompanyRequiredAbility companyRequiredAbility : companyRequiredAbilityList) {
-//            CompanyInfo companyInfo = companyInfoRepository.findById(companyRequiredAbility.getCompanyInfo().getId()).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 기업 정보를 찾을 수 없습니다."));
-//            List<Course> courseList = courseRepository.findByJobId(companyInfo.getJob().getId());
-//            String abilityName = processStringCutting(companyRequiredAbility.getName());
-//
-//            Long matchCourseDetailId = courseDetailCompareAbilityName(courseList, abilityName);
-//            if(matchCourseDetailId != null) {
-//                companyRequiredAbility.changeCourseDetail(CourseDetail.builder().id(matchCourseDetailId).build());
-//            }
-//        }
-//    }
+
 
 //    private Long courseDetailCompareAbilityName(List<Course> courseList, String abilityName) {
 //        for (Course course : courseList) {
@@ -129,23 +112,6 @@ public class AdminService {
 //        }
 //        return null;
 //    }
-
-
-    private String processStringCutting(String name) {
-        // 모든 공백 제거
-        String noSpaces = name.replaceAll("\\s+", "");
-
-        // 영어 문자는 소문자로 변환하고, 다른 문자는 그대로 유지
-        StringBuilder result = new StringBuilder();
-        for (char c : noSpaces.toCharArray()) {
-            if (Character.isAlphabetic(c) && Character.isUpperCase(c)) {
-                result.append(Character.toLowerCase(c));
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
 
 //    private MatchingFlag checkMatched(Course course, List<Long> requriedDetailIdList) {
 //        MatchingFlag matchingFlag = MatchingFlag.NO;

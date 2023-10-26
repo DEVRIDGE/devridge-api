@@ -1,6 +1,5 @@
 package io.devridge.api.web.admin;
 
-import io.devridge.api.domain.companyinfo.CompanyRequiredAbility;
 import io.devridge.api.domain.companyinfo.CompanyRequiredAbilityRepository;
 import io.devridge.api.domain.companyinfo.Job;
 import io.devridge.api.domain.companyinfo.JobRepository;
@@ -15,11 +14,9 @@ import io.devridge.api.handler.ex.JobNotFoundException;
 import io.devridge.api.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,12 +101,7 @@ public class AdminApiController {
 //        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
 //    }
 
-//    @GetMapping("/requiredAbility/{jobId}")
-//    public ResponseEntity<ApiResponse<Object>> getRequiredAbilityWithNotHaveCourseId(@PathVariable Long jobId) {
-//        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findAllByCourseDetailIsNullFetch(jobId);
-//
-//        return ResponseEntity.status(200).body(ApiResponse.success("요청 성공", companyRequiredAbilityList));
-//    }
+
 
 //    @PatchMapping("/requiredAbility/{jobId}")
 //    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility(@PathVariable Long jobId) {
