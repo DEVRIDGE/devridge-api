@@ -30,9 +30,6 @@ public class CourseVideo extends BaseTimeEntity {
     @Column(name = "course_video_thumbnail")
     private String thumbnail;
 
-    @Column(name = "course_video_like_cnt")
-    private Integer likeCnt;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "course_video_source")
     private VideoSource source;

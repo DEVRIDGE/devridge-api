@@ -12,6 +12,7 @@ public class CourseVideoResponseDto {
     public String courseTitle;
     private String courseDetailTitle;
     private List<CourseVideoDto> courseVideos;
+    private Integer LikeCnt;
 
     public CourseVideoResponseDto(String courseName, String courseDetailName, List<CourseVideo> courseVideoList) {
         this.courseTitle = courseName;
