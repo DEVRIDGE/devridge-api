@@ -28,9 +28,9 @@ spring:
         default_batch_fetch_size: 100
         format_sql: true
     show-sql: true
-    output:
-      ansi:
-        enabled: always
+  output:
+    ansi:
+      enabled: always
   sql:
     init:
       mode: never

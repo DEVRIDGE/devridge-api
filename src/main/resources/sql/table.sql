@@ -71,7 +71,6 @@ CREATE TABLE course_video (
     course_video_url varchar(255),
     course_video_thumbnail varchar(255),
     course_video_source varchar(255),
-    course_video_like_cnt integer,
     course_detail_id bigint,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,

@@ -76,11 +76,11 @@ INSERT INTO company_info_company_required_ability(company_info_company_required_
 
 
 -- 영상 정보
- INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_like_cnt, course_video_source, created_at, updated_at)
- VALUES (1, 1, '자바 수업을 리뉴얼 했습니다', 'https://www.youtube.com/watch?v=jdTsJzXmgU0&list=PLuHgQVnccGMCeAy-2-llhw3nWoQKUvQck', 'https://img.youtube.com/vi/jdTsJzXmgU0/0.jpg', '2000', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+ INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_source, created_at, updated_at)
+ VALUES (1, 1, '자바 수업을 리뉴얼 했습니다', 'https://www.youtube.com/watch?v=jdTsJzXmgU0&list=PLuHgQVnccGMCeAy-2-llhw3nWoQKUvQck', 'https://img.youtube.com/vi/jdTsJzXmgU0/0.jpg', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
- INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_like_cnt, course_video_source, created_at, updated_at)
- VALUES (2, 1, '[자바의정석-기초편] ch1-1,2 자바란? 자바의 역사', 'https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp', 'https://img.youtube.com/vi/oJlCC1DutbA/0.jpg', '1400', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+ INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_source, created_at, updated_at)
+ VALUES (2, 1, '[자바의정석-기초편] ch1-1,2 자바란? 자바의 역사', 'https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp', 'https://img.youtube.com/vi/oJlCC1DutbA/0.jpg', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 
 -- 유저 학습 상태

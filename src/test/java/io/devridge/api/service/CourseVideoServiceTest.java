@@ -6,7 +6,8 @@ import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.user.User;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
-import io.devridge.api.dto.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.UnauthorizedCourseAccessException;
@@ -48,22 +49,24 @@ public class CourseVideoServiceTest {
         Course course = Course.builder().id(1L).name("언어").build();
         CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").build();
         CourseToDetail courseToDetail = CourseToDetail.builder().course(course).courseDetail(courseDetail).build();
-        List<CourseVideo> courseVideoList = makeCourseVideoList(courseDetail);
+        List<CourseVideoWithLikeDto> courseVideoList = makeCourseVideoList();
 
         //stub
         when(courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(anyLong(), anyLong())).thenReturn(Optional.of(courseToDetail));
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
-        when(courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
+        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
 
         //when
         CourseVideoResponseDto courseVideoResponseDto = courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, loginUser);
 
         //then
-        assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상1");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상2");
         assertThat(courseVideoResponseDto.getCourseTitle()).isEqualTo("언어");
         assertThat(courseVideoResponseDto.getCourseDetailTitle()).isEqualTo("Java");
+        assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
+        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
+        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
     }
 
     @DisplayName("로그인 안한 유저가 허용된 영상 목록 요청시 성공적으로 가져온다.")
@@ -76,13 +79,13 @@ public class CourseVideoServiceTest {
         CourseToDetail courseToDetail = CourseToDetail.builder().course(course).courseDetail(courseDetail).build();
         List<Roadmap> roadmapList = new ArrayList<>();
         roadmapList.add(Roadmap.builder().id(1L).course(course).build());
-        List<CourseVideo> courseVideoList = makeCourseVideoList(courseDetail);
+        List<CourseVideoWithLikeDto> courseVideoList = makeCourseVideoList();
 
         //stub
         when(courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(anyLong(), anyLong())).thenReturn(Optional.of(courseToDetail));
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(anyLong())).thenReturn(roadmapList);
-        when(courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
+        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
 
         //when
         CourseVideoResponseDto courseVideoResponseDto = courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, null);
@@ -91,8 +94,10 @@ public class CourseVideoServiceTest {
         assertThat(courseVideoResponseDto.getCourseTitle()).isEqualTo("언어");
         assertThat(courseVideoResponseDto.getCourseDetailTitle()).isEqualTo("Java");
         assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상1");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
+        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
+        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
     }
 
     @DisplayName("로그인 안한 유저가 허용되지 않은 영상 목록 요청시 예외를 발생시킨다.")
@@ -149,10 +154,10 @@ public class CourseVideoServiceTest {
                 .isInstanceOf(CompanyInfoNotFoundException.class);
     }
 
-    private List<CourseVideo> makeCourseVideoList(CourseDetail courseDetail) {
-        List<CourseVideo> courseVideoList = new ArrayList<>();
-        courseVideoList.add(CourseVideo.builder().id(1L).title("Java 강의 영상1").courseDetail(courseDetail).build());
-        courseVideoList.add(CourseVideo.builder().id(2L).title("Java 강의 영상2").courseDetail(courseDetail).build());
+    private List<CourseVideoWithLikeDto> makeCourseVideoList() {
+        List<CourseVideoWithLikeDto> courseVideoList = new ArrayList<>();
+        courseVideoList.add(CourseVideoWithLikeDto.builder().id(2L).title("Java 강의 영상2").likeCnt(100L).build());
+        courseVideoList.add(CourseVideoWithLikeDto.builder().id(1L).title("Java 강의 영상1").likeCnt(0L).build());
         return courseVideoList;
     }
 

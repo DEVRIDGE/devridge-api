@@ -1,7 +1,7 @@
 package io.devridge.api.web;
 
 import io.devridge.api.config.auth.LoginUser;
-import io.devridge.api.dto.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.dto.coursevideo.LikeCourseVideoRequestDto;
 import io.devridge.api.service.CourseVideoService;

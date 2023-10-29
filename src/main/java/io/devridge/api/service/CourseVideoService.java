@@ -8,7 +8,8 @@ import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.domain.video.CourseVideoUser;
 import io.devridge.api.domain.video.CourseVideoUserRepository;
-import io.devridge.api.dto.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
 import io.devridge.api.dto.coursevideo.LikeCourseVideoRequestDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
@@ -25,7 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CourseVideoService {
 
-    private final CourseDetailRepository courseDetailRepository;
     private final CourseVideoRepository courseVideoRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
@@ -43,7 +43,7 @@ public class CourseVideoService {
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
         checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
 
-        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
+        List<CourseVideoWithLikeDto> courseVideoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
 
         return new CourseVideoResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseVideoList);
     }
@@ -86,4 +86,8 @@ public class CourseVideoService {
             return false; // 좋아요 -> 좋아요 해제를 하면 false를 반환
         }
     }
+
+//    public Long getCourseVideLikeCnt(Long courseVideoId) {
+//        return courseVideoUserRepository.countByCourseVideoId(courseVideoId);
+//    }
 }
