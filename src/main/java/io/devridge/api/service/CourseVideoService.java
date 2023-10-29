@@ -6,25 +6,31 @@ import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
-import io.devridge.api.dto.CourseVideoResponseDto;
+import io.devridge.api.domain.video.CourseVideoUser;
+import io.devridge.api.domain.video.CourseVideoUserRepository;
+import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
+import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
+import io.devridge.api.dto.coursevideo.LikeCourseVideoRequestDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
+import io.devridge.api.handler.ex.NotFoundCourseVideoException;
 import io.devridge.api.handler.ex.UnauthorizedCourseAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CourseVideoService {
 
-    private final CourseDetailRepository courseDetailRepository;
     private final CourseVideoRepository courseVideoRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
     private final CourseToDetailRepository courseToDetailRepository;
+    private final CourseVideoUserRepository courseVideoUserRepository;
 
     /**
      * 코스 ID 추가 - 코스와 코스 디테일 n:n 변화로 인한 파라미터 추가
@@ -37,7 +43,7 @@ public class CourseVideoService {
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
         checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
 
-        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
+        List<CourseVideoWithLikeDto> courseVideoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
 
         return new CourseVideoResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseVideoList);
     }
@@ -60,4 +66,28 @@ public class CourseVideoService {
                 .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
         if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
     }
+
+    @Transactional
+    public boolean clickLikeOnCourseVideo(LikeCourseVideoRequestDto likeCourseVideoRequestDto, LoginUser loginUser) {
+        CourseVideo courseVideo = courseVideoRepository.findById(likeCourseVideoRequestDto.getCourseVideoId()).orElseThrow(() -> new NotFoundCourseVideoException());
+
+        Optional<CourseVideoUser> courseVideoUser = courseVideoUserRepository.findByCourseVideoIdAndUserId(likeCourseVideoRequestDto.getCourseVideoId(), loginUser.getUser().getId());
+
+        if(courseVideoUser.isEmpty()) {
+            CourseVideoUser newCourseVideoUser = CourseVideoUser.builder()
+                    .courseVideo(courseVideo)
+                    .user(loginUser.getUser())
+                    .build();
+            courseVideoUserRepository.save(newCourseVideoUser);
+            return true; // 좋아요 안했음 -> 좋아요를 하면 true를 반환
+        }
+        else {
+            courseVideoUserRepository.delete(courseVideoUser.get());
+            return false; // 좋아요 -> 좋아요 해제를 하면 false를 반환
+        }
+    }
+
+//    public Long getCourseVideLikeCnt(Long courseVideoId) {
+//        return courseVideoUserRepository.countByCourseVideoId(courseVideoId);
+//    }
 }

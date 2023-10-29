@@ -121,8 +121,8 @@ public class AdminApiController {
     public ResponseEntity<ApiResponse<Object>> createCourseVideo(@PathVariable Long courseDetailId,
                                                                  @RequestParam String name,
                                                                  @RequestParam String url,
-                                                                 @RequestParam String owner,
-                                                                 @RequestParam Integer likes) {
+                                                                 @RequestParam String owner/*,
+                                                                 @RequestParam Integer likes*/) {
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
 
 
@@ -139,7 +139,7 @@ public class AdminApiController {
                 .thumbnail(thumbnail)
                 .owner(owner)
                 .source(VideoSource.YOUTUBE)
-                .likeCnt(likes)
+//                .likeCnt(likes)
                 .courseDetail(courseDetail)
                 .build();
 

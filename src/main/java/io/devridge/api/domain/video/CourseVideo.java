@@ -30,9 +30,6 @@ public class CourseVideo extends BaseTimeEntity {
     @Column(name = "course_video_thumbnail")
     private String thumbnail;
 
-    @Column(name = "course_video_like_cnt")
-    private Integer likeCnt;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "course_video_source")
     private VideoSource source;
@@ -42,13 +39,12 @@ public class CourseVideo extends BaseTimeEntity {
     private CourseDetail courseDetail;
 
     @Builder
-    public CourseVideo(Long id, String title, String url, String owner, String thumbnail, Integer likeCnt, VideoSource source, CourseDetail courseDetail) {
+    public CourseVideo(Long id, String title, String url, String owner, String thumbnail, VideoSource source, CourseDetail courseDetail) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.owner = owner;
         this.thumbnail = thumbnail;
-        this.likeCnt = likeCnt;
         this.source = source;
         this.courseDetail = courseDetail;
     }
