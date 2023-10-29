@@ -5,7 +5,6 @@ import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.user.*;
 import io.devridge.api.dto.CourseDetailResponseDto;
-import io.devridge.api.dto.course.CourseDetailWithAbilityDto;
 import io.devridge.api.dto.course.CourseListResponseDto;
 import io.devridge.api.dto.course.RoadmapStatusDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
@@ -238,46 +237,6 @@ class CourseServiceTest {
     /**
      * 코스 상세 테스트
      */
-
-    @DisplayName("코스 상세 목록과 회사 요구 스킬이 일치하는 항목이 없으면 모든 코스 상세 목록을 가져온다.")
-    @Test
-    void not_match_course_detail_and_company_required_skill_get_all_course_detail_list() {
-        //given
-        LoginUser loginUser = LoginUser.builder().user(User.builder().id(1L).build()).build();
-        CompanyInfo companyInfo = CompanyInfo.builder().id(1L).build();
-        Course course = Course.builder().id(1L).name("언어").build();
-        Roadmap roadmap = Roadmap.builder().id(1L).course(course).companyInfo(companyInfo).build();
-        List<CourseDetailWithAbilityDto> courseDetailList = new ArrayList<>();
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(1L).courseDetailName("C").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(2L).courseDetailName("C++").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(3L).courseDetailName("Java").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(4L).courseDetailName("Kotlin").build());
-        
-        //stub
-        when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
-        when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
-        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong(), anyList())).thenReturn(courseDetailList);
-        when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
-
-        //when
-        CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(1L, 1L, 1L, 1L, loginUser);
-
-        //then
-        assertThat(courseDetailResponseDto.getCourseName()).isEqualTo("언어");
-        assertThat(courseDetailResponseDto.getCourseDetails().size()).isEqualTo(4);
-        assertThat(courseDetailResponseDto.getLoginStatus()).isEqualTo(LoginStatus.YES);
-        assertThat(courseDetailResponseDto.getStudyStatus()).isNull();
-        assertThat(courseDetailResponseDto.getCourseDetails().get(0).getId()).isEqualTo(1L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(0).getName()).isEqualTo("C");
-        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getId()).isEqualTo(2L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getName()).isEqualTo("C++");
-        assertThat(courseDetailResponseDto.getCourseDetails().get(2).getId()).isEqualTo(3L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(2).getName()).isEqualTo("Java");
-        assertThat(courseDetailResponseDto.getCourseDetails().get(3).getId()).isEqualTo(4L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(3).getName()).isEqualTo("Kotlin");
-    }
-
     @DisplayName("코스 상세 목록과 회사 요구 스킬이 일치하는 항목이 있으면 그 항목만 가져온다.")
     @Test
     void match_course_detail_and_company_required_skill_get_all_course_detail_list() {
@@ -286,18 +245,14 @@ class CourseServiceTest {
         CompanyInfo companyInfo = CompanyInfo.builder().id(1L).build();
         Course course = Course.builder().id(1L).name("언어").build();
         Roadmap roadmap = Roadmap.builder().id(1L).course(course).companyInfo(companyInfo).build();
-        List<Long> matchingCourseDetailIds = new ArrayList<>();
-        matchingCourseDetailIds.add(1L);
-        matchingCourseDetailIds.add(3L);
-        List<CourseDetailWithAbilityDto> courseDetailList = new ArrayList<>();
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(1L).courseDetailName("C").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(3L).courseDetailName("Java").build());
+        List<CourseDetail> filteredCourseDetailList = new ArrayList<>();
+        filteredCourseDetailList.add(CourseDetail.builder().id(1L).name("C").build());
+        filteredCourseDetailList.add(CourseDetail.builder().id(3L).name("Java").build());
 
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(matchingCourseDetailIds);
-        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong(), anyList())).thenReturn(courseDetailList);
+        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong())).thenReturn(filteredCourseDetailList);
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         //when
@@ -314,23 +269,24 @@ class CourseServiceTest {
 
     @DisplayName("코스 상세 목록과 회사 요구 스킬이 일치하는 항목이 없으면 모든 코스 상세 목록을 가져온다.")
     @Test
-    void not_match_course_detail_and_company_required_skill_get_all_course_detail_list11() {
+    void not_match_course_detail_and_company_required_skill_get_all_course_detail_list() {
         //given
         LoginUser loginUser = LoginUser.builder().user(User.builder().id(1L).build()).build();
         CompanyInfo companyInfo = CompanyInfo.builder().id(1L).build();
         Course course = Course.builder().id(1L).name("언어").build();
         Roadmap roadmap = Roadmap.builder().id(1L).course(course).companyInfo(companyInfo).build();
-        List<CourseDetailWithAbilityDto> courseDetailList = new ArrayList<>();
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(1L).courseDetailName("C").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(2L).courseDetailName("C++").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(3L).courseDetailName("Java").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(4L).courseDetailName("Kotlin").build());
+        List<CourseDetail> emptyCourseDetailList = new ArrayList<>();
+        List<CourseDetail> filteredCourseDetailList = new ArrayList<>();
+        filteredCourseDetailList.add(CourseDetail.builder().id(1L).name("C").build());
+        filteredCourseDetailList.add(CourseDetail.builder().id(2L).name("C++").build());
+        filteredCourseDetailList.add(CourseDetail.builder().id(3L).name("Java").build());
+        filteredCourseDetailList.add(CourseDetail.builder().id(4L).name("Kotlin").build());
 
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
-        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong(), anyList())).thenReturn(courseDetailList);
+        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong())).thenReturn(emptyCourseDetailList);
+        when(courseDetailRepository.getAllCourseDetailByCourseIdOrderByName(anyLong())).thenReturn(filteredCourseDetailList);
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         //when
@@ -351,6 +307,7 @@ class CourseServiceTest {
         assertThat(courseDetailResponseDto.getCourseDetails().get(3).getName()).isEqualTo("Kotlin");
     }
 
+
     @DisplayName("로그인한 유저가 해당 코스 상세에 대한 학습 정보를 가지고 있으면 가져온다.")
     @Test
     void get_study_status_if_login_user_have_study_status_with_course_detail() {
@@ -364,8 +321,7 @@ class CourseServiceTest {
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(roadmap));
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
-        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong(), anyList())).thenReturn(new ArrayList<>());
+        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong())).thenReturn(new ArrayList<>());
         when(userRoadmapRepository.findByUserIdAndRoadmapId(anyLong(), anyLong())).thenReturn(Optional.of(userRoadmap));
 
         //when
@@ -386,16 +342,16 @@ class CourseServiceTest {
         roadmapList.add(allowRoadmap);
         roadmapList.add(Roadmap.builder().id(2L).course(Course.builder().id(2L).name("프레임 워크").build()).build());
 
-        List<CourseDetailWithAbilityDto> courseDetailList = new ArrayList<>();
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(1L).courseDetailName("Java").build());
-        courseDetailList.add(CourseDetailWithAbilityDto.builder().courseDetailId(2L).courseDetailName("Kotlin").build());
+        List<CourseDetail> filteredCourseDetailList = new ArrayList<>();
+        filteredCourseDetailList.add(CourseDetail.builder().id(1L).name("C").build());
+        filteredCourseDetailList.add(CourseDetail.builder().id(3L).name("Java").build());
+
 
         //stub
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findRoadmapWithCourseByCourseIdAndCompanyInfoId(anyLong(), anyLong())).thenReturn(Optional.of(allowRoadmap));
         when(roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(anyLong())).thenReturn(roadmapList);
-        when(courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(anyLong())).thenReturn(new ArrayList<>());
-        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong(), anyList())).thenReturn(courseDetailList);
+        when(courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(anyLong(), anyLong())).thenReturn(filteredCourseDetailList);
 
         //when
         CourseDetailResponseDto courseDetailResponseDto = courseService.getCourseDetailList(1L, 1L, 1L, 1L, null);
@@ -406,9 +362,9 @@ class CourseServiceTest {
         assertThat(courseDetailResponseDto.getStudyStatus()).isNull();
         assertThat(courseDetailResponseDto.getCourseDetails().size()).isEqualTo(2);
         assertThat(courseDetailResponseDto.getCourseDetails().get(0).getId()).isEqualTo(1L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(0).getName()).isEqualTo("Java");
-        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getId()).isEqualTo(2L);
-        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getName()).isEqualTo("Kotlin");
+        assertThat(courseDetailResponseDto.getCourseDetails().get(0).getName()).isEqualTo("C");
+        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getId()).isEqualTo(3L);
+        assertThat(courseDetailResponseDto.getCourseDetails().get(1).getName()).isEqualTo("Java");
     }
 
     @DisplayName("로그인 안한 유저가 허용되지 않은 코스 상세 목록 요청시 예외를 발생시킨다.")

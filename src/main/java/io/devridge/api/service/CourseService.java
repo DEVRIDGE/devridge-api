@@ -46,7 +46,7 @@ public class CourseService {
 
         checkCourseAccessForUser(getLoginUserId(loginUser), roadmap.getId(), companyInfo);
 
-        List<CourseDetailWithAbilityDto> courseDetailList = getFilteredOrAllCourseDetails(companyInfo, courseId);
+        List<CourseDetail> courseDetailList = getFilteredOrAllCourseDetails(companyInfo, courseId);
 
         return new CourseDetailResponseDto(roadmap.getCourse().getName(), getUserStudyStatus(loginUser, roadmap), courseDetailList);
     }
@@ -133,20 +133,15 @@ public class CourseService {
     }
 
     /**
-     * 선택한 코스의 상세 목록과 회사 정보가 매칭되는 정보를 가져옵니다.
-     * 만약 매칭되는 상세 목록이 하나도 없다면 선택한 코스의 모든 목록을 가져옵니다.
+     * 회사에서 요구하는 스킬과 매칭되는 CourseDetail 리스트를 응답 합니다.
+     * 만약 매칭되는 CourseDetail이 없다면 모든 CourseDetail 리스트를 응답 합니다.
      */
-    private List<CourseDetailWithAbilityDto> getFilteredOrAllCourseDetails(CompanyInfo companyInfo, Long courseId) {
-        List<Long> filteredCourseDetailIds = courseDetailRepository.getMatchingCourseDetailIdsForCompanyAbility(companyInfo.getId());
-        List<CourseDetailWithAbilityDto> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, companyInfo.getId(), filteredCourseDetailIds);
+    private List<CourseDetail> getFilteredOrAllCourseDetails(CompanyInfo companyInfo, Long courseId) {
+        List<CourseDetail> courseDetailList = courseDetailRepository.getCourseDetailListWithAbilityByCourseIdOrderByName(courseId, companyInfo.getId());
 
-        List<CourseDetailWithAbilityDto> filteredList = courseDetailList.stream()
-                .filter(dto -> dto.getCompanyRequiredAbilityId() != null)
-                .collect(Collectors.toList());
-
-        if (filteredList.isEmpty()) {
+        if(!courseDetailList.isEmpty()) {
             return courseDetailList;
         }
-        return filteredList;
+        return courseDetailRepository.getAllCourseDetailByCourseIdOrderByName(courseId);
     }
 }
