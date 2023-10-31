@@ -33,6 +33,10 @@ public class UserRoadmap extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Roadmap roadmap;
 
+    public void changeStudyStatus(StudyStatus studyStatus) {
+        this.studyStatus = studyStatus;
+    }
+
     @Builder
     public UserRoadmap(Long id, StudyStatus studyStatus, User user, Roadmap roadmap) {
         this.id = id;

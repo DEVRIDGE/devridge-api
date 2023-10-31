@@ -23,4 +23,6 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
             "JOIN FETCH r.course c " +
             "WHERE r.course.id = :courseId AND r.companyInfo.id = :companyInfoId")
     Optional<Roadmap> findRoadmapWithCourseByCourseIdAndCompanyInfoId(Long courseId, Long companyInfoId);
+
+    Optional<Roadmap> findByCourseIdAndCompanyInfoId(Long courseId, Long companyInfoId);
 }

@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CourseExceptionHandler {
 
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCourseNotFoundException(CourseNotFoundException exception) {
+        log.error("CourseNotFoundException = {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
+    }
+
     @ExceptionHandler(CompanyJobNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleCompanyJobNotFoundException(CompanyJobNotFoundException exception) {
         log.error("CompanyJobNotFoundException = {}", exception.getMessage());
