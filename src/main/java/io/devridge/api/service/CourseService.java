@@ -5,12 +5,12 @@ import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.user.LoginStatus;
+import io.devridge.api.domain.user.StudyStatus;
+import io.devridge.api.domain.user.UserRoadmap;
 import io.devridge.api.domain.user.UserRoadmapRepository;
 import io.devridge.api.dto.CourseDetailResponseDto;
 import io.devridge.api.dto.course.*;
-import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
-import io.devridge.api.handler.ex.RoadmapNotMatchCourseAndCompanyInfoException;
-import io.devridge.api.handler.ex.UnauthorizedCourseAccessException;
+import io.devridge.api.handler.ex.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
 
+    private final CompanyInfoService companyInfoService;
+
+    private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
@@ -49,6 +52,32 @@ public class CourseService {
         List<CourseDetail> courseDetailList = getFilteredOrAllCourseDetails(companyInfo, courseId);
 
         return new CourseDetailResponseDto(roadmap.getCourse().getName(), getUserStudyStatus(loginUser, roadmap), courseDetailList);
+    }
+
+    @Transactional
+    public void changeStudyStatus(Long courseId, ChangeStudyStatusRequestDto changeStudyStatusRequestDto, LoginUser loginUser) {
+        CompanyInfo companyInfo = companyInfoService.validateCompanyInfo(changeStudyStatusRequestDto.getCompanyId(), changeStudyStatusRequestDto.getDetailedPositionId(), changeStudyStatusRequestDto.getDetailedPositionId());
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당 코스 정보를 찾을 수 없습니다."));
+        Roadmap roadmap = roadmapRepository.findByCourseIdAndCompanyInfoId(course.getId(), companyInfo.getId()).orElseThrow(RoadmapNotMatchCourseAndCompanyInfoException::new);
+
+        if(changeStudyStatusRequestDto.getStudyStatus().equals(StudyStatusDto.BEFORE_STUDYING)) {
+            Optional<UserRoadmap> userRoadmap = userRoadmapRepository.findByUserIdAndRoadmapId(loginUser.getUser().getId(), roadmap.getId());
+            userRoadmap.ifPresent(userRoadmapRepository::delete);
+        }
+        else {
+            Optional<UserRoadmap> userRoadmap = userRoadmapRepository.findByUserIdAndRoadmapId(loginUser.getUser().getId(), roadmap.getId());
+            StudyStatus targetStudyStatus = changeStudyStatusRequestDto.getStudyStatus().equals(StudyStatusDto.STUDYING) ? StudyStatus.STUDYING : StudyStatus.STUDY_END;
+            if(userRoadmap.isEmpty()) {
+                userRoadmapRepository.save(UserRoadmap.builder()
+                        .user(loginUser.getUser())
+                        .roadmap(roadmap)
+                        .studyStatus(targetStudyStatus)
+                        .build());
+            }
+            else {
+                userRoadmap.get().changeStudyStatus(targetStudyStatus);
+            }
+        }
     }
 
     private UserStudyStatusDto getUserStudyStatus(LoginUser loginUser, Roadmap roadmap) {
