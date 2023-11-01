@@ -3,6 +3,7 @@ package io.devridge.api.dto.coursevideo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter

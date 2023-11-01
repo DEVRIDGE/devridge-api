@@ -25,7 +25,7 @@ public class CompanyInfoService {
     private final JobDetailedPositionService jobDetailedPositionService;
 
     public CompanyInfo validateCompanyInfo(Long companyId, Long jobId, Long detailedPositionId) {
-        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 회사 정보를 찾을 수 없습니다. 먼저 회사 정보를 등록해주세요."));
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId).orElseThrow(() -> new CompanyInfoNotFoundException("해당하는 회사 정보를 찾을 수 없습니다."));
     }
 
     /**

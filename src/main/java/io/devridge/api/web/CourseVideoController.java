@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class CourseVideoController {
@@ -32,7 +34,7 @@ public class CourseVideoController {
 
     @PostMapping("/videos/like")
     public ResponseEntity<ApiResponse<Object>> clickLikeOnCourseVideo(
-            @RequestBody LikeCourseVideoRequestDto likeCourseVideoRequestDto,
+            @Valid @RequestBody LikeCourseVideoRequestDto likeCourseVideoRequestDto,
             @AuthenticationPrincipal LoginUser loginUser) {
 
         boolean result = courseVideoService.clickLikeOnCourseVideo(likeCourseVideoRequestDto, loginUser);
