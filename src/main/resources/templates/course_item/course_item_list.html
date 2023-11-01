@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영상 & 책</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <header id="header" th:replace="~{/common/header :: header}"></header>
+
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalLabel">영상 정보 수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" id="modalVideoId" name="id">
+                        <div class="mb-3">
+                            <label for="modalVideoTitle" class="form-label">제목</label>
+                            <input type="text" class="form-control" id="modalVideoTitle" name="title" placeholder="제목을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modalVideoUrl" class="form-label">비디오 URL</label>
+                            <input type="text" class="form-control" id="modalVideoUrl" name="url" placeholder="URL을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modalVideoOwner" class="form-label">소유자</label>
+                            <input type="text" class="form-control" id="modalVideoOwner" name="owner" placeholder="소유자 이름을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modalVideoThumbnail" class="form-label">썸네일 URL</label>
+                            <input type="text" class="form-control" id="modalVideoThumbnail" name="thumbnail" placeholder="썸네일 URL을 입력하세요.">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary">수정</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 영상 등록 modal -->
+    <div class="modal fade" id="registerVideoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerVideoModalLabel">영상 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/item/{courseDetailId}/video(courseDetailId=${courseDetailId})}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="registerModalVideoTitle" class="form-label">제목</label>
+                            <input type="text" class="form-control" id="registerModalVideoTitle" name="title" placeholder="제목을 입력하세요." required >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoUrl" class="form-label">비디오 URL</label>
+                            <input type="text" class="form-control" id="registerModalVideoUrl" name="url" placeholder="URL을 입력하세요." required >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoOwner" class="form-label">소유자</label>
+                            <input type="text" class="form-control" id="registerModalVideoOwner" name="owner" placeholder="소유자 이름을 입력하세요." required >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoThumbnail" class="form-label">썸네일 URL (유튜브는 썸네일 자동 생성)</label>
+                            <input type="text" class="form-control" id="registerModalVideoThumbnail" name="thumbnail" placeholder="썸네일 URL을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoType" class="form-label">비디오 유형</label>
+                            <select class="form-select" id="registerModalVideoType" name="type" required>
+                                <option value="" selected>유형을 선택하세요.</option>
+                                <option th:each="videoSource : ${courseItemList.videoSourceList}" th:value="${videoSource}" th:text="${videoSource}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h1 th:text="${courseItemList.detailName}">제목</h1>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" th:classappend="${isActive} ? '' : 'active'" id="video-tab" data-bs-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="true">영상</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" th:classappend="${!isActive} ? '' : 'active'" id="book-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">책</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+
+            <div class="tab-pane fade" th:classappend="${isActive} ? '' : 'active show'" id="video" role="tabpanel" aria-labelledby="video-tab">
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerVideoModal">
+                        영상 등록
+                    </button>
+                </div>
+                <table class="table table-bordered table-striped mt-3">
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>URL</th>
+                        <th>소유자</th>
+                        <th>썸네일</th>
+                        <th>출처</th>
+                        <th>비고</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="video : ${courseItemList.courseVideoDtoList}">
+                        <td th:text="${video.title}" class="video-title"></td>
+                        <td><a th:href="@{${video.url}}" class="video-url" target="_blank">링크</a></td>
+                        <td th:text="${video.owner}" class="video-owner"></td>
+                        <td>
+                            <span
+                                    class="video-thumbnail"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    th:attr="data-src=${video.thumbnail}"
+                                    data-bs-html="true"
+                                    th:title="|<img src='${video.thumbnail}' alt='Thumbnail' width='200px'>|">
+                                <a href="javascript:void(0)" class="disabled">썸네일 보기</a>
+                            </span>
+                        </td>
+                        <td th:text="${video.source}"></td>
+                        <td>
+                            <i class="bi bi-pencil-square me-2" data-bs-toggle="modal" data-bs-target="#videoModal" th:attr="data-id=${video.id}"></i>
+                            <i class="bi bi-trash"></i>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" th:classappend="${!isActive} ? '' : 'active show'" id="book" role="tabpanel" aria-labelledby="book-tab">
+                <table class="table table-bordered table-striped mt-5">
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>URL</th>
+                        <th>썸네일</th>
+                        <th>출처</th>
+                        <th>비고</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book : ${courseItemList.courseBookDtoList}">
+                        <td th:text="${book.id}"></td>
+                        <td th:text="${book.title}"></td>
+                        <td><a th:href="@{${book.url}}" target="_blank">링크</a></td>
+                        <td>
+                            <span
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    data-bs-html="true"
+                                    th:title="|<img src='${book.thumbnail}' alt='Thumbnail' width='200px'>|">
+                                <a href="javascript:void(0)" class="disabled">썸네일 보기</a>
+                            </span>
+                        </td>
+                        <td th:text="${book.source}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        const videoModal = document.getElementById('videoModal')
+        document.addEventListener("DOMContentLoaded", function(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+
+        videoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const tr = button.parentElement.parentElement;
+
+            const itemId = button.getAttribute('data-id');
+            const title = tr.querySelector(".video-title").innerText;
+            const videoUrl = tr.querySelector(".video-url").getAttribute("href");
+            const videoOwner = tr.querySelector(".video-owner").innerText;
+            const videoThumbnail = tr.querySelector(".video-thumbnail").getAttribute("data-src");
+
+            document.getElementById('modalVideoId').value = itemId;
+            document.getElementById('modalVideoTitle').value = title;
+            document.getElementById('modalVideoUrl').value = videoUrl;
+            document.getElementById('modalVideoOwner').value = videoOwner;
+            document.getElementById('modalVideoThumbnail').value = videoThumbnail;
+        });
+    </script>
+</body>
+</html>
