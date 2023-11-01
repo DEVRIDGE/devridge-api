@@ -11,93 +11,13 @@
 <body>
     <header id="header" th:replace="~{/common/header :: header}"></header>
 
-    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="videoModalLabel">영상 정보 수정</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <input type="hidden" id="modalVideoId" name="id">
-                        <div class="mb-3">
-                            <label for="modalVideoTitle" class="form-label">제목</label>
-                            <input type="text" class="form-control" id="modalVideoTitle" name="title" placeholder="제목을 입력하세요.">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="modalVideoUrl" class="form-label">비디오 URL</label>
-                            <input type="text" class="form-control" id="modalVideoUrl" name="url" placeholder="URL을 입력하세요.">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="modalVideoOwner" class="form-label">소유자</label>
-                            <input type="text" class="form-control" id="modalVideoOwner" name="owner" placeholder="소유자 이름을 입력하세요.">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="modalVideoThumbnail" class="form-label">썸네일 URL</label>
-                            <input type="text" class="form-control" id="modalVideoThumbnail" name="thumbnail" placeholder="썸네일 URL을 입력하세요.">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary">수정</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 영상 등록 modal -->
-    <div class="modal fade" id="registerVideoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerVideoModalLabel">영상 등록</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form th:action="@{/admin/item/{courseDetailId}/video(courseDetailId=${courseDetailId})}" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="registerModalVideoTitle" class="form-label">제목</label>
-                            <input type="text" class="form-control" id="registerModalVideoTitle" name="title" placeholder="제목을 입력하세요." required >
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="registerModalVideoUrl" class="form-label">비디오 URL</label>
-                            <input type="text" class="form-control" id="registerModalVideoUrl" name="url" placeholder="URL을 입력하세요." required >
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="registerModalVideoOwner" class="form-label">소유자</label>
-                            <input type="text" class="form-control" id="registerModalVideoOwner" name="owner" placeholder="소유자 이름을 입력하세요." required >
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="registerModalVideoThumbnail" class="form-label">썸네일 URL (유튜브는 썸네일 자동 생성)</label>
-                            <input type="text" class="form-control" id="registerModalVideoThumbnail" name="thumbnail" placeholder="썸네일 URL을 입력하세요.">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="registerModalVideoType" class="form-label">비디오 유형</label>
-                            <select class="form-select" id="registerModalVideoType" name="type" required>
-                                <option value="" selected>유형을 선택하세요.</option>
-                                <option th:each="videoSource : ${courseItemList.videoSourceList}" th:value="${videoSource}" th:text="${videoSource}"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary">등록</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- 영상 모달 (등록, 수정, 삭제) -->
+    <div th:replace="course_item/modal/model_video_create :: videoCreateModal"></div>
+    <div th:replace="course_item/modal/model_video_modify :: videoModifyModal"></div>
+    <div th:replace="course_item/modal/model_video_delete :: videoDeleteModal"></div>
 
     <div class="container mt-5">
+        <a href="/admin/item"><button type="submit" class="btn btn-danger mb-5">뒤로가기</button></a>
         <h1 th:text="${courseItemList.detailName}">제목</h1>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -144,10 +64,10 @@
                                 <a href="javascript:void(0)" class="disabled">썸네일 보기</a>
                             </span>
                         </td>
-                        <td th:text="${video.source}"></td>
+                        <td class="video-type" th:text="${video.source}"></td>
                         <td>
                             <i class="bi bi-pencil-square me-2" data-bs-toggle="modal" data-bs-target="#videoModal" th:attr="data-id=${video.id}"></i>
-                            <i class="bi bi-trash"></i>
+                            <i class="bi bi-trash" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="data-id=${video.id}"></i>
                         </td>
                     </tr>
                     </tbody>
@@ -186,7 +106,42 @@
         </div>
     </div>
     <script>
+        let currentUrl = new URL(window.location.href);
+        let params = new URLSearchParams(currentUrl.search);
+        if (params.has('alertMessage')) {
+            let alertMessage = params.get('alertMessage');
+
+            if (alertMessage === "saved") {
+                alert("저장 완료");
+            } else if (alertMessage === "modified") {
+                alert("수정 완료");
+            } else if (alertMessage === "deleted") {
+                alert("삭제 완료");
+            }
+            params.delete('alertMessage');
+            currentUrl.search = params.toString();
+            window.history.replaceState({}, '', currentUrl.toString());
+        } else if (params.has('error')) {
+            let error = params.get('error');
+            if (error === "fail_modify_course_video") {
+                alert("수정 실패");
+            } else if (error === "fail_delete_course_video") {
+                alert("삭제 실패");
+            }
+            params.delete('error');
+            currentUrl.search = params.toString();
+            window.history.replaceState({}, '', currentUrl.toString());
+        }
+
+
+
         const videoModal = document.getElementById('videoModal')
+        const deleteModal = document.getElementById('deleteModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteModal.querySelector('#delete-id').value = button.getAttribute('data-id');
+        });
         document.addEventListener("DOMContentLoaded", function(){
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -197,18 +152,25 @@
         videoModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const tr = button.parentElement.parentElement;
-
             const itemId = button.getAttribute('data-id');
             const title = tr.querySelector(".video-title").innerText;
             const videoUrl = tr.querySelector(".video-url").getAttribute("href");
             const videoOwner = tr.querySelector(".video-owner").innerText;
             const videoThumbnail = tr.querySelector(".video-thumbnail").getAttribute("data-src");
+            const type = tr.querySelector(".video-type").innerText;
 
             document.getElementById('modalVideoId').value = itemId;
             document.getElementById('modalVideoTitle').value = title;
             document.getElementById('modalVideoUrl').value = videoUrl;
             document.getElementById('modalVideoOwner').value = videoOwner;
             document.getElementById('modalVideoThumbnail').value = videoThumbnail;
+            const selectElement = document.getElementById("modalVideoType");
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].text === type) {
+                    selectElement.selectedIndex = i;
+                    break;
+                }
+            }
         });
     </script>
 </body>

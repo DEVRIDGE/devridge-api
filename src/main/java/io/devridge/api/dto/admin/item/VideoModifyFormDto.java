@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class VideoFormDto {
+public class VideoModifyFormDto {
+    private Long id;
     private String title;
     private String url;
     private String owner;
@@ -15,7 +16,8 @@ public class VideoFormDto {
     private VideoSource type;
 
     @Builder
-    public VideoFormDto(String title, String url, String owner, String thumbnail, VideoSource type) {
+    public VideoModifyFormDto(Long id, String title, String url, String owner, String thumbnail, VideoSource type) {
+        this.id = id;
         this.title = title;
         this.url = url;
         this.owner = owner;

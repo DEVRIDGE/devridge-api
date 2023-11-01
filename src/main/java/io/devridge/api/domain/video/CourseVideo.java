@@ -2,6 +2,7 @@ package io.devridge.api.domain.video;
 
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.roadmap.CourseDetail;
+import io.devridge.api.dto.admin.item.VideoModifyFormDto;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -56,4 +57,11 @@ public class CourseVideo extends BaseTimeEntity {
         this.courseDetail = courseDetail;
     }
 
+    public void modifyVideoInfo(VideoModifyFormDto videoModifyFormDto) {
+        this.title = videoModifyFormDto.getTitle();
+        this.url = videoModifyFormDto.getUrl();
+        this.owner = videoModifyFormDto.getOwner();
+        this.thumbnail = videoModifyFormDto.getThumbnail();
+        this.source = videoModifyFormDto.getType();
+    }
 }

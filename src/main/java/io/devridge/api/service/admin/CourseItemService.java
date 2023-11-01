@@ -8,8 +8,10 @@ import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.domain.video.VideoSource;
 import io.devridge.api.dto.admin.item.CourseItemListDto;
-import io.devridge.api.dto.admin.item.VideoFormDto;
+import io.devridge.api.dto.admin.item.VideoModifyFormDto;
+import io.devridge.api.dto.admin.item.VideoRegisterFormDto;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
+import io.devridge.api.handler.ex.NotFoundCourseVideoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,27 +40,58 @@ public class CourseItemService {
         return new CourseItemListDto(courseDetail, courseVideoList, courseBookList);
     }
 
-    public void saveVideo(Long courseDetailId, VideoFormDto videoFormDto) {
+    public void saveVideo(Long courseDetailId, VideoRegisterFormDto videoRegisterFormDto) {
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("코스 상세를 찾을 수 없습니다."));
-        
-        /*
-        * 썸네일이 없고 유튜브인 경우 썸네일을 자동으로 만듬
-         */
-        if (Objects.equals(videoFormDto.getThumbnail(), "") && videoFormDto.getType() == VideoSource.YOUTUBE) {
-            String thumbnailUrl = "https://img.youtube.com/vi/" +  getYoutubeVideoId(videoFormDto.getUrl()) + "/0.jpg";
-            videoFormDto.setThumbnail(thumbnailUrl);
+
+        if (Objects.equals(videoRegisterFormDto.getThumbnail(), "") && videoRegisterFormDto.getType() == VideoSource.YOUTUBE) {
+            videoRegisterFormDto.setThumbnail(youtubeThumbnailMaker(videoRegisterFormDto.getUrl()));
         }
 
         CourseVideo courseVideo = CourseVideo.builder()
-                .title(videoFormDto.getTitle())
-                .url(videoFormDto.getUrl())
-                .owner(videoFormDto.getOwner())
-                .thumbnail(videoFormDto.getThumbnail())
-                .source(videoFormDto.getType())
+                .title(videoRegisterFormDto.getTitle())
+                .url(videoRegisterFormDto.getUrl())
+                .owner(videoRegisterFormDto.getOwner())
+                .thumbnail(videoRegisterFormDto.getThumbnail())
+                .source(videoRegisterFormDto.getType())
                 .courseDetail(courseDetail)
                 .build();
         
         courseVideoRepository.save(courseVideo);
+    }
+
+    public void modifyVideo(Long courseDetailId, VideoModifyFormDto videoModifyFormDto) {
+        checkCourseDetailId(courseDetailId);
+
+        CourseVideo courseVideo = getCourseVideo(videoModifyFormDto.getId());
+
+        String thumbnail = getDefaultYoutubeThumbnailIfAbsent(videoModifyFormDto.getThumbnail(), videoModifyFormDto.getType(), videoModifyFormDto.getUrl());
+        videoModifyFormDto.setThumbnail(thumbnail);
+
+        courseVideo.modifyVideoInfo(videoModifyFormDto);
+    }
+
+    public void deleteVideo(Long videoId) {
+        CourseVideo courseVideo = getCourseVideo(videoId);
+        courseVideoRepository.delete(courseVideo);
+    }
+
+    private CourseVideo getCourseVideo(Long videoId) {
+        return courseVideoRepository.findById(videoId).orElseThrow(NotFoundCourseVideoException::new);
+    }
+
+    private void checkCourseDetailId(Long courseDetailId) {
+        courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("코스 상세를 찾을 수 없습니다."));
+    }
+
+    private String getDefaultYoutubeThumbnailIfAbsent(String thumbnail, VideoSource videoSource, String url) {
+        if (Objects.equals(thumbnail, "") && videoSource == VideoSource.YOUTUBE) {
+            return youtubeThumbnailMaker(url);
+        }
+        return thumbnail;
+    }
+
+    private String youtubeThumbnailMaker(String url) {
+        return "https://img.youtube.com/vi/" + getYoutubeVideoId(url) + "/0.jpg";
     }
 
     private String getYoutubeVideoId(String url) {

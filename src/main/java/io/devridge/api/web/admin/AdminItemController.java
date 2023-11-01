@@ -2,8 +2,10 @@ package io.devridge.api.web.admin;
 
 import io.devridge.api.dto.admin.CourseDetailDto;
 import io.devridge.api.dto.admin.item.CourseItemListDto;
-import io.devridge.api.dto.admin.item.VideoFormDto;
+import io.devridge.api.dto.admin.item.VideoModifyFormDto;
+import io.devridge.api.dto.admin.item.VideoRegisterFormDto;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
+import io.devridge.api.handler.ex.NotFoundCourseVideoException;
 import io.devridge.api.service.admin.CourseDetailService;
 import io.devridge.api.service.admin.CourseItemService;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +52,40 @@ public class AdminItemController {
 
     @PostMapping("/item/{courseDetailId}/video")
     public String addCourseVideo(@PathVariable Long courseDetailId,
-                                 @ModelAttribute VideoFormDto videoFormDto) {
+                                 @ModelAttribute VideoRegisterFormDto videoRegisterFormDto) {
         try {
-            courseItemService.saveVideo(courseDetailId, videoFormDto);
-            return "redirect:/admin/item/" + courseDetailId;
+            courseItemService.saveVideo(courseDetailId, videoRegisterFormDto);
+            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=saved";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
             return "redirect:/admin/item?error=not_found_course_detail";
         }
+    }
 
+    @PutMapping("/item/{courseDetailId}/video")
+    public String modifyCourseVideo(@PathVariable Long courseDetailId,
+                                 @ModelAttribute VideoModifyFormDto videoModifyFormDto) {
+        try {
+            courseItemService.modifyVideo(courseDetailId, videoModifyFormDto);
+            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=modified";
+        } catch (CourseDetailNotFoundException e ) {
+            log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
+            return "redirect:/admin/item?error=not_found_course_detail";
+        } catch (NotFoundCourseVideoException e) {
+            log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
+            return "redirect:/admin/item/" + courseDetailId + "?error=fail_modify_course_video";
+        }
+    }
+
+    @DeleteMapping("/item/{courseDetailId}/video")
+    public String deleteCourseVideo(@PathVariable Long courseDetailId,
+                                    @RequestParam Long videoId) {
+        try {
+            courseItemService.deleteVideo(videoId);
+            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=deleted";
+        } catch (NotFoundCourseVideoException e) {
+            log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
+            return "redirect:/admin/item/" + courseDetailId + "?error=fail_delete_course_video";
+        }
     }
 }
