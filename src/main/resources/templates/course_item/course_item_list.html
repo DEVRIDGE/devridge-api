@@ -16,6 +16,11 @@
     <div th:replace="course_item/modal/model_video_modify :: videoModifyModal"></div>
     <div th:replace="course_item/modal/model_video_delete :: videoDeleteModal"></div>
 
+    <!-- 책 모달 (등록, 수정, 삭제) -->
+    <div th:replace="course_item/modal/model_book_create :: bookCreateModal"></div>
+    <div th:replace="course_item/modal/model_book_modify :: bookModifyModal"></div>
+    <div th:replace="course_item/modal/model_book_delete :: bookDeleteModal"></div>
+
     <div class="container mt-5">
         <a href="/admin/item"><button type="submit" class="btn btn-danger mb-5">뒤로가기</button></a>
         <h1 th:text="${courseItemList.detailName}">제목</h1>
@@ -73,8 +78,14 @@
                     </tbody>
                 </table>
             </div>
+
             <div class="tab-pane fade" th:classappend="${!isActive} ? '' : 'active show'" id="book" role="tabpanel" aria-labelledby="book-tab">
-                <table class="table table-bordered table-striped mt-5">
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerBookModal">
+                        책 등록
+                    </button>
+                </div>
+                <table class="table table-bordered table-striped mt-3">
                     <thead>
                     <tr>
                         <th>제목</th>
@@ -86,23 +97,29 @@
                     </thead>
                     <tbody>
                     <tr th:each="book : ${courseItemList.courseBookDtoList}">
-                        <td th:text="${book.id}"></td>
-                        <td th:text="${book.title}"></td>
-                        <td><a th:href="@{${book.url}}" target="_blank">링크</a></td>
+                        <td th:text="${book.title}"  class="book-title"></td>
+                        <td><a th:href="@{${book.url}}" class="book-url"  target="_blank">링크</a></td>
                         <td>
                             <span
+                                    class="book-thumbnail"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="right"
+                                    th:attr="data-src=${book.thumbnail}"
                                     data-bs-html="true"
                                     th:title="|<img src='${book.thumbnail}' alt='Thumbnail' width='200px'>|">
                                 <a href="javascript:void(0)" class="disabled">썸네일 보기</a>
                             </span>
                         </td>
-                        <td th:text="${book.source}"></td>
+                        <td class="book-type" th:text="${book.source}"></td>
+                        <td>
+                            <i class="bi bi-pencil-square me-2" data-bs-toggle="modal" data-bs-target="#modifyBookModal" th:attr="data-id=${book.id}"></i>
+                            <i class="bi bi-trash" data-bs-toggle="modal" data-bs-target="#bookDeleteModal" th:attr="data-id=${book.id}"></i>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
     <script>
@@ -123,9 +140,9 @@
             window.history.replaceState({}, '', currentUrl.toString());
         } else if (params.has('error')) {
             let error = params.get('error');
-            if (error === "fail_modify_course_video") {
+            if (error === "fail_modified") {
                 alert("수정 실패");
-            } else if (error === "fail_delete_course_video") {
+            } else if (error === "fail_deleted") {
                 alert("삭제 실패");
             }
             params.delete('error');
@@ -133,20 +150,30 @@
             window.history.replaceState({}, '', currentUrl.toString());
         }
 
-
-
         const videoModal = document.getElementById('videoModal')
+        const modifyBookModal = document.getElementById('modifyBookModal')
         const deleteModal = document.getElementById('deleteModal');
+        const bookDeleteModal = document.getElementById('bookDeleteModal');
 
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            deleteModal.querySelector('#delete-id').value = button.getAttribute('data-id');
-        });
         document.addEventListener("DOMContentLoaded", function(){
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
+
+            document.getElementById("book-tab").addEventListener("click", function(e) {
+                e.preventDefault();
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('isActive', 'true');
+                history.pushState({}, "", currentUrl);
+            });
+            document.getElementById("video-tab").addEventListener("click", function(e) {
+                e.preventDefault();
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.delete('isActive');
+                history.pushState({}, "", currentUrl);
+            });
+
         });
 
         videoModal.addEventListener('show.bs.modal', function (event) {
@@ -171,6 +198,37 @@
                     break;
                 }
             }
+        });
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteModal.querySelector('#deleteVideoId').value = button.getAttribute('data-id');
+        });
+
+        modifyBookModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const tr = button.parentElement.parentElement;
+            const itemId = button.getAttribute('data-id');
+            const title = tr.querySelector(".book-title").innerText;
+            const bookUrl = tr.querySelector(".book-url").getAttribute("href");
+            const bookThumbnail = tr.querySelector(".book-thumbnail").getAttribute("data-src");
+            const type = tr.querySelector(".book-type").innerText;
+            console.log(tr)
+            document.getElementById('modalBookId').value = itemId;
+            document.getElementById('modalBookTitle').value = title;
+            document.getElementById('modalBookUrl').value = bookUrl;
+            document.getElementById('modalBookThumbnail').value = bookThumbnail;
+            const selectElement = document.getElementById("modalBookType");
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].text === type) {
+                    selectElement.selectedIndex = i;
+                    break;
+                }
+            }
+        });
+        bookDeleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            bookDeleteModal.querySelector('#deleteBookId').value = button.getAttribute('data-id');
         });
     </script>
 </body>

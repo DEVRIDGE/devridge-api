@@ -5,8 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-<div th:fragment="videoDeleteModal">
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div th:fragment="bookDeleteModal">
+    <div class="modal fade" id="bookDeleteModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -14,12 +14,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    해당 영상을 삭제하시겠습니까?
+                    해당 책을 삭제하시겠습니까?
                 </div>
                 <div class="modal-footer">
-                    <form th:action="@{/admin/item/{courseDetailId}/video(courseDetailId=${courseDetailId})}" method="post">
+                    <form th:action="@{/admin/item/{courseDetailId}/book(courseDetailId=${courseDetailId})}" method="post">
                         <input type="hidden" name="_method" value="delete" />
-                        <input type="hidden" name="videoId" id="deleteVideoId">
+                        <input type="hidden" name="bookId" id="deleteBookId">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                         <button type="submit" class="btn btn-danger">삭제</button>
                     </form>

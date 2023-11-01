@@ -7,10 +7,9 @@ import io.devridge.api.domain.roadmap.CourseDetailRepository;
 import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.domain.video.VideoSource;
-import io.devridge.api.dto.admin.item.CourseItemListDto;
-import io.devridge.api.dto.admin.item.VideoModifyFormDto;
-import io.devridge.api.dto.admin.item.VideoRegisterFormDto;
+import io.devridge.api.dto.admin.item.*;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
+import io.devridge.api.handler.ex.NotFoundCourseBookException;
 import io.devridge.api.handler.ex.NotFoundCourseVideoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,6 +72,35 @@ public class CourseItemService {
     public void deleteVideo(Long videoId) {
         CourseVideo courseVideo = getCourseVideo(videoId);
         courseVideoRepository.delete(courseVideo);
+    }
+
+    public void saveBook(Long courseDetailId, BookRegisterFormDto bookRegisterFormDto) {
+        CourseDetail courseDetail = courseDetailRepository.findById(courseDetailId).orElseThrow(() -> new CourseDetailNotFoundException("코스 상세를 찾을 수 없습니다."));
+        CourseBook courseBook = CourseBook.builder()
+                .title(bookRegisterFormDto.getTitle())
+                .url(bookRegisterFormDto.getUrl())
+                .thumbnail(bookRegisterFormDto.getThumbnail())
+                .source(bookRegisterFormDto.getType())
+                .courseDetail(courseDetail)
+                .build();
+
+        courseBookRepository.save(courseBook);
+    }
+
+    public void modifyBook(Long courseDetailId, BookModifyFormDto bookModifyFormDto) {
+        checkCourseDetailId(courseDetailId);
+        CourseBook courseBook = getCourseBook(bookModifyFormDto.getId());
+
+        courseBook.modifyBookInfo(bookModifyFormDto);
+    }
+
+    public void deleteBook(Long bookId) {
+        CourseBook courseBook = getCourseBook(bookId);
+        courseBookRepository.delete(courseBook);
+    }
+
+    private CourseBook getCourseBook(Long bookId) {
+        return courseBookRepository.findById(bookId).orElseThrow(NotFoundCourseBookException::new);
     }
 
     private CourseVideo getCourseVideo(Long videoId) {
