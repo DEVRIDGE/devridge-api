@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-<div style="width: 300px; margin: 0 auto;">
-    <h2>로그인</h2>
-    <form action="#" method="post" th:action="@{/admin/login}">
-        <div>
-            <label for="email">아이디:</label>
-            <input type="text" id="email" name="email" required>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Login</h4>
+                    <form action="#" th:action="@{/admin/login}" method="post">
+                        <div class="form-group">
+                            <label for="email">Username:</label>
+                            <input type="text" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="password">비밀번호:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div>
-            <button type="submit">로그인</button>
-        </div>
-    </form>
+    </div>
 </div>
 <script>
     const queryString = new URLSearchParams(window.location.search);

@@ -6,25 +6,27 @@ import io.devridge.api.dto.companyinfo.CompanyRequiredAbilityForm;
 import io.devridge.api.service.CompanyInfoService;
 import io.devridge.api.service.CompanyRequiredAbilityService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
 @RequiredArgsConstructor
-@Slf4j
+@Controller
 @RequestMapping("/admin")
-public class CompanyInfoController {
+public class AdminCompanyInfoController {
 
     private final CompanyInfoService companyInfoService;
     private final CompanyRequiredAbilityService companyRequiredAbilityService;
 
+    @GetMapping
+    public String adminMain() {
+        return "company_info/register_company_info_and_skill";
+    }
+
     @PostMapping("/companyinfo")
+    @ResponseBody
     public ResponseEntity<ApiResponse<Object>> saveCompanyInfo(@Validated @RequestBody CompanyInfoForm companyInfoForm) {
 
         companyInfoService.transferCompanyInfoToAssociatedTable(companyInfoForm);
@@ -33,6 +35,7 @@ public class CompanyInfoController {
     }
 
     @PostMapping("/companyinfo/requiredability")
+    @ResponseBody
     public ResponseEntity<ApiResponse<Object>> saveCompanyRequiredAbility(@Validated @RequestBody CompanyRequiredAbilityForm companyRequiredAbilityForm) {
 
         companyRequiredAbilityService.saveCompanyRequiredAbilities(companyRequiredAbilityForm);
