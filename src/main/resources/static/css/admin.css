@@ -1,7 +1,1 @@
-.green-text {
-    color: green;
-}
-
-.red-text {
-    color: red;
-}
+.nav-link.active { color: white !important; }

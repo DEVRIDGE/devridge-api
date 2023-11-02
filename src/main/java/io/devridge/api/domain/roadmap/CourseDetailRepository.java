@@ -21,4 +21,6 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "JOIN CourseToDetail ctd ON cd.id = ctd.courseDetail.id " +
             "WHERE ctd.course.id = :courseId ORDER BY cd.name")
     List<CourseDetail> getAllCourseDetailByCourseIdOrderByName(Long courseId);
+
+    List<CourseDetail> findAllByOrderByName();
 }

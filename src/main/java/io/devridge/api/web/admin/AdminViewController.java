@@ -28,11 +28,6 @@ public class AdminViewController {
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final CourseVideoRepository courseVideoRepository;
 
-    @GetMapping
-    public String adminMain() {
-        return "main";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -65,20 +60,6 @@ public class AdminViewController {
     }
 
 
-    @GetMapping("/video")
-    public String courseVideo(Model model) {
-        List<Job> jobList = jobRepository.findAll();
-        model.addAttribute("jobList", jobList);
-        return "courseVideoMain";
-    }
-
-    @GetMapping("/video/{jobId}")
-    public String courseVideoCourse(@PathVariable Long jobId, Model model) {
-        List<Course> courseList = courseRepository.findByJobIdOrderByOrder(jobId);
-        model.addAttribute("jobId", jobId);
-        model.addAttribute("courseList", courseList);
-        return "courseVideoCourse";
-    }
 
 //    @GetMapping("/video/{jobId}/{courseId}")
 //    public String courseVideoCourse(@PathVariable Long jobId, @PathVariable Long courseId, Model model) {

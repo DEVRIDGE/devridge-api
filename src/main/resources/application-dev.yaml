@@ -7,6 +7,10 @@ server:
     include-stacktrace: never
 
 spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
   jwt:
     secretKey: test123
   security:
