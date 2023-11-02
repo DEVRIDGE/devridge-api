@@ -3,7 +3,6 @@ package io.devridge.api.domain.book;
 import io.devridge.api.domain.BaseTimeEntity;
 import io.devridge.api.domain.roadmap.CourseDetail;
 import io.devridge.api.dto.admin.item.BookModifyFormDto;
-import io.devridge.api.dto.admin.item.VideoModifyFormDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
