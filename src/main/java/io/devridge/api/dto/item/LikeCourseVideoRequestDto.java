@@ -1,9 +1,8 @@
-package io.devridge.api.dto.coursevideo;
+package io.devridge.api.dto.item;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter

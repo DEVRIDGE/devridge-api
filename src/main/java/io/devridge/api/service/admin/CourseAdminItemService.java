@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class CourseItemService {
+public class CourseAdminItemService {
     private final CourseVideoRepository courseVideoRepository;
     private final CourseBookRepository courseBookRepository;
     private final CourseDetailRepository courseDetailRepository;
