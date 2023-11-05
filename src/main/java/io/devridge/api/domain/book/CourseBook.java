@@ -35,17 +35,22 @@ public class CourseBook extends BaseTimeEntity {
     @Column(name = "course_book_source")
     private BookSource source;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "course_book_language")
+    private BookLanguage language;
+
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
 
     @Builder
-    public CourseBook(Long id, String title, String url, String thumbnail, BookSource source, CourseDetail courseDetail) {
+    public CourseBook(Long id, String title, String url, String thumbnail, BookSource source, BookLanguage language, CourseDetail courseDetail) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.thumbnail = thumbnail;
         this.source = source;
+        this.language = language;
         this.courseDetail = courseDetail;
     }
 
