@@ -9,11 +9,13 @@ import java.util.*;
 public class CourseListResponseDto {
     private final String companyName;
     private final String jobName;
+    private final String companyInfoUrl;
     private final List<CourseIndexList> courseList;
 
     public CourseListResponseDto(CompanyInfo companyInfo, List<CourseIndexList> courseList) {
         this.companyName = companyInfo.getCompany().getName();
         this.jobName = companyInfo.getJob().getName();
+        this.companyInfoUrl = companyInfo.getContent();
         this.courseList = courseList;
     }
 }
