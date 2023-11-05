@@ -23,10 +23,14 @@ public class CourseDetail extends BaseTimeEntity {
     @Column(name = "course_detail_name")
     private String name;
 
+    @Column(name = "course_detail_description")
+    private String description;
+
     @Builder
-    public CourseDetail(Long id, String name) {
+    public CourseDetail(Long id, String name, String description) {
         this.id = id;
         this.name = name;
+        this.description = description;
     }
 
     public void changeCourseDetailInfo(CourseDetailInfo courseDetailInfo) {
