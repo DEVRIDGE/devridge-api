@@ -9,7 +9,7 @@ import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.domain.video.CourseVideoUser;
 import io.devridge.api.domain.video.CourseVideoUserRepository;
-import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
+import io.devridge.api.dto.item.CourseVideoWithLikeDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,30 +47,24 @@ public class CourseVideoRepositoryTest {
     @Test
     void get_course_detail_list_order_by_like_cnt_success_test() {
         User testUser = userRepository.save(User.builder()
-//                .id(1L)
                 .name("testUser")
                 .build());
 
-
         CourseDetail courseDetail = courseDetailRepository.save(CourseDetail.builder()
-//                .id(1L)
                 .name("testCourseDetail1")
                 .build());
 
         CourseVideo testCourseVideo1 = courseVideoRepository.save(CourseVideo.builder()
-//                .id(1L)
                 .title("testCourseVideo1")
                 .courseDetail(courseDetail)
                 .build());
 
         CourseVideo testCourseVideo2 = courseVideoRepository.save(CourseVideo.builder()
-//                .id(2L)
                 .title("testCourseVideo2")
                 .courseDetail(courseDetail)
                 .build());
 
         CourseVideoUser courseVideoUser = courseVideoUserRepository.save(CourseVideoUser.builder()
-//                .id(1L)
                 .user(testUser)
                 .courseVideo(testCourseVideo2)
                 .build());
@@ -78,7 +72,7 @@ public class CourseVideoRepositoryTest {
         em.flush();
         em.clear();
 
-        List<CourseVideoWithLikeDto> courseVideoWithLikeDtoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetail.getId());
+        List<CourseVideoWithLikeDto> courseVideoWithLikeDtoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetail.getId(), 1L);
 
         assertThat(courseVideoWithLikeDtoList.get(0).getTitle()).isEqualTo("testCourseVideo2");
         assertThat(courseVideoWithLikeDtoList.get(0).getLikeCnt()).isEqualTo(1L);
