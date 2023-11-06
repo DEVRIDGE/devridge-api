@@ -35,25 +35,23 @@ public class CourseVideo extends BaseTimeEntity {
     @Column(name = "course_video_source")
     private VideoSource source;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "course_video_language")
+    private VideoLanguage language;
+
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
 
     @Builder
-    public CourseVideo(Long id, String title, String url, String owner, String thumbnail, VideoSource source, CourseDetail courseDetail) {
+    public CourseVideo(Long id, String title, String url, String owner, String thumbnail, VideoSource source, VideoLanguage language, CourseDetail courseDetail) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.owner = owner;
         this.thumbnail = thumbnail;
         this.source = source;
-        this.courseDetail = courseDetail;
-    }
-
-    @Builder
-    public CourseVideo(Long id, String title, CourseDetail courseDetail) {
-        this.id = id;
-        this.title = title;
+        this.language = language;
         this.courseDetail = courseDetail;
     }
 

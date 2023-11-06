@@ -1,10 +1,10 @@
 package io.devridge.api.web;
 
 import io.devridge.api.config.auth.LoginUser;
-import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
+import io.devridge.api.dto.item.CourseItemResponseDto;
 import io.devridge.api.dto.common.ApiResponse;
-import io.devridge.api.dto.coursevideo.LikeCourseVideoRequestDto;
-import io.devridge.api.service.CourseVideoService;
+import io.devridge.api.dto.item.LikeCourseVideoRequestDto;
+import io.devridge.api.service.CourseItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-public class CourseVideoController {
+public class CourseItemController {
+    private final CourseItemService courseItemService;
 
-    private final CourseVideoService courseVideoService;
-
-    @GetMapping("/videos")
+    @GetMapping("/items")
     public ResponseEntity<ApiResponse<Object>> courseVideoList(
             @RequestParam("course") Long courseId,
             @RequestParam("courseDetail") Long courseDetailId,
@@ -28,7 +27,7 @@ public class CourseVideoController {
             @RequestParam("detailedPosition") Long detailedPositionId,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        CourseVideoResponseDto courseVideoList = courseVideoService.getCourseVideoList(courseId, courseDetailId, companyId, jobId, detailedPositionId, loginUser);
+        CourseItemResponseDto courseVideoList = courseItemService.getCourseVideoAndBookList(courseId, courseDetailId, companyId, jobId, detailedPositionId, loginUser);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(courseVideoList));
     }
 
@@ -37,7 +36,7 @@ public class CourseVideoController {
             @Valid @RequestBody LikeCourseVideoRequestDto likeCourseVideoRequestDto,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        boolean result = courseVideoService.clickLikeOnCourseVideo(likeCourseVideoRequestDto, loginUser);
+        boolean result = courseItemService.clickLikeOnCourseVideo(likeCourseVideoRequestDto, loginUser);
 
         if(result){
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("성공적으로 좋아요가 되었습니다."));

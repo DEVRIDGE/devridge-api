@@ -64,6 +64,7 @@ class CourseServiceTest {
         // then
         assertThat(courseListResponseDto.getCompanyName()).isEqualTo("test company");
         assertThat(courseListResponseDto.getJobName()).isEqualTo("test job");
+        assertThat(courseListResponseDto.getCompanyInfoUrl()).isEqualTo("companyInfoUrl");
         assertThat(courseListResponseDto.getCourseList().size()).isEqualTo(1);
         assertThat(courseListResponseDto.getCourseList().get(0).getIndex()).isEqualTo(0);
         assertThat(courseListResponseDto.getCourseList().get(0).getCourses().get(0).getId()).isEqualTo(1L);
@@ -422,6 +423,6 @@ class CourseServiceTest {
         Company company = Company.builder().id(1L).name("test company").build();
         Job job = Job.builder().id(1L).name("test job").build();
         DetailedPosition detailedPosition = DetailedPosition.builder().id(1L).name("test detailed position").build();
-        return CompanyInfo.builder().id(1L).company(company).job(job).detailedPosition(detailedPosition).build();
+        return CompanyInfo.builder().id(1L).content("companyInfoUrl").company(company).job(job).detailedPosition(detailedPosition).build();
     }
 }

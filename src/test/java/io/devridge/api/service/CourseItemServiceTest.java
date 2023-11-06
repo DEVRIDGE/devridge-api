@@ -1,13 +1,15 @@
 package io.devridge.api.service;
 
 import io.devridge.api.config.auth.LoginUser;
+import io.devridge.api.domain.book.BookSource;
+import io.devridge.api.domain.book.CourseBook;
+import io.devridge.api.domain.book.CourseBookRepository;
 import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.domain.user.User;
-import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
-import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
-import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
+import io.devridge.api.dto.item.CourseItemResponseDto;
+import io.devridge.api.dto.item.CourseVideoWithLikeDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.UnauthorizedCourseAccessException;
@@ -24,13 +26,14 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CourseVideoServiceTest {
+public class CourseItemServiceTest {
     @InjectMocks
-    private CourseVideoService courseVideoService;
+    private CourseItemService courseItemService;
     @Mock
     private CourseToDetailRepository courseToDetailRepository;
     @Mock
@@ -39,34 +42,50 @@ public class CourseVideoServiceTest {
     private CompanyInfoRepository companyInfoRepository;
     @Mock
     private RoadmapRepository roadmapRepository;
+    @Mock
+    private CourseBookRepository courseBookRepository;
 
-    @DisplayName("코스 상세에 해당하는 영상 목록을 성공적으로 가져온다.")
+    @DisplayName("코스 상세에 해당하는 책과 영상 목록을 성공적으로 가져온다.")
     @Test
     public void get_course_video_list_success() {
         //given
         LoginUser loginUser = LoginUser.builder().user(User.builder().id(1L).build()).build();
         CompanyInfo companyInfo = makeCompanyInfo();
         Course course = Course.builder().id(1L).name("언어").build();
-        CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").build();
+        CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").description("Java 강의 설명").build();
         CourseToDetail courseToDetail = CourseToDetail.builder().course(course).courseDetail(courseDetail).build();
         List<CourseVideoWithLikeDto> courseVideoList = makeCourseVideoList();
+        List<CourseBook> courseBookList = makeCourseBookList();
 
         //stub
         when(courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(anyLong(), anyLong())).thenReturn(Optional.of(courseToDetail));
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
-        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
+        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(anyLong(), anyLong())).thenReturn(courseVideoList);
+        when(courseBookRepository.findByCourseDetailIdOrderByLanguage(anyLong())).thenReturn(courseBookList);
 
         //when
-        CourseVideoResponseDto courseVideoResponseDto = courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, loginUser);
+        CourseItemResponseDto courseItemResponseDto = courseItemService.getCourseVideoAndBookList(1L, 1L, 1L, 1L, 1L, loginUser);
 
         //then
-        assertThat(courseVideoResponseDto.getCourseTitle()).isEqualTo("언어");
-        assertThat(courseVideoResponseDto.getCourseDetailTitle()).isEqualTo("Java");
-        assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
+        assertThat(courseItemResponseDto.getCourseTitle()).isEqualTo("언어");
+        assertThat(courseItemResponseDto.getCourseDetailTitle()).isEqualTo("Java");
+        assertThat(courseItemResponseDto.getCourseDetailDescription()).isEqualTo("Java 강의 설명");
+        assertThat(courseItemResponseDto.getCourseVideos().size()).isEqualTo(2);
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getUserLikedYn()).isEqualTo("YES");
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getUserLikedYn()).isEqualTo("NO");
+        assertThat(courseItemResponseDto.getCourseBooks().size()).isEqualTo(2);
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getTitle()).isEqualTo("책1");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getUrl()).isEqualTo("https://책1.com");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getThumbnail()).isEqualTo("https://책1_이미지.png");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getSource()).isEqualTo(BookSource.COUPANG);
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getTitle()).isEqualTo("책2");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getUrl()).isEqualTo("https://책2.com");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getThumbnail()).isEqualTo("https://책2_이미지.png");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getSource()).isEqualTo(BookSource.COUPANG);
     }
 
     @DisplayName("로그인 안한 유저가 허용된 영상 목록 요청시 성공적으로 가져온다.")
@@ -75,29 +94,43 @@ public class CourseVideoServiceTest {
         //given
         CompanyInfo companyInfo = makeCompanyInfo();
         Course course = Course.builder().id(1L).name("언어").build();
-        CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").build();
+        CourseDetail courseDetail = CourseDetail.builder().id(1L).name("Java").description("Java 강의 설명").build();
         CourseToDetail courseToDetail = CourseToDetail.builder().course(course).courseDetail(courseDetail).build();
         List<Roadmap> roadmapList = new ArrayList<>();
         roadmapList.add(Roadmap.builder().id(1L).course(course).build());
         List<CourseVideoWithLikeDto> courseVideoList = makeCourseVideoList();
+        List<CourseBook> courseBookList = makeCourseBookList();
 
         //stub
         when(courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(anyLong(), anyLong())).thenReturn(Optional.of(courseToDetail));
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(companyInfo));
         when(roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(anyLong())).thenReturn(roadmapList);
-        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(anyLong())).thenReturn(courseVideoList);
+        when(courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(any(), anyLong())).thenReturn(courseVideoList);
+        when(courseBookRepository.findByCourseDetailIdOrderByLanguage(anyLong())).thenReturn(courseBookList);
 
         //when
-        CourseVideoResponseDto courseVideoResponseDto = courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, null);
+        CourseItemResponseDto courseItemResponseDto = courseItemService.getCourseVideoAndBookList(1L, 1L, 1L, 1L, 1L, null);
 
         //then
-        assertThat(courseVideoResponseDto.getCourseTitle()).isEqualTo("언어");
-        assertThat(courseVideoResponseDto.getCourseDetailTitle()).isEqualTo("Java");
-        assertThat(courseVideoResponseDto.getCourseVideos().size()).isEqualTo(2);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
-        assertThat(courseVideoResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
+        assertThat(courseItemResponseDto.getCourseTitle()).isEqualTo("언어");
+        assertThat(courseItemResponseDto.getCourseDetailTitle()).isEqualTo("Java");
+        assertThat(courseItemResponseDto.getCourseDetailDescription()).isEqualTo("Java 강의 설명");
+        assertThat(courseItemResponseDto.getCourseVideos().size()).isEqualTo(2);
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getTitle()).isEqualTo("Java 강의 영상2");
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getLikeCnt()).isEqualTo(100L);
+        assertThat(courseItemResponseDto.getCourseVideos().get(0).getUserLikedYn()).isEqualTo("YES");
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getTitle()).isEqualTo("Java 강의 영상1");
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getLikeCnt()).isEqualTo(0L);
+        assertThat(courseItemResponseDto.getCourseVideos().get(1).getUserLikedYn()).isEqualTo("NO");
+        assertThat(courseItemResponseDto.getCourseBooks().size()).isEqualTo(2);
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getTitle()).isEqualTo("책1");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getUrl()).isEqualTo("https://책1.com");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getThumbnail()).isEqualTo("https://책1_이미지.png");
+        assertThat(courseItemResponseDto.getCourseBooks().get(0).getSource()).isEqualTo(BookSource.COUPANG);
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getTitle()).isEqualTo("책2");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getUrl()).isEqualTo("https://책2.com");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getThumbnail()).isEqualTo("https://책2_이미지.png");
+        assertThat(courseItemResponseDto.getCourseBooks().get(1).getSource()).isEqualTo(BookSource.COUPANG);
     }
 
     @DisplayName("로그인 안한 유저가 허용되지 않은 영상 목록 요청시 예외를 발생시킨다.")
@@ -118,7 +151,7 @@ public class CourseVideoServiceTest {
         when(roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(anyLong())).thenReturn(roadmapList);
 
         //when & then
-        assertThatThrownBy(() -> courseVideoService.getCourseVideoList(3L, 1L, 1L, 1L, 1L, null))
+        assertThatThrownBy(() -> courseItemService.getCourseVideoAndBookList(3L, 1L, 1L, 1L, 1L, null))
                 .isInstanceOf(UnauthorizedCourseAccessException.class);
     }
 
@@ -132,7 +165,7 @@ public class CourseVideoServiceTest {
         when(courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, loginUser))
+        assertThatThrownBy(() -> courseItemService.getCourseVideoAndBookList(1L, 1L, 1L, 1L, 1L, loginUser))
                 .isInstanceOf(CourseDetailNotFoundException.class);
     }
 
@@ -150,15 +183,22 @@ public class CourseVideoServiceTest {
         when(companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> courseVideoService.getCourseVideoList(1L, 1L, 1L, 1L, 1L, loginUser))
+        assertThatThrownBy(() -> courseItemService.getCourseVideoAndBookList(1L, 1L, 1L, 1L, 1L, loginUser))
                 .isInstanceOf(CompanyInfoNotFoundException.class);
     }
 
     private List<CourseVideoWithLikeDto> makeCourseVideoList() {
         List<CourseVideoWithLikeDto> courseVideoList = new ArrayList<>();
-        courseVideoList.add(CourseVideoWithLikeDto.builder().id(2L).title("Java 강의 영상2").likeCnt(100L).build());
+        courseVideoList.add(CourseVideoWithLikeDto.builder().id(2L).title("Java 강의 영상2").likeCnt(100L).courseVideoUserId(1L).build());
         courseVideoList.add(CourseVideoWithLikeDto.builder().id(1L).title("Java 강의 영상1").likeCnt(0L).build());
         return courseVideoList;
+    }
+
+    private List<CourseBook> makeCourseBookList() {
+        List<CourseBook> courseBookList = new ArrayList<>();
+        courseBookList.add(CourseBook.builder().id(1L).title("책1").url("https://책1.com").thumbnail("https://책1_이미지.png").source(BookSource.COUPANG).build());
+        courseBookList.add(CourseBook.builder().id(2L).title("책2").url("https://책2.com").thumbnail("https://책2_이미지.png").source(BookSource.COUPANG).build());
+        return courseBookList;
     }
 
     private CompanyInfo makeCompanyInfo() {

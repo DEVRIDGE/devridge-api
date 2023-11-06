@@ -1,6 +1,8 @@
 package io.devridge.api.service;
 
 import io.devridge.api.config.auth.LoginUser;
+import io.devridge.api.domain.book.CourseBook;
+import io.devridge.api.domain.book.CourseBookRepository;
 import io.devridge.api.domain.companyinfo.CompanyInfo;
 import io.devridge.api.domain.companyinfo.CompanyInfoRepository;
 import io.devridge.api.domain.roadmap.*;
@@ -8,9 +10,9 @@ import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.domain.video.CourseVideoRepository;
 import io.devridge.api.domain.video.CourseVideoUser;
 import io.devridge.api.domain.video.CourseVideoUserRepository;
-import io.devridge.api.dto.coursevideo.CourseVideoResponseDto;
-import io.devridge.api.dto.coursevideo.CourseVideoWithLikeDto;
-import io.devridge.api.dto.coursevideo.LikeCourseVideoRequestDto;
+import io.devridge.api.dto.item.CourseItemResponseDto;
+import io.devridge.api.dto.item.CourseVideoWithLikeDto;
+import io.devridge.api.dto.item.LikeCourseVideoRequestDto;
 import io.devridge.api.handler.ex.CompanyInfoNotFoundException;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.NotFoundCourseVideoException;
@@ -24,28 +26,32 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CourseVideoService {
-
+public class CourseItemService {
     private final CourseVideoRepository courseVideoRepository;
     private final CompanyInfoRepository companyInfoRepository;
     private final RoadmapRepository roadmapRepository;
     private final CourseToDetailRepository courseToDetailRepository;
     private final CourseVideoUserRepository courseVideoUserRepository;
+    private final CourseBookRepository courseBookRepository;
 
     /**
      * 코스 ID 추가 - 코스와 코스 디테일 n:n 변화로 인한 파라미터 추가
      */
     @Transactional(readOnly = true)
-    public CourseVideoResponseDto getCourseVideoList(long courseId, long courseDetailId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
+    public CourseItemResponseDto getCourseVideoAndBookList(long courseId, long courseDetailId, long companyId, long jobId, long detailedPositionId, LoginUser loginUser) {
         CourseToDetail courseToDetail = courseToDetailRepository.findFetchByCourseIdAndCourseDetailId(courseId, courseDetailId)
                 .orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
 
         CompanyInfo companyInfo = findCompanyInfo(companyId, jobId, detailedPositionId);
         checkCourseAccessForUser(getLoginUserId(loginUser), courseId, companyInfo);
 
-        List<CourseVideoWithLikeDto> courseVideoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetailId);
+        Long userId = loginUser == null ? null : loginUser.getUser().getId();
 
-        return new CourseVideoResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseVideoList);
+        List<CourseVideoWithLikeDto> courseVideoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(userId, courseDetailId);
+
+        List<CourseBook> courseBookList = courseBookRepository.findByCourseDetailIdOrderByLanguage(courseDetailId);
+
+        return new CourseItemResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseToDetail.getCourseDetail().getDescription(), courseVideoList, courseBookList);
     }
 
     private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {
@@ -86,8 +92,4 @@ public class CourseVideoService {
             return false; // 좋아요 -> 좋아요 해제를 하면 false를 반환
         }
     }
-
-//    public Long getCourseVideLikeCnt(Long courseVideoId) {
-//        return courseVideoUserRepository.countByCourseVideoId(courseVideoId);
-//    }
 }
