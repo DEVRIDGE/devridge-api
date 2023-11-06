@@ -72,7 +72,7 @@ public class CourseVideoRepositoryTest {
         em.flush();
         em.clear();
 
-        List<CourseVideoWithLikeDto> courseVideoWithLikeDtoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetail.getId(), 1L);
+        List<CourseVideoWithLikeDto> courseVideoWithLikeDtoList = courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(testUser.getId(), courseDetail.getId());
 
         assertThat(courseVideoWithLikeDtoList.get(0).getTitle()).isEqualTo("testCourseVideo2");
         assertThat(courseVideoWithLikeDtoList.get(0).getLikeCnt()).isEqualTo(1L);
