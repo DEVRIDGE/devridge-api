@@ -56,7 +56,7 @@ public class CourseService {
 
     @Transactional
     public void changeStudyStatus(Long courseId, ChangeStudyStatusRequestDto changeStudyStatusRequestDto, LoginUser loginUser) {
-        CompanyInfo companyInfo = companyInfoService.validateCompanyInfo(changeStudyStatusRequestDto.getCompanyId(), changeStudyStatusRequestDto.getDetailedPositionId(), changeStudyStatusRequestDto.getDetailedPositionId());
+        CompanyInfo companyInfo = companyInfoService.validateCompanyInfo(changeStudyStatusRequestDto.getCompanyId(), changeStudyStatusRequestDto.getJobId(), changeStudyStatusRequestDto.getDetailedPositionId());
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("해당 코스 정보를 찾을 수 없습니다."));
         Roadmap roadmap = roadmapRepository.findByCourseIdAndCompanyInfoId(course.getId(), companyInfo.getId()).orElseThrow(RoadmapNotMatchCourseAndCompanyInfoException::new);
 
