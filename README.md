@@ -2,7 +2,7 @@
 
 # DEVRIDGE 프로젝트 소개
 
-![DEVRIDGE 포트폴리오](https://private-user-images.githubusercontent.com/86590710/282099313-9b85d770-d841-477a-a0ee-019600c0d04b.png?width=100
+![DEVRIDGE 포트폴리오](https://private-user-images.githubusercontent.com/86590710/282099313-9b85d770-d841-477a-a0ee-019600c0d04b.png?width=100)
 
 취업 준비생들이 직면하는 주요 과제 중 하나는 시간과 노력을 많이 들여 다양한 채용 정보 플랫폼에서 회사가 요구하는 기술을 파악하고 준비하는 것입니다. 이러한 문제를 해결하기 위해, DEVRIDGE는 사용자에게 채용 정보를 기반으로 회사와 직무에 관한 로드맵을 제공합니다. 또한, 이에 맞는 강의, 책 등 다양한 학습 자료를 추천하여 취업이나 직무 전환에 실질적인 도움을 줍니다.
 
