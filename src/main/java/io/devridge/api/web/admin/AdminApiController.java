@@ -30,15 +30,7 @@ public class AdminApiController {
     private final CourseDetailRepository courseDetailRepository;
     private final AdminService adminService;
     private final JobRepository jobRepository;
-    private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final CourseVideoRepository courseVideoRepository;
-
-//    @GetMapping("/courses")
-//    public ResponseEntity<ApiResponse<CourseListDto>> getCourseList(@RequestParam("jobId") Long jobId) {
-//        List<Course> courseList = courseRepository.getCourseListByJob(jobId);
-//
-//        return ResponseEntity.status(200).body(ApiResponse.success(new CourseListDto(courseList)));
-//    }
 
     @PostMapping("/course")
     public ResponseEntity<ApiResponse<Object>> createCourse(@RequestBody @Valid CourseCreateInfo courseCreateInfo) {
@@ -59,14 +51,6 @@ public class AdminApiController {
     public ResponseEntity<ApiResponse<Object>> editCourse(@RequestBody @Valid CourseInfo courseInfo) {
         adminService.changeCourse(courseInfo);
         return ResponseEntity.status(200).body(ApiResponse.success("수정되었습니다."));
-    }
-
-    @DeleteMapping("/course/{courseId}")
-    public ResponseEntity<ApiResponse<Object>> deleteCourse(@PathVariable Long courseId) {
-
-        adminService.deleteCourse(courseId);
-
-        return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
     }
 
     @PostMapping("/courseDetail")
@@ -92,23 +76,6 @@ public class AdminApiController {
         adminService.deleteCourseDetail(courseDetailId);
         return ResponseEntity.status(200).body(ApiResponse.success("삭제되었습니다."));
     }
-
-//    @PostMapping("/companyInfo")
-//    public ResponseEntity<ApiResponse<Object>> createCourse() {
-//
-//        adminService.makeRoadmap();
-//
-//        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
-//    }
-
-
-
-//    @PatchMapping("/requiredAbility/{jobId}")
-//    public ResponseEntity<ApiResponse<Object>> matchRequiredAbility(@PathVariable Long jobId) {
-//
-//        adminService.matchRequiredAbilityWithCourseDetailId(jobId);
-//        return ResponseEntity.status(200).body(ApiResponse.success("등록되었습니다."));
-//    }
 
     @DeleteMapping("/video/{videoId}")
     public ResponseEntity<ApiResponse<Object>> courseVideoDelete(@PathVariable Long videoId) {

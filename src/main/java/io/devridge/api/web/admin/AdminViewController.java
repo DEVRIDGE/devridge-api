@@ -41,16 +41,6 @@ public class AdminViewController {
         return "courseList";
     }
 
-//    @GetMapping("/course/{courseId}")
-//    public String courseDetailList(@PathVariable Long courseId, Model model) {
-//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
-//        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseIdOrderByName(courseId);
-//        model.addAttribute("course", course);
-//        model.addAttribute("courseDetailList", courseDetailList);
-//
-//        return "courseDetailList";
-//    }
-
     @GetMapping("/companyInfo")
     public String companyInfo(Model model) {
         List<CompanyInfoDto> companyInfoList = companyInfoRepository.findByAllWithRoadmap();

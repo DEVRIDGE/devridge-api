@@ -3,8 +3,11 @@ package io.devridge.api.service.admin;
 import io.devridge.api.domain.companyinfo.*;
 import io.devridge.api.domain.roadmap.CourseDetail;
 import io.devridge.api.domain.roadmap.CourseDetailRepository;
-import io.devridge.api.dto.admin.CompanyRequiredAbilityListByCourseDetailNullDto;
+import io.devridge.api.dto.admin.company_info.CompanyRequiredAbilityDto;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,16 +17,16 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class CompanyRequiredService {
+public class CompanyRequiredAdminService {
 
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
     private final CourseDetailRepository courseDetailRepository;
 
-    @Transactional
-    public CompanyRequiredAbilityListByCourseDetailNullDto getCompanyInfoCompanyRequiredListWithCourseDetailIsNull() {
-        List<CompanyRequiredAbility> companyRequiredAbilityList = companyRequiredAbilityRepository.findByCourseDetailIdIsNull();
+    @Transactional(readOnly = true)
+    public Page<CompanyRequiredAbilityDto> getCompanyInfoCompanyRequiredListWithCourseDetailIsNull(Pageable pageable) {
+        Page<CompanyRequiredAbility> companyRequiredAbilityPage = companyRequiredAbilityRepository.findByCourseDetailIdIsNull(pageable);
 
-        return new CompanyRequiredAbilityListByCourseDetailNullDto(companyRequiredAbilityList);
+        return companyRequiredAbilityPage.map(entity -> new CompanyRequiredAbilityDto(entity.getId(), entity.getName()));
     }
 
     @Transactional
