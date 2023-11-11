@@ -1,7 +1,5 @@
 package io.devridge.api.dto.admin;
 
-import io.devridge.api.domain.companyinfo.CompanyInfo;
-import io.devridge.api.domain.roadmap.Roadmap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

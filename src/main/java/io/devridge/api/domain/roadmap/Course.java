@@ -36,9 +36,6 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
 
-    @OneToMany(mappedBy = "course", orphanRemoval = true)
-    private List<Roadmap> roadmapList;
-
     @Builder
     public Course(Long id, String name, CourseType type, int order, Job job) {
         this.id = id;

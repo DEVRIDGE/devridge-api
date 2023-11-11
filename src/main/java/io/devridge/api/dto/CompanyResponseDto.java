@@ -15,7 +15,7 @@ public class CompanyResponseDto {
         this.companies = companies.stream().map(company -> new CompanyDto(company)).collect(Collectors.toList());
     }
 
-    @Getter // Getter 붙여야 오류 안난다
+    @Getter
     public class CompanyDto {
         private Long id;
         private String name;

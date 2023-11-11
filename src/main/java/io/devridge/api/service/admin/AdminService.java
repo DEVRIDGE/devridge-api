@@ -21,16 +21,8 @@ public class AdminService {
 
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
-    private final CompanyInfoRepository companyInfoRepository;
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
-    private final RoadmapRepository roadmapRepository;
     private final CourseVideoRepository courseVideoRepository;
-    private final CourseToDetailRepository courseToDetailRepository;
-
-    @Transactional
-    public void test() {
-
-    }
 
     @Transactional
     public void changeCourse(CourseInfo courseInfo) {
@@ -42,17 +34,6 @@ public class AdminService {
     public void changeCourseDetail(CourseDetailInfo courseDetailInfo) {
         CourseDetail courseDetail = courseDetailRepository.findById(courseDetailInfo.getId()).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 코스 상세를 찾을 수 없습니다."));
         courseDetail.changeCourseDetailInfo(courseDetailInfo);
-    }
-
-    @Transactional
-    public void deleteCourse(Long courseId) {
-//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
-//        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseId(course.getId());
-//        for (CourseDetail courseDetail : courseDetailList) {
-//            checkCourseVideoAndRequiredAbilityNull(courseDetail.getId());
-//        }
-//        courseDetailRepository.deleteAll(courseDetailList);
-//        courseRepository.delete(course);
     }
 
     @Transactional
