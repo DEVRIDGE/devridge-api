@@ -1,5 +1,6 @@
 package io.devridge.api.web.admin;
 
+import io.devridge.api.dto.admin.company_info.NeededMakeCompanyInfoDto;
 import io.devridge.api.dto.common.ApiResponse;
 import io.devridge.api.dto.companyinfo.CompanyInfoForm;
 import io.devridge.api.dto.companyinfo.CompanyRequiredAbilityForm;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,9 @@ public class AdminCompanyInfoController {
     private final AdminCompanyRequiredAbilityService adminCompanyRequiredAbilityService;
 
     @GetMapping
-    public String companyInfoRegisterPage() {
-
+    public String companyInfoRegisterPage(Model model) {
+        NeededMakeCompanyInfoDto neededToMakeCompanyInfo = adminCompanyInfoService.getNeededToMakeCompanyInfo();
+        model.addAttribute("neededToMakeCompanyInfo", neededToMakeCompanyInfo);
 
         return "company_info/register_company_info_and_skill";
     }

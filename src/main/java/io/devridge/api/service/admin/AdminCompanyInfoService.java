@@ -1,18 +1,33 @@
 package io.devridge.api.service.admin;
 
 import io.devridge.api.domain.companyinfo.*;
-import io.devridge.api.dto.companyinfo.CompanyInfoForm;
-import io.devridge.api.handler.ex.ExistingCompanyInfoException;
+import io.devridge.api.dto.admin.company_info.NeededMakeCompanyInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class AdminCompanyInfoService {
+    private final CompanyRepository companyRepository;
+    private final JobRepository jobRepository;
+
+    public NeededMakeCompanyInfoDto getNeededToMakeCompanyInfo() {
+        List<Company> allCompanyList = getAllCompanyAndDetailPosition();
+        List<Job> allJobList = getAllJob();
+
+        return new NeededMakeCompanyInfoDto(allCompanyList, allJobList);
+    }
+    private List<Job> getAllJob() {
+        return jobRepository.findAll();
+    }
+
+    private List<Company> getAllCompanyAndDetailPosition() {
+        return companyRepository.findAllByFetch();
+    }
 
     /**
      * CompanyInfo가 전달되면 회사정보 테이블에 CompanyInfo가 저장되고

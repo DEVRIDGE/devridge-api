@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +23,10 @@ public class Company extends BaseTimeEntity {
 
     @Column(name = "company_name")
     private String name;
+
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<DetailedPosition> detailedPositionList;
 
     @Builder
     public Company(Long id, String name) {

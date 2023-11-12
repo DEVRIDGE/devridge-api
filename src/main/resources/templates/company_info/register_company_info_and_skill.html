@@ -15,9 +15,11 @@
         <label for="companySelect" class="col-sm-2 col-form-label">회사</label>
         <div class="col-sm-4">
             <select class="form-control" id="companySelect">
-                <option value="">Select Company</option>
-                <option value="other">기타</option>
-                <!-- Add other company options here -->
+                <option value="">회사 선택</option>
+                <th:block th:each="company : ${neededToMakeCompanyInfo.allCompanyList}">
+                    <option th:value="${company.id}" th:text="${company.name}">회사명</option>
+                </th:block>
+                <option value="0">기타</option>
             </select>
         </div>
         <div class="col-sm-6 d-none" id="otherCompany">
@@ -29,9 +31,10 @@
         <label for="jobSelect" class="col-sm-2 col-form-label">직무</label>
         <div class="col-sm-4">
             <select class="form-control" id="jobSelect">
-                <option value="">Select Job</option>
-                <option value="other">기타</option>
-                <!-- Add other job options here -->
+                <option value="">직무 선택</option>
+                <th:block th:each="job : ${neededToMakeCompanyInfo.allJobList}">
+                    <option th:value="${job.id}" th:text="${job.name}">회사명</option>
+                </th:block>
             </select>
         </div>
         <div class="col-sm-6 d-none" id="otherJob">
@@ -43,9 +46,7 @@
         <label for="detailedPositionSelect" class="col-sm-2 col-form-label">상세직무</label>
         <div class="col-sm-4">
             <select class="form-control" id="detailedPositionSelect">
-                <option value="">Select Position</option>
-                <option value="other">기타</option>
-                <!-- Add other detailed position options here -->
+                <option value="">상세직무 선택</option>
             </select>
         </div>
         <div class="col-sm-6 d-none" id="otherDetailedPosition">
@@ -53,19 +54,17 @@
         </div>
     </div>
 
-    <!-- Rest of the form elements -->
-</div>
-
+<script th:inline="javascript">
+    const companyList = [[${neededToMakeCompanyInfo.allCompanyList}]];
+</script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Function to toggle the input field next to the select box
-    function toggleInputField(selectBoxId, inputFieldId) {
-        var selectBox = document.getElementById(selectBoxId);
-        var inputField = document.getElementById(inputFieldId);
+    const toggleInputField = (selectBoxId, inputFieldId) => {
+        const selectBox = document.getElementById(selectBoxId);
+        const inputField = document.getElementById(inputFieldId);
 
         selectBox.addEventListener('change', function () {
-            if (this.value === 'other') {
+            if (this.value === '0') {
                 inputField.classList.remove('d-none');
             } else {
                 inputField.classList.add('d-none');
@@ -73,120 +72,165 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize the function for all select boxes that have the '기타' option
-    toggleInputField('companySelect', 'otherCompany');
-    toggleInputField('jobSelect', 'otherJob');
-    toggleInputField('detailedPositionSelect', 'otherDetailedPosition');
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateDetailedPositions(companyId) {
+            const detailedPositionSelect = document.getElementById('detailedPositionSelect');
+            const otherDetailedPosition = document.getElementById('otherDetailedPosition');
 
+            detailedPositionSelect.innerHTML = '<option value="">상세직무 선택</option>'; // 초기화
+            otherDetailedPosition.classList.add('d-none');
 
-const companyButton = document.getElementById('companyButton');
-const requiredSkillButton = document.getElementById('requiredSkillButton')
-const companyNameDom = document.getElementById('companyName');
-const jobNameDom = document.getElementById('jobName');
-const detailedPositionNameDom = document.getElementById('detailedPositionName');
-const contentDom = document.getElementById('content');
+            const company = companyList.find(c => c.id.toString() === companyId);
 
-const requiredSkillTextarea = document.getElementById('requiredSkillTextarea');
+            if(company && company.detailedPositionDtoList) {
+                company.detailedPositionDtoList.forEach(function(detailPosition) {
+                    const option = document.createElement('option');
+                    option.value = detailPosition.id;
+                    option.textContent = detailPosition.name;
+                    detailedPositionSelect.appendChild(option);
+                });
+            }
 
-const fetchCompanyInfo = async () => {
-    if(!companyNameDom.value) {
-        alert('회사명을 입력해주세요.');
-        return;
-    } else if(!jobNameDom.value) {
-        alert('직무명을 입력해주세요.');
-        return;
-    } else if(!detailedPositionNameDom.value) {
-        alert('상세직무명을 입력해주세요.');
-        return;
-    }
-
-    let data = {
-        companyName: companyNameDom.value,
-        jobName: jobNameDom.value,
-        detailedPositionName: detailedPositionNameDom.value,
-        content: contentDom.value
-    };
-
-    try {
-        const response = await fetch('/admin/companyinfo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        const responseData = await response.json();
-
-        if(response.status === 201) {
-            alert("성공적으로 저장완료")
-        } else {
-            if(responseData.message === "DB에 이미 존재하는 회사 정보입니다.") {
-                alert("DB에 이미 존재하는 회사 정보입니다.")
-            } else {
-                alert('데이터 저장에 실패했습니다.');
+            if (companyId !== '') {
+                const otherOption = document.createElement('option');
+                otherOption.value = '0';
+                otherOption.textContent = '기타';
+                detailedPositionSelect.appendChild(otherOption);
             }
         }
-        console.log(responseData);
-    } catch (error) {
-        console.error('Error:', error);
-        alert("실패")
-    }
-}
 
-const fetchRequiredSkill = async () => {
-    if(!companyNameDom.value) {
-        alert('회사명을 입력해주세요.');
-        return;
-    } else if(!jobNameDom.value) {
-        alert('직무명을 입력해주세요.');
-        return;
-    } else if(!detailedPositionNameDom.value) {
-        alert('상세직무명을 입력해주세요.');
-        return;
-    } else if(!requiredSkillTextarea.value) {
-        alert('요구스킬을 입력해주세요.');
-        return;
-    }
-
-    let skillsText = requiredSkillTextarea.value;
-
-    let skillsArray = skillsText.split(',').map(skill => skill.trim());
-
-    let data = {
-        companyName: companyNameDom.value,
-        jobName: jobNameDom.value,
-        detailedPositionName: detailedPositionNameDom.value,
-        companyRequiredAbilityList: skillsArray
-    };
-
-    try {
-        const response = await fetch('/admin/companyinfo/requiredability', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
+        const companySelect = document.getElementById('companySelect');
+        companySelect.addEventListener('change', function() {
+            updateDetailedPositions(this.value);
+            toggleInputField('companySelect', 'otherCompany');
         });
 
-        const responseData = await response.json();
-
-        if(response.status === 201) {
-            alert("성공적으로 저장완료")
-        } else {
-            alert('데이터 저장에 실패했습니다.');
-        }
-        console.log(responseData);
-    } catch (error) {
-        console.error('Error:', error);
-        alert("실패")
-    }
-}
-
-
-companyButton.addEventListener("click", fetchCompanyInfo);
-requiredSkillButton.addEventListener("click", fetchRequiredSkill)
+        // 기타를 위한 기존 함수를 유지합니다.
+        toggleInputField('companySelect', 'otherCompany');
+        toggleInputField('detailedPositionSelect', 'otherDetailedPosition');
+    });
+//
+//     // 상세직무 select 박스 옆에 "기타" 입력 필드를 표시하는 기능
+//     function toggleInputField(selectBoxId, inputFieldId) {
+//         let selectBox = document.getElementById(selectBoxId);
+//         let inputField = document.getElementById(inputFieldId);
+//
+//         selectBox.addEventListener('change', function () {
+//             if (this.value === '0') {
+//                 inputField.classList.remove('d-none');
+//             } else {
+//                 inputField.classList.add('d-none');
+//             }
+//         });
+//     }
+//
+// const companyButton = document.getElementById('companyButton');
+// const requiredSkillButton = document.getElementById('requiredSkillButton')
+// const companyNameDom = document.getElementById('companyName');
+// const jobNameDom = document.getElementById('jobName');
+// const detailedPositionNameDom = document.getElementById('detailedPositionName');
+// const contentDom = document.getElementById('content');
+//
+// const requiredSkillTextarea = document.getElementById('requiredSkillTextarea');
+//
+// const fetchCompanyInfo = async () => {
+//     if(!companyNameDom.value) {
+//         alert('회사명을 입력해주세요.');
+//         return;
+//     } else if(!jobNameDom.value) {
+//         alert('직무명을 입력해주세요.');
+//         return;
+//     } else if(!detailedPositionNameDom.value) {
+//         alert('상세직무명을 입력해주세요.');
+//         return;
+//     }
+//
+//     let data = {
+//         companyName: companyNameDom.value,
+//         jobName: jobNameDom.value,
+//         detailedPositionName: detailedPositionNameDom.value,
+//         content: contentDom.value
+//     };
+//
+//     try {
+//         const response = await fetch('/admin/companyinfo', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(data),
+//         });
+//
+//         const responseData = await response.json();
+//
+//         if(response.status === 201) {
+//             alert("성공적으로 저장완료")
+//         } else {
+//             if(responseData.message === "DB에 이미 존재하는 회사 정보입니다.") {
+//                 alert("DB에 이미 존재하는 회사 정보입니다.")
+//             } else {
+//                 alert('데이터 저장에 실패했습니다.');
+//             }
+//         }
+//         console.log(responseData);
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert("실패")
+//     }
+// }
+//
+// const fetchRequiredSkill = async () => {
+//     if(!companyNameDom.value) {
+//         alert('회사명을 입력해주세요.');
+//         return;
+//     } else if(!jobNameDom.value) {
+//         alert('직무명을 입력해주세요.');
+//         return;
+//     } else if(!detailedPositionNameDom.value) {
+//         alert('상세직무명을 입력해주세요.');
+//         return;
+//     } else if(!requiredSkillTextarea.value) {
+//         alert('요구스킬을 입력해주세요.');
+//         return;
+//     }
+//
+//     let skillsText = requiredSkillTextarea.value;
+//
+//     let skillsArray = skillsText.split(',').map(skill => skill.trim());
+//
+//     let data = {
+//         companyName: companyNameDom.value,
+//         jobName: jobNameDom.value,
+//         detailedPositionName: detailedPositionNameDom.value,
+//         companyRequiredAbilityList: skillsArray
+//     };
+//
+//     try {
+//         const response = await fetch('/admin/companyinfo/requiredability', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(data),
+//         });
+//
+//         const responseData = await response.json();
+//
+//         if(response.status === 201) {
+//             alert("성공적으로 저장완료")
+//         } else {
+//             alert('데이터 저장에 실패했습니다.');
+//         }
+//         console.log(responseData);
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert("실패")
+//     }
+// }
+//
+//
+// companyButton.addEventListener("click", fetchCompanyInfo);
+// requiredSkillButton.addEventListener("click", fetchRequiredSkill)
 </script>
 
 </body>
