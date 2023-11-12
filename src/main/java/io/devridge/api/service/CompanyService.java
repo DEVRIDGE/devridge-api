@@ -24,12 +24,8 @@ public class CompanyService {
         return new CompanyResponseDto(companyList);
     }
 
-    public Optional<Company> findByName(String name) {
-        return companyRepository.findByName(name);
-    }
-
     public void throwsExceptionIfCompanyNotFound(Long companyId) {
-        companyRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException());
+        companyRepository.findById(companyId).orElseThrow(CompanyNotFoundException::new);
     }
 
     public Company save(Company company) {

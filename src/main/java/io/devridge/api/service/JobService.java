@@ -13,9 +13,6 @@ import java.util.Optional;
 public class JobService {
     private final JobRepository jobRepository;
     private final CompanyService companyService;
-    public Optional<Job> findByName(String jobName) {
-        return jobRepository.findByName(jobName);
-    }
 
     public Job save(Job job) {
         return jobRepository.save(job);

@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class CourseService {
-
     private final CompanyInfoService companyInfoService;
-
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
     private final CompanyInfoRepository companyInfoRepository;

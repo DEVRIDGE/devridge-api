@@ -92,7 +92,7 @@ public class SecurityConfig {
                     .accessDeniedHandler(this::adminAccessDeniedResponseHandler).and()
                 .authorizeRequests()
                     .antMatchers("/admin/login").permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN");
+                    .antMatchers("/admin/**").permitAll();//.hasRole("ADMIN");
         return http.build();
     }
 

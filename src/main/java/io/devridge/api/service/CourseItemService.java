@@ -54,25 +54,6 @@ public class CourseItemService {
         return new CourseItemResponseDto(courseToDetail.getCourse().getName(), courseToDetail.getCourseDetail().getName(), courseToDetail.getCourseDetail().getDescription(), courseVideoList, courseBookList);
     }
 
-    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {
-        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
-                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
-    }
-
-    private Long getLoginUserId(LoginUser loginUser) {
-        return (loginUser != null) ? loginUser.getUser().getId() : null;
-    }
-
-    private void checkCourseAccessForUser(Long userId, long courseId, CompanyInfo companyInfo) {
-        if (userId == null) { checkIfCourseIsAllowedForUnauthenticatedUser(courseId, companyInfo); }
-    }
-
-    private void checkIfCourseIsAllowedForUnauthenticatedUser(long courseId, CompanyInfo companyInfo) {
-        boolean isAllowedCourse = roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(companyInfo.getId())
-                .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
-        if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
-    }
-
     @Transactional
     public boolean clickLikeOnCourseVideo(LikeCourseVideoRequestDto likeCourseVideoRequestDto, LoginUser loginUser) {
         CourseVideo courseVideo = courseVideoRepository.findById(likeCourseVideoRequestDto.getCourseVideoId()).orElseThrow(() -> new NotFoundCourseVideoException());
@@ -91,5 +72,24 @@ public class CourseItemService {
             courseVideoUserRepository.delete(courseVideoUser.get());
             return false; // 좋아요 -> 좋아요 해제를 하면 false를 반환
         }
+    }
+
+    private CompanyInfo findCompanyInfo(long companyId, long jobId, long detailedPositionId) {
+        return companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(companyId, jobId, detailedPositionId)
+                .orElseThrow(() -> new CompanyInfoNotFoundException("회사, 직무, 서비스에 일치 하는 회사 정보가 없습니다."));
+    }
+
+    private Long getLoginUserId(LoginUser loginUser) {
+        return (loginUser != null) ? loginUser.getUser().getId() : null;
+    }
+
+    private void checkCourseAccessForUser(Long userId, long courseId, CompanyInfo companyInfo) {
+        if (userId == null) { checkIfCourseIsAllowedForUnauthenticatedUser(courseId, companyInfo); }
+    }
+
+    private void checkIfCourseIsAllowedForUnauthenticatedUser(long courseId, CompanyInfo companyInfo) {
+        boolean isAllowedCourse = roadmapRepository.findTop2ByCompanyInfoIdOrderByCourseOrder(companyInfo.getId())
+                .stream().anyMatch(roadmap -> roadmap.getCourse().getId().equals(courseId));
+        if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
     }
 }

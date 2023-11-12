@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,20 +18,11 @@ public class DetailedPositionService {
     private final CompanyJobRepository companyJobRepository;
     private final DetailedPositionRepository detailedPositionRepository;
 
-    //TODO DetailedPositionDto 만들고 서비스 로직 만들어야함
     public DetailedPositionResponseDto getDetailedPositionList(long companyId, long jobId) {
         validateCompanyJob(companyId, jobId);
         List<DetailedPosition> detailedPositionList = detailedPositionRepository.findByCompanyIdAndJobId(companyId, jobId);
 
         return new DetailedPositionResponseDto(detailedPositionList);
-    }
-
-    public Optional<DetailedPosition> findByNameAndCompanyId(String detailedPositionName, Long companyId) {
-        return detailedPositionRepository.findByNameAndCompanyId(detailedPositionName, companyId);
-    }
-
-    public DetailedPosition save(DetailedPosition detailedPosition) {
-        return detailedPositionRepository.save(detailedPosition);
     }
 
     private void validateCompanyJob(long companyId, long jobId) {
