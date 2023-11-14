@@ -32,8 +32,4 @@ public class CourseDetail extends BaseTimeEntity {
         this.name = name;
         this.description = description;
     }
-
-    public void changeCourseDetailInfo(CourseDetailInfo courseDetailInfo) {
-        this.name = courseDetailInfo.getName();
-    }
 }
