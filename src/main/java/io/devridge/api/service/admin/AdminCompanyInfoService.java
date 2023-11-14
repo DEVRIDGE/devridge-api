@@ -1,12 +1,17 @@
 package io.devridge.api.service.admin;
 
 import io.devridge.api.domain.companyinfo.*;
+import io.devridge.api.domain.roadmap.*;
 import io.devridge.api.dto.admin.company_info.NeededMakeCompanyInfoDto;
+import io.devridge.api.dto.companyinfo.CompanyInfoForm;
+import io.devridge.api.handler.ex.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -14,6 +19,15 @@ import java.util.List;
 public class AdminCompanyInfoService {
     private final CompanyRepository companyRepository;
     private final JobRepository jobRepository;
+    private final DetailedPositionRepository detailedPositionRepository;
+    private final CompanyJobRepository companyJobRepository;
+    private final JobDetailedPositionRepository jobDetailedPositionRepository;
+    private final CompanyInfoRepository companyInfoRepository;
+    private final CourseDetailRepository courseDetailRepository;
+    private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
+    private final CompanyInfoCompanyRequiredAbilityRepository companyInfoCompanyRequiredAbilityRepository;
+    private final CourseRepository courseRepository;
+    private final RoadmapRepository roadmapRepository;
 
     public NeededMakeCompanyInfoDto getNeededToMakeCompanyInfo() {
         List<Company> allCompanyList = getAllCompanyAndDetailPosition();
@@ -21,6 +35,28 @@ public class AdminCompanyInfoService {
 
         return new NeededMakeCompanyInfoDto(allCompanyList, allJobList);
     }
+
+    /**
+     * 회사공고, 채용스킬 등록 및 로드맵 생성 자동화
+     */
+    public void registerCompanyInfoAndMakeRoadmap(CompanyInfoForm companyInfoForm) {
+        // 회사, 직무, 상세직무 등록
+        Company company = findCompanyOrSave(companyInfoForm.getCompanyName());
+        Job job = findJob(companyInfoForm.getJobName());
+        DetailedPosition detailedPosition = findDetailPositionOrSave(companyInfoForm.getDetailedPositionName(), company);
+        associateCompanyAndJobAndDetailedPosition(company, job, detailedPosition); // 회사, 직무, 상세직무 연관관계 등록
+
+        // 회사공고 등록
+        CompanyInfo companyInfo = saveCompanyInfo(company, job, detailedPosition, companyInfoForm.getCompanyInfoUrl());
+
+        // 채용스킬 등록
+        List<CompanyRequiredAbility> companyRequiredAbilities = saveCompanyRequiredAbility(companyInfoForm.getCompanyRequiredAbilityList());
+        associateCompanyInfoAndCompanyRequiredAbility(companyInfo, companyRequiredAbilities);
+
+        // 로드맵 등록
+        makeRoadmap(job, companyInfo, companyRequiredAbilities);
+    }
+
     private List<Job> getAllJob() {
         return jobRepository.findAll();
     }
@@ -29,115 +65,91 @@ public class AdminCompanyInfoService {
         return companyRepository.findAllByFetch();
     }
 
-    /**
-     * CompanyInfo가 전달되면 회사정보 테이블에 CompanyInfo가 저장되고
-     * 직무, 서비스종류, 회사 테아블에 회사정보 내의 정보가 전달된다.
-     * 그리고 회사와 직무,직무와 서비스종류,서비스종류와 회사를 연관시킨다.
-     */
-/*
-    public void transferCompanyInfoToAssociatedTable(CompanyInfoForm companyInfoForm) {
-
-        //회사를 저장한다. 이미 존재하면 이미 있는 회사를 가져온다.
-        Company targetCompany = getCompany(companyInfoForm);
-
-        //직무를 저장한다. 이미 존재하면 이미 있는 직무를 가져온다.
-        Job targetJob = getJob(companyInfoForm);
-
-
-        //서비스 종류를 저장한다. 이미 존재하면 이미 있는 서비스 종류를 가져온다.
-        DetailedPosition targetDetailedPosition = getDetailedPosition(companyInfoForm, targetCompany);
-
-        //회사와 직무를 연관시킨다.
-        associateCompanyJob(targetCompany, targetJob);
-
-        //직무와 서비스종류를 연관시킨다.
-        associateJobDetailedPosition(targetJob, targetDetailedPosition);
-
-        //서비스 종류와 회사는 위에서 서비스 종류를 저장할 때 연관되었으므로 없어도 된다.
-
-        //회사정보를 저장한다. 이미 해당하는 회사, 직무, 서비스 종류의 회사 정보가 있으면 예외가 발생한다.
-        saveCompanyInfo(companyInfoForm, targetCompany, targetJob, targetDetailedPosition);
+    private Company findCompanyOrSave(String companyName) {
+        return companyRepository.findByNameByFetch(companyName)
+                .orElseGet(() -> companyRepository.save(Company.builder().name(companyName).build()));
     }
 
-    private Company getCompany(CompanyInfoForm companyInfoForm) {
-        Company targetCompany;
-        Optional<Company> foundCompany = companyService.findByName(companyInfoForm.getCompanyName());
-        if(foundCompany.isEmpty()) {
-            Company newCompany = Company.builder()
-                    .name(companyInfoForm.getCompanyName())
-                    .build();
-            targetCompany = companyService.save(newCompany);
-        } else {
-            targetCompany = foundCompany.get();
+    private Job findJob(String jobName) {
+        return jobRepository.findByName(jobName)
+                .orElseThrow(JobNotFoundException::new);
+    }
+
+    private DetailedPosition findDetailPositionOrSave(String detailedPositionName, Company company) {
+        return company.getDetailedPositionList().stream().filter(detailedPosition -> detailedPosition.getName().equals(detailedPositionName)).findFirst()
+                .orElseGet(() -> detailedPositionRepository.save(DetailedPosition.builder().name(detailedPositionName).company(company).build()));
+    }
+
+    private void associateCompanyAndJobAndDetailedPosition(Company company, Job job, DetailedPosition detailedPosition) {
+        associateCompanyAndJob(company, job);
+        associateJobAndDetailedPosition(job, detailedPosition);
+    }
+
+    private void associateJobAndDetailedPosition(Job job, DetailedPosition detailedPosition) {
+        jobDetailedPositionRepository.findByJobAndDetailedPosition(job, detailedPosition)
+                .orElseGet(() -> jobDetailedPositionRepository.save(JobDetailedPosition.builder().job(job).detailedPosition(detailedPosition).build()));
+    }
+
+    private void associateCompanyAndJob(Company company, Job job) {
+        companyJobRepository.findByCompanyAndJob(company, job)
+                .orElseGet(() -> companyJobRepository.save(CompanyJob.builder().company(company).job(job).build()));
+    }
+
+    private CompanyInfo saveCompanyInfo(Company company, Job job, DetailedPosition detailedPosition, String companyInfoUrl) {
+        /**
+         * TODO 회사정보 중복 체크
+         * 임시적으로 중복 체크 기능 추가
+         * 메인 API 중복 데이터 처리가 끝나면 해당 로직 삭제
+         */
+        Optional<CompanyInfo> companyInfoOptional = companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(company.getId(), job.getId(), detailedPosition.getId());
+        if(companyInfoOptional.isPresent()) {
+            throw new IllegalArgumentException("이미 등록된 회사정보입니다.");
         }
-        return targetCompany;
+        return companyInfoRepository.save(CompanyInfo.builder()
+                .company(company)
+                .job(job)
+                .detailedPosition(detailedPosition)
+                .content(companyInfoUrl)
+                .build());
     }
 
-    private Job getJob(CompanyInfoForm companyInfoForm) {
-        Job targetJob;
-        Optional<Job> foundJob = jobService.findByName(companyInfoForm.getJobName());
-        if(foundJob.isEmpty()) {
-            Job newJob = Job.builder()
-                    .name(companyInfoForm.getJobName())
-                    .build();
-            targetJob = jobService.save(newJob);
-        } else {
-            targetJob = foundJob.get();
-        }
-        return targetJob;
+    private List<CompanyRequiredAbility> saveCompanyRequiredAbility(List<String> companyRequiredAbilityList) {
+        return companyRequiredAbilityList.stream()
+                .map(this::createOrFindCompanyRequiredAbility)
+                .collect(Collectors.toList());
     }
 
-    private DetailedPosition getDetailedPosition(CompanyInfoForm companyInfoForm, Company targetCompany) {
-        DetailedPosition targetDetailedPosition;
-        Optional<DetailedPosition> foundDetailedPosition = detailedPositionService.findByNameAndCompanyId(companyInfoForm.getDetailedPositionName(), targetCompany.getId());
-        if(foundDetailedPosition.isEmpty()) {
-            DetailedPosition newDetailedPosition = DetailedPosition.builder()
-                    .name(companyInfoForm.getDetailedPositionName())
-                    .company(targetCompany)
-                    .build();
-            targetDetailedPosition = newDetailedPosition;
-        } else {
-            targetDetailedPosition = foundDetailedPosition.get();
-        }
-        return targetDetailedPosition;
+    private CompanyRequiredAbility createOrFindCompanyRequiredAbility(String companyRequiredAbilityName) {
+        return companyRequiredAbilityRepository
+                .findByNameIgnoreCaseAndSpacesRemoved(companyRequiredAbilityName)
+                .orElseGet(() -> companyRequiredAbilityRepository.save(CompanyRequiredAbility.builder()
+                        .name(companyRequiredAbilityName)
+                        .courseDetail(courseDetailRepository.findByNameIgnoringCaseAndSpaces(companyRequiredAbilityName).orElse(null)).build())
+                );
     }
 
-    private void associateCompanyJob(Company targetCompany, Job targetJob) {
-        if(adminCompanyJobService.findByCompanyIdAndJobId(targetCompany.getId(), targetJob.getId()).isEmpty()) {
-            CompanyJob newCompanyJob = CompanyJob.builder()
-                    .company(targetCompany)
-                    .job(targetJob)
-                    .build();
-
-            adminCompanyJobService.save(newCompanyJob);
-        }
+    private void associateCompanyInfoAndCompanyRequiredAbility(CompanyInfo companyInfo, List<CompanyRequiredAbility> companyRequiredAbilities) {
+        companyInfoCompanyRequiredAbilityRepository.saveAll(
+                companyRequiredAbilities.stream()
+                        .map(companyRequiredAbility -> CompanyInfoCompanyRequiredAbility.builder()
+                                .companyInfo(companyInfo)
+                                .companyRequiredAbility(companyRequiredAbility)
+                                .build())
+                        .collect(Collectors.toList())
+        );
     }
 
-    private void associateJobDetailedPosition(Job targetJob, DetailedPosition targetDetailedPosition) {
-        if(jobDetailedPositionService.findByJobIdAndDetailedPositionId(targetJob.getId(), targetDetailedPosition.getId()).isEmpty()) {
-            JobDetailedPosition newJobDetailedPosition = JobDetailedPosition.builder()
-                    .job(targetJob)
-                    .detailedPosition(targetDetailedPosition)
-                    .build();
-
-            //jobDetailedPositionService.save(newJobDetailedPosition);
-        }
+    private void makeRoadmap(Job job, CompanyInfo companyInfo, List<CompanyRequiredAbility> companyRequiredAbilities) {
+        List<Course> courseList = courseRepository.getCourseByJobOrderByOrder(job);
+        List<Roadmap> roadmaps = courseList.stream()
+                .map(course -> {
+                    boolean isMatch = course.getCourseToDetails().stream()
+                            .anyMatch(courseToDetail -> companyRequiredAbilities.stream()
+                                    .anyMatch(ability -> ability.getCourseDetail() != null &&
+                                            ability.getCourseDetail().getId().equals(courseToDetail.getCourseDetail().getId())));
+                    return Roadmap.builder().course(course).companyInfo(companyInfo).matchingFlag(isMatch ? MatchingFlag.YES : MatchingFlag.NO).build();
+                })
+                .collect(Collectors.toList());
+        roadmapRepository.saveAll(roadmaps);
     }
-
-    private void saveCompanyInfo(CompanyInfoForm companyInfoForm, Company targetCompany, Job targetJob, DetailedPosition targetDetailedPosition) {
-        Optional<CompanyInfo> foundCompanyInfo = companyInfoRepository.findByCompanyIdAndJobIdAndDetailedPositionId(targetCompany.getId(), targetJob.getId(), targetDetailedPosition.getId());
-
-        if(foundCompanyInfo.isPresent()) {
-            throw new ExistingCompanyInfoException();
-        }
-
-        CompanyInfo newCompanyInfo = CompanyInfo.builder()
-                .company(targetCompany)
-                .job(targetJob)
-                .detailedPosition(targetDetailedPosition)
-                .content(companyInfoForm.getContent())
-                .build();
-        companyInfoRepository.save(newCompanyInfo);
-    }
-    */
 }

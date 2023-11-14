@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long> {
-    Optional<CourseDetail> findByName(String name);
-
     @Query("SELECT cd FROM CourseDetail cd " +
             "JOIN CourseToDetail ctd ON cd.id = ctd.courseDetail.id " +
             "JOIN CompanyRequiredAbility cra ON cd.id = cra.courseDetail.id " +
@@ -23,4 +21,7 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
     List<CourseDetail> getAllCourseDetailByCourseIdOrderByName(Long courseId);
 
     List<CourseDetail> findAllByOrderByName();
+
+    @Query("SELECT cd FROM CourseDetail cd WHERE REPLACE(LOWER(cd.name), ' ', '') = LOWER(REPLACE(:name, ' ', ''))")
+    Optional<CourseDetail> findByNameIgnoringCaseAndSpaces(String name);
 }
