@@ -93,7 +93,6 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers("/admin/login").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN");
-
         return http.build();
     }
 
@@ -103,7 +102,6 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        // TODO 설정 추후 변경
         configuration.setAllowedOriginPatterns(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

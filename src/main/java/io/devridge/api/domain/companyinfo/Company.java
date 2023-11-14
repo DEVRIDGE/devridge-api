@@ -23,8 +23,8 @@ public class Company extends BaseTimeEntity {
     @Column(name = "company_name")
     private String name;
 
-    @Builder()
-    public Company(Long id, String name, String logo) {
+    @Builder
+    public Company(Long id, String name) {
         this.id = id;
         this.name = name;
     }

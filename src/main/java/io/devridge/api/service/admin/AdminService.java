@@ -21,54 +21,35 @@ public class AdminService {
 
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
-    private final CompanyInfoRepository companyInfoRepository;
     private final CompanyRequiredAbilityRepository companyRequiredAbilityRepository;
-    private final RoadmapRepository roadmapRepository;
     private final CourseVideoRepository courseVideoRepository;
-    private final CourseToDetailRepository courseToDetailRepository;
 
-    @Transactional
-    public void test() {
+//    @Transactional
+//    public void changeCourse(CourseInfo courseInfo) {
+//        Course course = courseRepository.findById(courseInfo.getId()).orElseThrow(() -> new CourseNotFoundException("해당하는 코스를 찾을 수 없습니다."));
+//        course.changeCourseInfo(courseInfo);
+//    }
+//
+//    @Transactional
+//    public void changeCourseDetail(CourseDetailInfo courseDetailInfo) {
+//        CourseDetail courseDetail = courseDetailRepository.findById(courseDetailInfo.getId()).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 코스 상세를 찾을 수 없습니다."));
+//        courseDetail.changeCourseDetailInfo(courseDetailInfo);
+//    }
+//
+//    @Transactional
+//    public void deleteCourseDetail(Long courseDetailId) {
+//        checkCourseVideoAndRequiredAbilityNull(courseDetailId);
+//        courseDetailRepository.deleteById(courseDetailId);
+//    }
 
-    }
-
-    @Transactional
-    public void changeCourse(CourseInfo courseInfo) {
-        Course course = courseRepository.findById(courseInfo.getId()).orElseThrow(() -> new CourseNotFoundException("해당하는 코스를 찾을 수 없습니다."));
-        course.changeCourseInfo(courseInfo);
-    }
-
-    @Transactional
-    public void changeCourseDetail(CourseDetailInfo courseDetailInfo) {
-        CourseDetail courseDetail = courseDetailRepository.findById(courseDetailInfo.getId()).orElseThrow(() -> new CourseDetailNotFoundException("해당하는 코스 상세를 찾을 수 없습니다."));
-        courseDetail.changeCourseDetailInfo(courseDetailInfo);
-    }
-
-    @Transactional
-    public void deleteCourse(Long courseId) {
-//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException("코스를 찾을 수 없습니다."));
-//        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseId(course.getId());
-//        for (CourseDetail courseDetail : courseDetailList) {
-//            checkCourseVideoAndRequiredAbilityNull(courseDetail.getId());
+//    private void checkCourseVideoAndRequiredAbilityNull(Long courseDetailId) {
+//        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailId(courseDetailId);
+//        if(!courseVideoList.isEmpty()) {
+//            throw new DeleteFailedExistVideoException();
 //        }
-//        courseDetailRepository.deleteAll(courseDetailList);
-//        courseRepository.delete(course);
-    }
-
-    @Transactional
-    public void deleteCourseDetail(Long courseDetailId) {
-        checkCourseVideoAndRequiredAbilityNull(courseDetailId);
-        courseDetailRepository.deleteById(courseDetailId);
-    }
-
-    private void checkCourseVideoAndRequiredAbilityNull(Long courseDetailId) {
-        List<CourseVideo> courseVideoList = courseVideoRepository.findByCourseDetailId(courseDetailId);
-        if(!courseVideoList.isEmpty()) {
-            throw new DeleteFailedExistVideoException();
-        }
-        companyRequiredAbilityRepository.findByCourseDetailId(courseDetailId)
-                .forEach(companyRequiredAbility -> companyRequiredAbility.changeCourseDetail(null));
-    }
+//        companyRequiredAbilityRepository.findByCourseDetailId(courseDetailId)
+//                .forEach(companyRequiredAbility -> companyRequiredAbility.changeCourseDetail(null));
+//    }
 
 //    @Transactional
 //    public void makeRoadmap() {

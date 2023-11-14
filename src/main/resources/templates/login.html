@@ -6,18 +6,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-4 offset-md-4">
+<div style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div style="width: 100%; display: flex; justify-content: center;">
+        <div style="width: 25%;">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Login</h4>
+                    <h4 class="card-title" style="margin-bottom: 20px;">관리자 로그인</h4>
                     <form action="#" th:action="@{/admin/login}" method="post">
                         <div class="form-group">
                             <label for="email">Username:</label>
                             <input type="text" class="form-control" id="email" name="email" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 20px;">
                             <label for="password">Password:</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>

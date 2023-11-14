@@ -1,13 +1,8 @@
 package io.devridge.api.service;
 
 import io.devridge.api.domain.companyinfo.*;
-import io.devridge.api.domain.roadmap.CourseDetail;
-import io.devridge.api.domain.video.CourseVideo;
 import io.devridge.api.dto.companyinfo.DetailedPositionResponseDto;
-import io.devridge.api.dto.course.CompanyJobInfo;
 import io.devridge.api.handler.ex.CompanyJobNotFoundException;
-import io.devridge.api.handler.ex.CourseDetailNotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

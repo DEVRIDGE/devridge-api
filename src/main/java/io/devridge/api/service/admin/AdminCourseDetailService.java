@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CourseDetailService {
+public class AdminCourseDetailService {
 
     private final CourseDetailRepository courseDetailRepository;
 

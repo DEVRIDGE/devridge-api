@@ -5,8 +5,8 @@ import io.devridge.api.dto.admin.item.*;
 import io.devridge.api.handler.ex.CourseDetailNotFoundException;
 import io.devridge.api.handler.ex.NotFoundCourseBookException;
 import io.devridge.api.handler.ex.NotFoundCourseVideoException;
-import io.devridge.api.service.admin.CourseDetailService;
-import io.devridge.api.service.admin.CourseAdminItemService;
+import io.devridge.api.service.admin.AdminCourseDetailService;
+import io.devridge.api.service.admin.AdminCourseItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,12 +20,12 @@ import java.util.List;
 @RequestMapping("/admin")
 @Controller
 public class AdminItemController {
-    private final CourseDetailService courseDetailService;
-    private final CourseAdminItemService courseAdminItemService;
+    private final AdminCourseDetailService adminCourseDetailService;
+    private final AdminCourseItemService adminCourseItemService;
 
     @GetMapping("/item")
     public String courseDetailListViewWithItem(Model model) {
-        List<CourseDetailDto> courseDetailList = courseDetailService.getAllCourseDetail();
+        List<CourseDetailDto> courseDetailList = adminCourseDetailService.getAllCourseDetail();
         model.addAttribute("courseDetailList", courseDetailList);
 
         return "course_item/course_item_main";
@@ -36,7 +36,7 @@ public class AdminItemController {
                                  @RequestParam(value = "isActive", defaultValue = "false") boolean isActive,
                                  Model model) {
         try {
-            CourseItemListDto courseItemList = courseAdminItemService.findAllItemByCourseDetailId(courseDetailId);
+            CourseItemListDto courseItemList = adminCourseItemService.findAllItemByCourseDetailId(courseDetailId);
 
             model.addAttribute("courseItemList", courseItemList);
             model.addAttribute("isActive", isActive);
@@ -53,7 +53,7 @@ public class AdminItemController {
     public String addCourseVideo(@PathVariable Long courseDetailId,
                                  @ModelAttribute VideoRegisterFormDto videoRegisterFormDto) {
         try {
-            courseAdminItemService.saveVideo(courseDetailId, videoRegisterFormDto);
+            adminCourseItemService.saveVideo(courseDetailId, videoRegisterFormDto);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=saved";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
@@ -65,7 +65,7 @@ public class AdminItemController {
     public String modifyCourseVideo(@PathVariable Long courseDetailId,
                                  @ModelAttribute VideoModifyFormDto videoModifyFormDto) {
         try {
-            courseAdminItemService.modifyVideo(courseDetailId, videoModifyFormDto);
+            adminCourseItemService.modifyVideo(courseDetailId, videoModifyFormDto);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=modified";
         } catch (CourseDetailNotFoundException e ) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
@@ -80,7 +80,7 @@ public class AdminItemController {
     public String deleteCourseVideo(@PathVariable Long courseDetailId,
                                     @RequestParam Long videoId) {
         try {
-            courseAdminItemService.deleteVideo(videoId);
+            adminCourseItemService.deleteVideo(videoId);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=deleted";
         } catch (NotFoundCourseVideoException e) {
             log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
@@ -92,7 +92,7 @@ public class AdminItemController {
     public String addCourseBook(@PathVariable Long courseDetailId,
                                  @ModelAttribute BookRegisterFormDto bookRegisterFormDto) {
         try {
-            courseAdminItemService.saveBook(courseDetailId, bookRegisterFormDto);
+            adminCourseItemService.saveBook(courseDetailId, bookRegisterFormDto);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=saved&isActive=true";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
@@ -104,7 +104,7 @@ public class AdminItemController {
     public String modifyCourseBook(@PathVariable Long courseDetailId,
                                     @ModelAttribute BookModifyFormDto bookModifyFormDto) {
         try {
-            courseAdminItemService.modifyBook(courseDetailId, bookModifyFormDto);
+            adminCourseItemService.modifyBook(courseDetailId, bookModifyFormDto);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=modified&isActive=true";
         } catch (CourseDetailNotFoundException e ) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
@@ -119,7 +119,7 @@ public class AdminItemController {
     public String deleteCourseBook(@PathVariable Long courseDetailId,
                                     @RequestParam Long bookId) {
         try {
-            courseAdminItemService.deleteBook(bookId);
+            adminCourseItemService.deleteBook(bookId);
             return "redirect:/admin/item/" + courseDetailId + "?alertMessage=deleted&isActive=true";
         } catch (NotFoundCourseBookException e) {
             log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);

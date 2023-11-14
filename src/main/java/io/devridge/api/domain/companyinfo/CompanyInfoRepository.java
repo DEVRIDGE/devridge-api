@@ -18,7 +18,6 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 
     Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionId(long companyId, long jobId, long detailedPositionId);
 
-
     @Query("SELECT new io.devridge.api.dto.admin.CompanyInfoDto(c.name, j.name, dp.name, MAX(r.id)) FROM CompanyInfo ci " +
             "JOIN ci.company c " +
             "JOIN ci.job j " +
@@ -26,12 +25,4 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
             "LEFT JOIN Roadmap r ON ci.id = r.companyInfo.id " +
             "GROUP BY c.name, j.name, dp.name")
     List<CompanyInfoDto> findByAllWithRoadmap();
-
-    @Query("SELECT new io.devridge.api.dto.admin.CompanyInfoIdDto(ci.id, c.id, j.id, dp.id, MAX(r.id)) FROM CompanyInfo ci " +
-            "JOIN ci.company c " +
-            "JOIN ci.job j " +
-            "JOIN ci.detailedPosition dp " +
-            "LEFT JOIN Roadmap r ON ci.id = r.companyInfo.id " +
-            "GROUP BY c.name, j.name, dp.name")
-    List<CompanyInfoIdDto> findByAllIdWithRoadmap();
 }

@@ -1,5 +1,7 @@
 package io.devridge.api.domain.companyinfo;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -9,11 +11,7 @@ public interface CompanyRequiredAbilityRepository extends JpaRepository<CompanyR
 
     Optional<CompanyRequiredAbility> findByName(String companyRequiredAbilityName);
 
-//
-//    @Query("SELECT cra.courseDetail.id FROM CompanyRequiredAbility cra " +
-//            "JOIN CompanyInfoCompanyRequiredAbility cicra ON cra.id = cicra.companyRequiredAbility.id " +
-//            "WHERE cicra.companyInfo.id = :companyInfoId AND cra.courseDetail IS NOT NULL")
-//    List<Long> findIdsByCompanyInfoId(@Param("companyInfoId") Long companyInfoId);
+    Page<CompanyRequiredAbility> findByCourseDetailIdIsNull(Pageable pageable);
 
     List<CompanyRequiredAbility> findByCourseDetailIdIsNull();
 
