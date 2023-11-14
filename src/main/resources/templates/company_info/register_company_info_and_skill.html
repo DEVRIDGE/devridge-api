@@ -10,7 +10,7 @@
 <header id="header" th:replace="~{common/header :: header}"></header>
 
 <div class="container my-5">
-    <h2 class="text-center mb-4 font-weight-bold">회사정보</h2>
+    <h2 class="text-center" style="margin-bottom: 40px; font-weight: bold;">채용공고 추가</h2>
     <div class="form-group row mb-3">
         <label for="companySelect" class="col-sm-2 col-form-label">회사</label>
         <div class="col-sm-4">
@@ -23,7 +23,7 @@
             </select>
         </div>
         <div class="col-sm-6 d-none" id="otherCompany">
-            <input type="text" class="form-control" id="otherCompanyInput" placeholder="Enter company name">
+            <input type="text" class="form-control" id="otherCompanyInput" placeholder="회사를 입력해주세요.">
         </div>
     </div>
 
@@ -37,9 +37,6 @@
                 </th:block>
             </select>
         </div>
-        <div class="col-sm-6 d-none" id="otherJob">
-            <input type="text" class="form-control" id="otherJobInput" placeholder="Enter job title">
-        </div>
     </div>
 
     <div class="form-group row mb-3">
@@ -50,9 +47,31 @@
             </select>
         </div>
         <div class="col-sm-6 d-none" id="otherDetailedPosition">
-            <input type="text" class="form-control" id="otherDetailedPositionInput" placeholder="Enter detailed position">
+            <input type="text" class="form-control" id="otherDetailedPositionInput" placeholder="상세 직무를 입력해주세요.">
         </div>
     </div>
+
+    <div class="form-group row mb-3">
+        <label for="detailedPositionSelect" class="col-sm-2 col-form-label">상세직무</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="companyInfoUrl" placeholder="채용정보 URL을 넣어주세요">
+        </div>
+    </div>
+
+    <div class="form-group row mb-3">
+        <label for="detailedPositionSelect" class="col-sm-2 col-form-label">채용스킬</label>
+        <div class="col">
+            <textarea type="text" id="requiredSkillTextarea" class="form-control" placeholder="채용스킬 ,로 구분" style="height: 200px; width: 100%;"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group row mb-3">
+        <div class="col-sm-8" style="margin-top: 20px; width: 100%; text-align: right; ">
+            <button id="registerCompanyInfoBtn" class="btn btn-primary btn-lg btn-block" style="width: 200px;">등록</button>
+        </div>
+    </div>
+
+</div>
 
 <script th:inline="javascript">
     const companyList = [[${neededToMakeCompanyInfo.allCompanyList}]];
@@ -109,128 +128,70 @@
         toggleInputField('companySelect', 'otherCompany');
         toggleInputField('detailedPositionSelect', 'otherDetailedPosition');
     });
-//
-//     // 상세직무 select 박스 옆에 "기타" 입력 필드를 표시하는 기능
-//     function toggleInputField(selectBoxId, inputFieldId) {
-//         let selectBox = document.getElementById(selectBoxId);
-//         let inputField = document.getElementById(inputFieldId);
-//
-//         selectBox.addEventListener('change', function () {
-//             if (this.value === '0') {
-//                 inputField.classList.remove('d-none');
-//             } else {
-//                 inputField.classList.add('d-none');
-//             }
-//         });
-//     }
-//
-// const companyButton = document.getElementById('companyButton');
-// const requiredSkillButton = document.getElementById('requiredSkillButton')
-// const companyNameDom = document.getElementById('companyName');
-// const jobNameDom = document.getElementById('jobName');
-// const detailedPositionNameDom = document.getElementById('detailedPositionName');
-// const contentDom = document.getElementById('content');
-//
-// const requiredSkillTextarea = document.getElementById('requiredSkillTextarea');
-//
-// const fetchCompanyInfo = async () => {
-//     if(!companyNameDom.value) {
-//         alert('회사명을 입력해주세요.');
-//         return;
-//     } else if(!jobNameDom.value) {
-//         alert('직무명을 입력해주세요.');
-//         return;
-//     } else if(!detailedPositionNameDom.value) {
-//         alert('상세직무명을 입력해주세요.');
-//         return;
-//     }
-//
-//     let data = {
-//         companyName: companyNameDom.value,
-//         jobName: jobNameDom.value,
-//         detailedPositionName: detailedPositionNameDom.value,
-//         content: contentDom.value
-//     };
-//
-//     try {
-//         const response = await fetch('/admin/companyinfo', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(data),
-//         });
-//
-//         const responseData = await response.json();
-//
-//         if(response.status === 201) {
-//             alert("성공적으로 저장완료")
-//         } else {
-//             if(responseData.message === "DB에 이미 존재하는 회사 정보입니다.") {
-//                 alert("DB에 이미 존재하는 회사 정보입니다.")
-//             } else {
-//                 alert('데이터 저장에 실패했습니다.');
-//             }
-//         }
-//         console.log(responseData);
-//     } catch (error) {
-//         console.error('Error:', error);
-//         alert("실패")
-//     }
-// }
-//
-// const fetchRequiredSkill = async () => {
-//     if(!companyNameDom.value) {
-//         alert('회사명을 입력해주세요.');
-//         return;
-//     } else if(!jobNameDom.value) {
-//         alert('직무명을 입력해주세요.');
-//         return;
-//     } else if(!detailedPositionNameDom.value) {
-//         alert('상세직무명을 입력해주세요.');
-//         return;
-//     } else if(!requiredSkillTextarea.value) {
-//         alert('요구스킬을 입력해주세요.');
-//         return;
-//     }
-//
-//     let skillsText = requiredSkillTextarea.value;
-//
-//     let skillsArray = skillsText.split(',').map(skill => skill.trim());
-//
-//     let data = {
-//         companyName: companyNameDom.value,
-//         jobName: jobNameDom.value,
-//         detailedPositionName: detailedPositionNameDom.value,
-//         companyRequiredAbilityList: skillsArray
-//     };
-//
-//     try {
-//         const response = await fetch('/admin/companyinfo/requiredability', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(data),
-//         });
-//
-//         const responseData = await response.json();
-//
-//         if(response.status === 201) {
-//             alert("성공적으로 저장완료")
-//         } else {
-//             alert('데이터 저장에 실패했습니다.');
-//         }
-//         console.log(responseData);
-//     } catch (error) {
-//         console.error('Error:', error);
-//         alert("실패")
-//     }
-// }
-//
-//
-// companyButton.addEventListener("click", fetchCompanyInfo);
-// requiredSkillButton.addEventListener("click", fetchRequiredSkill)
+
+    const registerCompanyInfoBtn = document.getElementById("registerCompanyInfoBtn");
+
+    const checkEmptyValue = (value, message) => {
+        if(!value) {
+            alert(message);
+            return false;
+        }
+        return true;
+    }
+
+    function getSelectedJobText(selectElementId) {
+        var selectElement = document.getElementById(selectElementId);
+        if (selectElement.selectedIndex == -1)
+            return null;
+        return selectElement.options[selectElement.selectedIndex].text;
+    }
+
+    const registerCompanyInfoFetch = async () => {
+        const companySelect = document.getElementById('companySelect');
+        const jobSelect = document.getElementById('jobSelect');
+        const detailedPositionSelect = document.getElementById('detailedPositionSelect');
+        const otherCompanyInput = document.getElementById('otherCompanyInput');
+        const otherDetailedPositionInput = document.getElementById('otherDetailedPositionInput');
+        const companyInfoUrl = document.getElementById('companyInfoUrl');
+        const requiredSkillTextarea = document.getElementById('requiredSkillTextarea');
+
+        // 빈값 체크
+        if(!checkEmptyValue(companySelect.value, '회사명을 선택해주세요.')) return;
+        if(companySelect.value === '0' && !checkEmptyValue(otherCompanyInput.value, '회사명을 입력해주세요.')) return;
+        if(!checkEmptyValue(jobSelect.value, '직무명을 선택해주세요.')) return;
+        if(!checkEmptyValue(detailedPositionSelect.value, '상세직무명을 선택해주세요.')) return;
+        if(detailedPositionSelect.value === '0' && !checkEmptyValue(otherDetailedPositionInput.value, '상세직무명을 입력해주세요.')) return;
+
+        let data = {
+            companyName: companySelect.value === '0' ? otherCompanyInput.value : companySelect.options[companySelect.selectedIndex].text,
+            jobName: jobSelect.options[jobSelect.selectedIndex].text,
+            detailedPositionName: detailedPositionSelect.value === '0' ? otherDetailedPositionInput.value : detailedPositionSelect.options[detailedPositionSelect.selectedIndex].text,
+            companyInfoUrl: companyInfoUrl.value,
+            companyRequiredAbilityList: requiredSkillTextarea.value ? requiredSkillTextarea.value.split(',').map(skill => skill.trim()) : [],
+        };
+
+        try {
+            const response = await fetch('/admin/companyinfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if(response.status === 201) {
+                alert("채용공고 등록 성공")
+                location.reload();
+            } else {
+                alert("채용공고 등록에 실패했습니다.");
+            }
+        } catch (error) {
+            alert("채용공고 등록에 실패했습니다.");
+            console.error(error);
+        }
+    }
+
+    registerCompanyInfoBtn.addEventListener('click', registerCompanyInfoFetch);
 </script>
 
 </body>
