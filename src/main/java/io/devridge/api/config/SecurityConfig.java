@@ -92,7 +92,13 @@ public class SecurityConfig {
                     .accessDeniedHandler(this::adminAccessDeniedResponseHandler).and()
                 .authorizeRequests()
                     .antMatchers("/admin/login").permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN");
+                    .antMatchers("/admin/**").hasRole("ADMIN").and()
+                .logout()
+                    .logoutUrl("/admin/logout")
+                    .logoutSuccessUrl("/admin/login?error=logout")
+                    .deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true);
+
         return http.build();
     }
 
