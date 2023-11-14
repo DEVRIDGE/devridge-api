@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,6 +36,9 @@ public class Course extends BaseTimeEntity {
     @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
+
+    @OneToMany(mappedBy = "course")
+    private List<CourseToDetail> courseToDetails = new ArrayList<>();
 
     @Builder
     public Course(Long id, String name, CourseType type, int order, Job job) {

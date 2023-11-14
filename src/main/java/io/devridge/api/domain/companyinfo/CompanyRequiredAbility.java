@@ -33,8 +33,4 @@ public class CompanyRequiredAbility extends BaseTimeEntity {
         this.name = name;
         this.courseDetail = courseDetail;
     }
-
-    public void changeCourseDetail(CourseDetail courseDetail) {
-        this.courseDetail = courseDetail;
-    }
 }
