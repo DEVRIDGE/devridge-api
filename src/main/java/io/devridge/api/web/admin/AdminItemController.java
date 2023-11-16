@@ -9,11 +9,12 @@ import io.devridge.api.service.admin.AdminCourseDetailService;
 import io.devridge.api.service.admin.AdminCourseItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,8 +25,8 @@ public class AdminItemController {
     private final AdminCourseItemService adminCourseItemService;
 
     @GetMapping("/item")
-    public String courseDetailListViewWithItem(Model model) {
-        List<CourseDetailDto> courseDetailList = adminCourseDetailService.getAllCourseDetail();
+    public String courseDetailListViewWithItem(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<CourseDetailDto> courseDetailList = adminCourseDetailService.getAllCourseDetail(pageable);
         model.addAttribute("courseDetailList", courseDetailList);
 
         return "course_item/course_item_main";
@@ -34,6 +35,7 @@ public class AdminItemController {
     @GetMapping("/item/{courseDetailId}")
     public String courseItemList(@PathVariable Long courseDetailId,
                                  @RequestParam(value = "isActive", defaultValue = "false") boolean isActive,
+                                 @RequestParam(value = "beforePage", defaultValue = "0") int beforePage,
                                  Model model) {
         try {
             CourseItemListDto courseItemList = adminCourseItemService.findAllItemByCourseDetailId(courseDetailId);
@@ -41,6 +43,7 @@ public class AdminItemController {
             model.addAttribute("courseItemList", courseItemList);
             model.addAttribute("isActive", isActive);
             model.addAttribute("courseDetailId", courseDetailId);
+            model.addAttribute("beforePage", beforePage);
 
             return "course_item/course_item_list";
         } catch (CourseDetailNotFoundException e) {

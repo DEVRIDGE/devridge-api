@@ -1,12 +1,13 @@
 package io.devridge.api.service.admin;
 
+import io.devridge.api.domain.roadmap.CourseDetail;
 import io.devridge.api.domain.roadmap.CourseDetailRepository;
 import io.devridge.api.dto.admin.CourseDetailDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -14,7 +15,8 @@ public class AdminCourseDetailService {
 
     private final CourseDetailRepository courseDetailRepository;
 
-    public List<CourseDetailDto> getAllCourseDetail() {
-        return courseDetailRepository.findAllByOrderByName().stream().map(CourseDetailDto::new).collect(Collectors.toList());
+    public Page<CourseDetailDto> getAllCourseDetail(Pageable pageable) {
+        Page<CourseDetail> courseDetailPage = courseDetailRepository.findAllByOrderByName(pageable);
+        return courseDetailPage.map(CourseDetailDto::new);
     }
 }

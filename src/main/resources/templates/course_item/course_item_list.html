@@ -22,7 +22,9 @@
     <div th:replace="course_item/modal/model_book_delete :: bookDeleteModal"></div>
 
     <div class="container mt-5">
-        <a href="/admin/item"><button type="submit" class="btn btn-danger mb-5">뒤로가기</button></a>
+        <a th:href="@{/admin/item(page=${beforePage})}">
+            <button type="button" class="btn btn-danger mb-5">뒤로가기</button>
+        </a>
         <h1 th:text="${courseItemList.detailName}">제목</h1>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">

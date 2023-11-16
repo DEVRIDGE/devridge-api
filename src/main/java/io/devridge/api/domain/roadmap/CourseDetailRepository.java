@@ -1,5 +1,7 @@
 package io.devridge.api.domain.roadmap;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,7 +22,7 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail, Long
             "WHERE ctd.course.id = :courseId ORDER BY cd.name")
     List<CourseDetail> getAllCourseDetailByCourseIdOrderByName(Long courseId);
 
-    List<CourseDetail> findAllByOrderByName();
+    Page<CourseDetail> findAllByOrderByName(Pageable pageable);
 
     @Query("SELECT cd FROM CourseDetail cd WHERE REPLACE(LOWER(cd.name), ' ', '') = LOWER(REPLACE(:name, ' ', ''))")
     Optional<CourseDetail> findByNameIgnoringCaseAndSpaces(String name);

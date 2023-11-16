@@ -9,9 +9,48 @@
 <body>
     <header id="header" th:replace="~{common/header :: header}"></header>
 
-    <div style="width: 100vw; display: flex; align-items: center; flex-wrap: wrap">
-        <div th:each="courseDetail : ${courseDetailList}" style="padding: 20px;border:solid 1px #ccc; min-width: 25%; text-align: center;">
-            <a th:href="@{/admin/item/{id}(id=${courseDetail.id})}" th:text="${courseDetail.name}"></a>
+    <div class="container">
+        <div class="text-center mb-4" style="margin-top:40px;">
+            <h2 class="fw-bold" >코스 상세</h2>
+        </div>
+
+        <div class="required-list-wrap">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>설명</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="courseDetail : ${courseDetailList}"
+                    th:attr="data-url=@{/admin/item/{id}(id=${courseDetail.id}, beforePage=${courseDetailList.number})}"
+                    onclick="window.location.href = this.dataset.url">
+                    <td th:text="${courseDetail.name}">상세 이름</td>
+                    <td th:text="${courseDetail.description}">상세 설명</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:class="${courseDetailList.number == 0 ? 'disabled' : ''}">
+                        <a class="page-link" href="javascript:void(0);" th:href="${courseDetailList.number > 0 ? ('/admin/item?page=0&size=' + courseDetailList.size) : '#'}">&laquo;&laquo;</a>
+                    </li>
+                    <li class="page-item" th:class="${courseDetailList.number < 5 ? 'disabled' : ''}">
+                        <a class="page-link" href="javascript:void(0);" th:href="${courseDetailList.number >= 5 ? ('/admin/item?page=' + (courseDetailList.number - 5) + '&size=' + courseDetailList.size) : '#'}">&laquo;</a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(courseDetailList.number / 5 * 5, (courseDetailList.totalPages - 1 < (courseDetailList.number / 5 * 5) + 4) ? (courseDetailList.totalPages - 1) : (courseDetailList.number / 5 * 5) + 4)}" class="page-item" th:class="${i == courseDetailList.number ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/admin/item(page=${i}, size=${courseDetailList.size})}" th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:class="${courseDetailList.totalPages <= courseDetailList.number / 5 * 5 + 5 ? 'disabled' : ''}">
+                        <a class="page-link" href="javascript:void(0);" th:href="${courseDetailList.totalPages > courseDetailList.number / 5 * 5 + 5 ? ('/admin/item?page=' + (courseDetailList.number / 5 * 5 + 5) + '&size=' + courseDetailList.size) : '#'}">&raquo;</a>
+                    </li>
+                    <li class="page-item" th:class="${courseDetailList.number + 1 == courseDetailList.totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="javascript:void(0);" th:href="${courseDetailList.totalPages > 1 ? ('/admin/item?page=' + (courseDetailList.totalPages - 1) + '&size=' + courseDetailList.size) : '#'}">&raquo;&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
