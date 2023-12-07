@@ -1,7 +1,8 @@
 # DEVRIDGE
 ## Live
 
-Link: [https://devridge.dev](https://devridge.dev/)
+Link: [https://devridge.dev](https://devridge.dev/)  
+Repository: [https://github.com/DEVRIDGE/devridge-api](https://github.com/DEVRIDGE/devridge-api)
 
 ![Demo](docs/readme1.png)
 
@@ -70,3 +71,33 @@ sh start.sh
 </table>
 
 ## 릴리즈 노트
+
+### Version 1.0.0 (2023. 9. 19)
+
+- 구글 로그인 기능 추가
+- 회사별 맞춤 채용 정보에 기반한 로드맵 제공.
+- 학습 주제에 적합한 영상 정보 제공.
+- 사용자 권한에 따른 정보 제공 차별화 기능 도입.
+
+### Version 1.0.1 (2023. 10. 4)
+
+- 관리자 서비스 추가(코스 관리, 채용 정보 간편 등록, 영상 관리)
+  
+### Version 1.1.0 (2023. 10. 12)
+
+- 채널톡을 통한 설문조사 및 고객응대 기능 도입
+
+### Version 2.0.0 (2023. 10. 27)
+
+- 시스템 설계 변경 및 개편 (중복 데이터 문제 해결)
+
+### Version 2.1.0 (2023. 11. 1)
+
+- 영상 '좋아요' 기능 추가.
+- 학습 상태 변경 로직 추가.
+- 책 정보 제공 기능 추가.
+- 기술 설명 추가
+
+### Version 2.1.1 (2023. 11. 14)
+
+- 관리자 페이지 개편 및 채용공고 등록 자동화.

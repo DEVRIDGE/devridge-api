@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.devridge'
-version = '1.2.2-SNAPSHOT'
+version = '2.1.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '11'
