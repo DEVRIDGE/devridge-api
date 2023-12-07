@@ -53,29 +53,19 @@ sh start.sh
 
 ## 프로젝트 멤버
 
-<table border="1">
+<table>
+  <th align="center">프론트엔드</th>
+  <th align="center">백엔드</th>
+  <th align="center">백엔드</th>
   <tr>
-    <td align="center">
-      프론트엔드
-      <hr>
-      <img src="https://avatars.githubusercontent.com/u/104720635?v=4" alt="배민수" style="border-radius: 50%; width: 100px; height: 100px;">
-      <hr>
-      <a href="https://github.com/minsu-cnu">배민수</a>
-    </td>
-    <td align="center">
-      백엔드
-      <hr>
-      <img src="https://avatars.githubusercontent.com/u/86590710?v=4" alt="김우성" style="border-radius: 50%; width: 100px; height: 100px;">
-      <hr>
-      <a href="https://github.com/woosungkim0123">김우성</a>
-    </td>
-    <td align="center">
-      백엔드
-      <hr>
-      <img src="https://avatars.githubusercontent.com/u/83588265?v=4" alt="송하빈" style="border-radius: 50%; width: 100px; height: 100px;">
-      <hr>
-      <a href="https://github.com/boulce">송하빈</a>
-    </td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/104720635?v=4" alt="배민수" style="border-radius: 50%; width: 100px; height: 100px;"></td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/86590710?v=4" alt="김우성" style="border-radius: 50%; width: 100px; height: 100px;"></td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/83588265?v=4" alt="송하빈" style="border-radius: 50%; width: 100px; height: 100px;"></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/minsu-cnu">배민수</a></td>
+    <td align="center"><a href="https://github.com/woosungkim0123">김우성</a></td>
+    <td align="center"><a href="https://github.com/boulce">송하빈</a></td>
   </tr>
 </table>
 
