@@ -40,6 +40,5 @@ out/
 src/main/resources/application-prod.yaml
 
 .DS_Store
-Dockerfile
 
 
