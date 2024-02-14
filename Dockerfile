@@ -8,4 +8,4 @@ WORKDIR /app
 COPY build/libs/devridge-*.jar app.jar
 
 # 컨테이너가 시작될 때 실행될 명령어를 지정합니다.
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/config/", "app.jar"]
