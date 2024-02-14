@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: devridge docker  # 환경 이름을 지정합니다.
     steps:
-      - uses: actions/checkout@v2
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: devridge-artifact
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
@@ -27,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/your-app-name:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:latest
