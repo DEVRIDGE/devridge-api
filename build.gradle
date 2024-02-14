@@ -5,10 +5,14 @@ plugins {
 }
 
 group = 'io.devridge'
-version = '2.1.1-SNAPSHOT'
+version = '2.1.1'
 
 java {
 	sourceCompatibility = '11'
+}
+
+jar {
+	enabled = false
 }
 
 configurations {
@@ -46,8 +50,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-jar {
-	enabled=true
 }
