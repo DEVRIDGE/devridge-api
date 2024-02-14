@@ -11,7 +11,7 @@ jobs:
   build-and-test: # 잡 이름
 
     runs-on: ubuntu-latest # 실행 환경
-
+    environment: devridge docker # github secrets 환경 시크릿
     steps:
       - uses: actions/checkout@v2
 
