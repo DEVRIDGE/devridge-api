@@ -40,5 +40,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no gitaction@3.38.125.102 << EOF
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:${{ secrets.DOCKER_IMAGE_TAG }}
-            /home/gitaction/deploy.sh ${{ secrets.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKER_HUB_USERNAME }}
+            sh /home/gitaction/deploy.sh ${{ secrets.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKER_HUB_USERNAME }}
           EOF
