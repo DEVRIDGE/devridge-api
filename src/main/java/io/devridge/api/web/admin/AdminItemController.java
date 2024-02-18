@@ -48,7 +48,7 @@ public class AdminItemController {
             return "course_item/course_item_list";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item?error=not_found_course_detail";
+            return "redirect:/api/admin/item?error=not_found_course_detail";
         }
     }
 
@@ -57,10 +57,10 @@ public class AdminItemController {
                                  @ModelAttribute VideoRegisterFormDto videoRegisterFormDto) {
         try {
             adminCourseItemService.saveVideo(courseDetailId, videoRegisterFormDto);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=saved";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=saved";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item?error=not_found_course_detail";
+            return "redirect:/api/admin/item?error=not_found_course_detail";
         }
     }
 
@@ -69,13 +69,13 @@ public class AdminItemController {
                                  @ModelAttribute VideoModifyFormDto videoModifyFormDto) {
         try {
             adminCourseItemService.modifyVideo(courseDetailId, videoModifyFormDto);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=modified";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=modified";
         } catch (CourseDetailNotFoundException e ) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item?error=not_found_course_detail";
+            return "redirect:/api/admin/item?error=not_found_course_detail";
         } catch (NotFoundCourseVideoException e) {
             log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item/" + courseDetailId + "?error=fail_modified";
+            return "redirect:/api/admin/item/" + courseDetailId + "?error=fail_modified";
         }
     }
 
@@ -84,10 +84,10 @@ public class AdminItemController {
                                     @RequestParam Long videoId) {
         try {
             adminCourseItemService.deleteVideo(videoId);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=deleted";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=deleted";
         } catch (NotFoundCourseVideoException e) {
             log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item/" + courseDetailId + "?error=fail_deleted";
+            return "redirect:/api/admin/item/" + courseDetailId + "?error=fail_deleted";
         }
     }
 
@@ -96,10 +96,10 @@ public class AdminItemController {
                                  @ModelAttribute BookRegisterFormDto bookRegisterFormDto) {
         try {
             adminCourseItemService.saveBook(courseDetailId, bookRegisterFormDto);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=saved&isActive=true";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=saved&isActive=true";
         } catch (CourseDetailNotFoundException e) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item?error=not_found_course_detail";
+            return "redirect:/api/admin/item?error=not_found_course_detail";
         }
     }
 
@@ -108,13 +108,13 @@ public class AdminItemController {
                                     @ModelAttribute BookModifyFormDto bookModifyFormDto) {
         try {
             adminCourseItemService.modifyBook(courseDetailId, bookModifyFormDto);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=modified&isActive=true";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=modified&isActive=true";
         } catch (CourseDetailNotFoundException e ) {
             log.error("코스 상세를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item?error=not_found_course_detail";
+            return "redirect:/api/admin/item?error=not_found_course_detail";
         } catch (NotFoundCourseBookException e) {
             log.error("코스 책을 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item/" + courseDetailId + "?error=fail_modified&isActive=true";
+            return "redirect:/api/admin/item/" + courseDetailId + "?error=fail_modified&isActive=true";
         }
     }
 
@@ -123,10 +123,10 @@ public class AdminItemController {
                                     @RequestParam Long bookId) {
         try {
             adminCourseItemService.deleteBook(bookId);
-            return "redirect:/admin/item/" + courseDetailId + "?alertMessage=deleted&isActive=true";
+            return "redirect:/api/admin/item/" + courseDetailId + "?alertMessage=deleted&isActive=true";
         } catch (NotFoundCourseBookException e) {
             log.error("코스 비디오를 찾을 수 없습니다. = {0}", e);
-            return "redirect:/admin/item/" + courseDetailId + "?error=fail_deleted&isActive=true";
+            return "redirect:/api/admin/item/" + courseDetailId + "?error=fail_deleted&isActive=true";
         }
     }
 }
