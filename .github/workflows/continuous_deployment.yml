@@ -30,18 +30,15 @@ jobs:
         run: |
           aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Pull and Restart Docker Container
+      - name: Execute Deploy Script with Docker Pull
         run: |
           ssh -o StrictHostKeyChecking=no gitaction@3.38.125.102 << EOF
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:latest
-            docker stop devridge-container || true
-            docker rm devridge-container || true
-            docker run -d --name devridge-container -p 8081:8081 --env SPRING_PROFILES_ACTIVE=prod -v ~/setting:/config ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:latest
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:${{ secrets.DOCKER_IMAGE_TAG }}
+            /home/gitaction/deploy.sh ${{ secrets.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKER_HUB_USERNAME }}
           EOF

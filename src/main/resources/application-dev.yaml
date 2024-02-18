@@ -47,8 +47,3 @@ spring:
   sql:
     init:
       mode: always
-
-logging:
-  level:
-    org.hibernate.type: TRACE
-    io.devridge.api: DEBUG
