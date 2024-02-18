@@ -42,3 +42,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/devridge:${{ secrets.DOCKER_IMAGE_TAG }}
             /home/gitaction/deploy.sh ${{ secrets.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKER_HUB_USERNAME }}
           EOF
+
+      - name: Remove Github Actions IP from Security Group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
