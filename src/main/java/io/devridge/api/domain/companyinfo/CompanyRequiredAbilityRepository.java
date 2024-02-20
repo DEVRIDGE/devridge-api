@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -11,5 +12,5 @@ public interface CompanyRequiredAbilityRepository extends JpaRepository<CompanyR
     Page<CompanyRequiredAbility> findByCourseDetailIdIsNull(Pageable pageable);
 
     @Query("SELECT cra FROM CompanyRequiredAbility cra WHERE LOWER(REPLACE(cra.name, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
-    Optional<CompanyRequiredAbility> findByNameIgnoreCaseAndSpacesRemoved(String name);
+    Optional<CompanyRequiredAbility> findByNameIgnoreCaseAndSpacesRemoved(@Param("name") String name);
 }

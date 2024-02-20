@@ -3,6 +3,7 @@ package io.devridge.api.domain.video;
 import io.devridge.api.dto.item.CourseVideoWithLikeDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface CourseVideoRepository extends JpaRepository<CourseVideo, Long> 
             "COUNT(cvu2.id) DESC, " +
             "CASE WHEN cv.language = 'KOR' THEN 1 ELSE 2 END , " +
             "cv.title ")
-    List<CourseVideoWithLikeDto> findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(Long userId, Long courseDetailId);
+    List<CourseVideoWithLikeDto> findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(@Param("userId") Long userId, @Param("courseDetailId") Long courseDetailId);
 
-    List<CourseVideo> findByCourseDetailId(Long courseDetailId);
+    List<CourseVideo> findByCourseDetailId(@Param("courseDetailId") Long courseDetailId);
 }

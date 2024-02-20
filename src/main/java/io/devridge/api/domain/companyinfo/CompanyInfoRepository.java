@@ -4,6 +4,7 @@ import io.devridge.api.dto.admin.CompanyInfoDto;
 import io.devridge.api.dto.admin.CompanyInfoIdDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
             "JOIN FETCH ci.company c " +
             "JOIN FETCH ci.job j " +
             "WHERE ci.company.id = :companyId AND ci.job.id = :jobId AND ci.detailedPosition.id = :detailedPositionId")
-    Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(long companyId, long jobId, long detailedPositionId);
+    Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionIdWithFetchJoin(@Param("companyId") long companyId, @Param("jobId") long jobId, @Param("detailedPositionId") long detailedPositionId);
 
     Optional<CompanyInfo> findByCompanyIdAndJobIdAndDetailedPositionId(long companyId, long jobId, long detailedPositionId);
 
