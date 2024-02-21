@@ -21,6 +21,8 @@ public class OAuth2Attribute {
         switch (provider) {
             case "google":
                 return ofGoogle(provider, attributes);
+            case "kakao":
+                return ofKakao(provider, attributes);
             default:
                 throw new UnsupportedProviderException(provider);
         }
@@ -31,6 +33,17 @@ public class OAuth2Attribute {
                 .email(getStringAttribute(attributes, "email"))
                 .name(getStringAttribute(attributes, "name"))
                 .picture(getStringAttribute(attributes, "picture"))
+                .provider(provider)
+                .attributes(attributes)
+                .build();
+    }
+
+    private static OAuth2Attribute ofKakao(String provider, Map<String, Object> attributes) {
+        KakaoProfile kakaoProfile = new KakaoProfile(attributes);
+        return OAuth2Attribute.builder()
+                .email(kakaoProfile.getKakaoAccount().getEmail())
+                .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                .picture(kakaoProfile.getKakaoAccount().getProfile().getThumbnailImageUrl())
                 .provider(provider)
                 .attributes(attributes)
                 .build();

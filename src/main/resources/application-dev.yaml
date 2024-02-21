@@ -23,6 +23,25 @@ spring:
             scope:
               - email
               - profile
+          kakao:
+            client-id: 35277fca72a287a03382401a75858be5
+            client-secret: MTGBbR3Q9IdzODJwxMaMyOAbAvwD5RI8
+            client-authentication-method: client_secret_post
+            redirect-uri: http://localhost:8081/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
     driver-class-name: org.h2.Driver
