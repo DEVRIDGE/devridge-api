@@ -8,6 +8,7 @@ on:
 jobs:
   docker-build-and-push:
     runs-on: ubuntu-latest
+    if: github.repository == 'DEVRIDGE/devridge-api'
     environment: devridge docker  # 환경 이름을 지정합니다.
     steps:
       - name: Checkout repository
