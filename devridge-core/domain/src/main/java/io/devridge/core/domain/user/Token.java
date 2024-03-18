@@ -1,7 +1,6 @@
-package io.devridge.core.domain.token;
+package io.devridge.core.domain.user;
 
 import io.devridge.core.domain.common.BaseTimeEntity;
-import io.devridge.core.domain.user.User;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -30,4 +29,9 @@ public class Token extends BaseTimeEntity {
 
     @Column(nullable = false, name = "token_expired_at")
     private LocalDateTime expiredAt;
+
+    public Token changeContent(String content) {
+        this.content = content;
+        return this;
+    }
 }

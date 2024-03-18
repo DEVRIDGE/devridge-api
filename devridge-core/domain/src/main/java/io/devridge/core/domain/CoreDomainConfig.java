@@ -6,6 +6,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @EntityScan("io.devridge.core.domain") //
-@EnableJpaRepositories("io.devridge.core.domain")
+@EnableJpaRepositories("io.devridge")
 public class CoreDomainConfig {
 }
