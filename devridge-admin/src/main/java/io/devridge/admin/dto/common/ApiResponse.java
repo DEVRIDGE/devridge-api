@@ -1,4 +1,4 @@
-package io.devridge.api.dto.common;
+package io.devridge.admin.dto.common;
 
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
@@ -15,9 +15,9 @@ public class ApiResponse<T> {
     private static final String SUCCESS_STATUS = "success";
     private static final String ERROR_STATUS = "error";
 
-    private String status;
-    private String message;
-    private T data;
+    private final String status;
+    private final String message;
+    private final T data;
 
     private ApiResponse(String status, String message, T data) {
         this.status = status;
