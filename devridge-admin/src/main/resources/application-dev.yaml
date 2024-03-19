@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
   error:
     include-exception: false
     include-binding-errors: never
@@ -65,4 +65,4 @@ spring:
       enabled: always
   sql:
     init:
-      mode: always
+      mode: never

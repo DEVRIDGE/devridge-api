@@ -42,7 +42,7 @@ spring:
             user-name-attribute: id
   datasource:
     
-    url: jdbc:mar://devridge-database.cfoqqq4kwavy.ap-northeast-2.rds.amazonaws.com:3306/devridge
+    url: jdbc:mysql://devridge-database.cfoqqq4kwavy.ap-northeast-2.rds.amazonaws.com:3306/devridge
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: devridge
     password: devr2024!
