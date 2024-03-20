@@ -34,8 +34,8 @@ class DetailedPositionServiceTest {
     @Test
     void getDetailedPositionList_success_test() {
         // given
-        Long companyId = 1L;
-        Long jobId = 1L;
+        long companyId = 1L;
+        long jobId = 1L;
 
         // stub
         Company company = Company.builder().id(1L).name("company1").build();
@@ -61,8 +61,8 @@ class DetailedPositionServiceTest {
     @Test
     void getDetailedPositionList_empty_test() {
         // given
-        Long companyId = 1L;
-        Long jobId = 1L;
+        long companyId = 1L;
+        long jobId = 1L;
 
         // stub
         when(jobService.findCompanyJob(companyId, jobId)).thenReturn(Optional.of(CompanyJob.builder().build()));
@@ -79,8 +79,8 @@ class DetailedPositionServiceTest {
     @Test
     void validateCompanyJob_notFound_test() {
         // given
-        Long companyId = 1L;
-        Long jobId = 1L;
+        long companyId = 1L;
+        long jobId = 1L;
 
         // stub
         when(jobService.findCompanyJob(companyId, jobId)).thenReturn(Optional.empty());

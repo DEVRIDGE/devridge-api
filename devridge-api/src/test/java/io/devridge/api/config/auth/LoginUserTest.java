@@ -16,7 +16,7 @@ class LoginUserTest {
 
     @DisplayName("로그인 한 사용자의 권한을 확인한다.")
     @Test
-    public void oauth2_unmatched_email_and_provider_exception_test() throws IOException, ServletException {
+    public void oauth2_unmatched_email_and_provider_exception_test() {
         // given
         User user = User.builder().email("test@test.com").role(UserRole.USER).build();
         LoginUser loginUser = LoginUser.builder().user(user).build();

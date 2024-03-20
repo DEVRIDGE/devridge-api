@@ -3,7 +3,6 @@ package io.devridge.api.service.user;
 import io.devridge.api.config.auth.OAuth2Attribute;
 import io.devridge.api.handler.ex.UnmatchedEmailAndProviderException;
 import io.devridge.api.repository.user.ApiUserRepository;
-import io.devridge.api.service.user.UserService;
 import io.devridge.core.domain.user.User;
 import io.devridge.core.domain.user.UserRole;
 import org.junit.jupiter.api.DisplayName;
