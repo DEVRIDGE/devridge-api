@@ -1,10 +1,11 @@
-package io.devridge.api.service;
+package io.devridge.api.service.user;
 
 import io.devridge.api.config.auth.OAuth2Attribute;
-import io.devridge.api.domain.user.User;
-import io.devridge.api.domain.user.UserRepository;
-import io.devridge.api.domain.user.UserRole;
 import io.devridge.api.handler.ex.UnmatchedEmailAndProviderException;
+import io.devridge.api.repository.user.ApiUserRepository;
+import io.devridge.api.service.user.UserService;
+import io.devridge.core.domain.user.User;
+import io.devridge.core.domain.user.UserRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Mock
-    private UserRepository userRepository;
+    private ApiUserRepository userRepository;
 
     @DisplayName("OAuth2 로그인을 통해 들어온 이메일을 가지고 유저 정보를 확인한다.")
     @Test

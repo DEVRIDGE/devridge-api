@@ -1,12 +1,12 @@
 package io.devridge.api.util.jwt;
 
-import io.devridge.api.domain.user.User;
 import io.devridge.api.mock.FakeTimeProvider;
 import io.devridge.api.mock.FakeTokenProvider;
 import io.devridge.api.util.jwt.exception.JwtExpiredException;
 import io.devridge.api.util.jwt.exception.JwtIdConversionException;
 import io.devridge.api.util.jwt.exception.JwtNotHaveIdException;
 import io.devridge.api.util.jwt.exception.JwtVerifyException;
+import io.devridge.core.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class TokenProcessTest {
         TokenDto result = tokenProcess.createAccessToken(user);
 
         // then
-        assertThat(result.getToken()).isEqualTo("access_success_token");
+        assertThat(result.getTokenContent()).isEqualTo("access_success_token");
         assertThat(result.getExpiredAt()).isEqualTo(LocalDateTime.of(2020, 1, 1, 0, 30, 0));
     }
 
@@ -56,7 +56,7 @@ class TokenProcessTest {
         TokenDto result = tokenProcess.createRefreshToken();
 
         // then
-        assertThat(result.getToken()).isEqualTo("refresh_success_token");
+        assertThat(result.getTokenContent()).isEqualTo("refresh_success_token");
         assertThat(result.getExpiredAt()).isEqualTo(LocalDateTime.of(2020, 1, 8, 0, 0, 0));
     }
 

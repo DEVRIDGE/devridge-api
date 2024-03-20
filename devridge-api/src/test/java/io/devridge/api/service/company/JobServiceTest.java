@@ -1,6 +1,6 @@
 package io.devridge.api.service.company;
 
-import io.devridge.api.dto.company.JobListDto;
+import io.devridge.api.dto.company.JobListResponse;
 import io.devridge.api.handler.ex.company.CompanyNotFoundException;
 import io.devridge.api.repository.company.ApiCompanyJobRepository;
 import io.devridge.core.domain.company.Company;
@@ -51,7 +51,7 @@ class JobServiceTest {
         when(companyJobRepository.getCompanyJobByCompany(company)).thenReturn(companyJobs);
 
         // when
-        JobListDto result = jobService.getJobListByCompanyId(1L);
+        JobListResponse result = jobService.getJobListByCompanyId(1L);
 
         // then
         assertThat(result.getJobs().size()).isEqualTo(2);
@@ -73,7 +73,7 @@ class JobServiceTest {
         when(companyJobRepository.getCompanyJobByCompany(company)).thenReturn(companyJobs);
 
         // when
-        JobListDto result = jobService.getJobListByCompanyId(1L);
+        JobListResponse result = jobService.getJobListByCompanyId(1L);
 
         // then
         assertThat(result.getJobs().size()).isEqualTo(0);

@@ -1,6 +1,6 @@
 package io.devridge.api.service.company;
 
-import io.devridge.api.dto.company.CompanyListDto;
+import io.devridge.api.dto.company.CompanyListResponse;
 import io.devridge.core.domain.company.Company;
 import io.devridge.core.domain.company.CompanyRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ class CompanyServiceTest {
         when(companyRepository.findAll()).thenReturn(companies);
 
         // when
-        CompanyListDto companyList = companyService.getCompanyList();
+        CompanyListResponse companyList = companyService.getCompanyList();
 
         // then
         assertThat(companyList.getCompanies().size()).isEqualTo(2);
@@ -58,7 +58,7 @@ class CompanyServiceTest {
         when(companyRepository.findAll()).thenReturn(companies);
 
         // when
-        CompanyListDto companyList = companyService.getCompanyList();
+        CompanyListResponse companyList = companyService.getCompanyList();
 
         // then
         assertThat(companyList.getCompanies().size()).isEqualTo(0);

@@ -1,6 +1,6 @@
 package io.devridge.api.service.company;
 
-import io.devridge.api.dto.company.DetailedPositionListDto;
+import io.devridge.api.dto.company.DetailedPositionListResponse;
 import io.devridge.api.handler.ex.company.CompanyJobNotFoundException;
 import io.devridge.api.repository.company.ApiDetailedPositionRepository;
 import io.devridge.core.domain.company.*;
@@ -47,7 +47,7 @@ class DetailedPositionServiceTest {
         when(detailedPositionRepository.findByCompanyIdAndJobId(companyId, jobId)).thenReturn(detailedPositions);
 
         // when
-        DetailedPositionListDto detailedPositionList = detailedPositionService.getDetailedPositionList(companyId, jobId);
+        DetailedPositionListResponse detailedPositionList = detailedPositionService.getDetailedPositionList(companyId, jobId);
 
         // then
         assertThat(detailedPositionList.getDetailedPositionDtos().size()).isEqualTo(2);
@@ -69,7 +69,7 @@ class DetailedPositionServiceTest {
         when(detailedPositionRepository.findByCompanyIdAndJobId(companyId, jobId)).thenReturn(List.of());
 
         // when
-        DetailedPositionListDto detailedPositionList = detailedPositionService.getDetailedPositionList(companyId, jobId);
+        DetailedPositionListResponse detailedPositionList = detailedPositionService.getDetailedPositionList(companyId, jobId);
 
         // then
         assertThat(detailedPositionList.getDetailedPositionDtos().size()).isEqualTo(0);

@@ -1,7 +1,7 @@
 package io.devridge.api.config.auth;
 
-import io.devridge.api.domain.user.User;
-import io.devridge.api.service.TokenService;
+import io.devridge.api.service.user.TokenService;
+import io.devridge.core.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

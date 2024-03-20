@@ -1,14 +1,14 @@
 package io.devridge.api.config.filter;
 
-import io.devridge.api.domain.user.User;
-import io.devridge.api.domain.user.UserRepository;
-import io.devridge.api.domain.user.UserRole;
+import io.devridge.api.repository.user.ApiUserRepository;
 import io.devridge.api.util.jwt.JwtSetting;
 import io.devridge.api.util.jwt.TokenProcess;
 import io.devridge.api.util.jwt.exception.JwtExpiredException;
 import io.devridge.api.util.jwt.exception.JwtIdConversionException;
 import io.devridge.api.util.jwt.exception.JwtNotHaveIdException;
 import io.devridge.api.util.jwt.exception.JwtVerifyException;
+import io.devridge.core.domain.user.User;
+import io.devridge.core.domain.user.UserRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +46,7 @@ class JwtAuthorizationFilterTest {
     private TokenProcess tokenProcess;
 
     @MockBean
-    private UserRepository userRepository;
+    private ApiUserRepository userRepository;
 
     @DisplayName("로그인이 필요없는 API에 토큰을 가지고 있어도 검증 없이 응답한다.")
     @Test

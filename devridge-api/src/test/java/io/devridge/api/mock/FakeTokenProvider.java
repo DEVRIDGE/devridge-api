@@ -1,11 +1,11 @@
 package io.devridge.api.mock;
 
-import io.devridge.api.domain.user.User;
 import io.devridge.api.util.jwt.TokenProvider;
 import io.devridge.api.util.jwt.exception.JwtExpiredException;
 import io.devridge.api.util.jwt.exception.JwtIdConversionException;
 import io.devridge.api.util.jwt.exception.JwtNotHaveIdException;
 import io.devridge.api.util.jwt.exception.JwtVerifyException;
+import io.devridge.core.domain.user.User;
 
 import java.time.LocalDateTime;
 import java.util.Date;

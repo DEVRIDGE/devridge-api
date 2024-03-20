@@ -1,7 +1,7 @@
 package io.devridge.api.config.auth;
 
-import io.devridge.api.domain.user.User;
-import io.devridge.api.domain.user.UserRole;
+import io.devridge.core.domain.user.User;
+import io.devridge.core.domain.user.UserRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
