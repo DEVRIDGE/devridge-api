@@ -28,7 +28,7 @@ public class CompanyController {
     }
 
     @GetMapping("/companies/{companyId}/jobs")
-    public ResponseEntity<ApiResponse<JobListResponse>> getJobs(@PathVariable("company") Long companyId) {
+    public ResponseEntity<ApiResponse<JobListResponse>> getJobs(@PathVariable("companyId") Long companyId) {
         JobListResponse jobListResponse = jobService.getJobListByCompanyId(companyId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(jobListResponse));
