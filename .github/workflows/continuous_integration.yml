@@ -22,7 +22,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew bootApiJar
+        run: ./gradlew build
 
       - name: Run tests
         run: ./gradlew test
