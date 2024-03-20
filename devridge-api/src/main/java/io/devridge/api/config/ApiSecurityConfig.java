@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class SecurityConfig {
+public class ApiSecurityConfig {
     private final Environment environment;
     private final OAuth2UserService oauth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;

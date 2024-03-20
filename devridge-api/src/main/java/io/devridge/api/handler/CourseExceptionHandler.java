@@ -45,9 +45,9 @@ public class CourseExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(exception.getMessage()));
     }
 
-    @ExceptionHandler(UnauthorizedCourseAccessException.class)
-    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedCourseAccessException(UnauthorizedCourseAccessException exception) {
-        log.error("UnauthorizedCourseAccessException = {}", exception.getMessage());
+    @ExceptionHandler(UnAuthorizedCourseAccessException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedCourseAccessException(UnAuthorizedCourseAccessException exception) {
+        log.error("UnAuthorizedCourseAccessException = {}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Login required"));
     }
 

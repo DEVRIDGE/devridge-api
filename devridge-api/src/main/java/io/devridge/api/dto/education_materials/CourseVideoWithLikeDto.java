@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 public class CourseVideoWithLikeDto {
-    private Long id;
-    private String title;
-    private String thumbnail;
-    private String url;
-    private VideoSource source;
-    private String userLikedYn;
-    private Long likeCnt;
+    private final Long id;
+    private final String title;
+    private final String thumbnail;
+    private final String url;
+    private final VideoSource source;
+    private final String userLikedYn;
+    private final Long likeCnt;
 
     @Builder
     public CourseVideoWithLikeDto(Long id, String title, String thumbnail, String url, VideoSource source, Long courseVideoUserId, Long likeCnt) {

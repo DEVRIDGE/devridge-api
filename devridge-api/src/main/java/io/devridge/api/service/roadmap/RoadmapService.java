@@ -46,7 +46,7 @@ public class RoadmapService {
     }
 
     @Transactional(readOnly = true)
-    public CourseDetailResponseDto getCourseDetails(long courseId, long jobId, long detailedPositionId, LoginUser loginUser) {
+    public CourseDetailResponseDto getCourseDetails(Long courseId, Long jobId, Long detailedPositionId, LoginUser loginUser) {
         RecruitmentInfo recruitmentInfo = findRecruitmentInfo(jobId, detailedPositionId);
 
         Roadmap roadmap = getRoadmapWithCourseByRecruitmentInfo(courseId, recruitmentInfo);
@@ -61,7 +61,7 @@ public class RoadmapService {
     }
 
     @Transactional(readOnly = true)
-    public CourseItemResponseDto getCourseVideoAndBookList(long courseId, long courseDetailId, long jobId, long detailedPositionId, LoginUser loginUser) {
+    public CourseItemResponseDto getCourseVideoAndBookList(Long courseId, Long courseDetailId, Long jobId, Long detailedPositionId, LoginUser loginUser) {
         CourseToDetail courseToDetail = findCourseInfo(courseId, courseDetailId);
 
         RecruitmentInfo recruitmentInfo = findRecruitmentInfo(jobId, detailedPositionId);
@@ -184,7 +184,7 @@ public class RoadmapService {
     private void checkIfCourseIsAllowedForUnauthenticatedUser(Long courseId, RecruitmentInfo recruitmentInfo, BiPredicate<Roadmap, Long> isMatch) {
         boolean isAllowedCourse = roadmapRepository.findTop2ByRecruitmentInfoIdOrderByCourseOrder(recruitmentInfo.getId())
                 .stream().anyMatch(roadmap -> isMatch.test(roadmap, courseId));
-        if (!isAllowedCourse) { throw new UnauthorizedCourseAccessException(); }
+        if (!isAllowedCourse) { throw new UnAuthorizedCourseAccessException(); }
     }
 
     // TODO : 예외 - CompanyInfo가 아니라 RecruitmentInfo로 변경
@@ -211,8 +211,8 @@ public class RoadmapService {
                 .orElseThrow(() -> new CourseDetailNotFoundException("해당하는 세부코스가 없습니다."));
     }
 
-    private List<CourseVideoWithLikeDto> getCourseVideos(Long loginUserId, long courseDetailId) {
-        return educationMaterialService.getCourseVideos(loginUserId, courseDetailId);
+    private List<CourseVideoWithLikeDto> getCourseVideos(Long courseDetailId, Long loginUserId) {
+        return educationMaterialService.getCourseVideos(courseDetailId, loginUserId);
     }
 
     private List<CourseBook> getCourseBooks(long courseDetailId) {

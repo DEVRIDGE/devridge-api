@@ -1,7 +1,7 @@
 package io.devridge.api.service.company;
 
 
-import io.devridge.api.dto.company.DetailedPositionListDto;
+import io.devridge.api.dto.company.DetailedPositionListResponse;
 import io.devridge.api.handler.ex.company.CompanyJobNotFoundException;
 import io.devridge.api.repository.company.ApiDetailedPositionRepository;
 import io.devridge.core.domain.company.DetailedPosition;
@@ -19,12 +19,12 @@ public class DetailedPositionService {
     private final JobService jobService;
     private final ApiDetailedPositionRepository detailedPositionRepository;
 
-    public DetailedPositionListDto getDetailedPositionList(Long companyId, Long jobId) {
+    public DetailedPositionListResponse getDetailedPositionList(Long companyId, Long jobId) {
         validateCompanyJob(companyId, jobId);
 
         List<DetailedPosition> detailedPositionList = detailedPositionRepository.findByCompanyIdAndJobId(companyId, jobId);
 
-        return new DetailedPositionListDto(detailedPositionList);
+        return new DetailedPositionListResponse(detailedPositionList);
     }
 
     private void validateCompanyJob(Long companyId, Long jobId) {

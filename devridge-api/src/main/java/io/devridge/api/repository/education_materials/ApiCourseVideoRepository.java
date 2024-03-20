@@ -27,7 +27,7 @@ public interface ApiCourseVideoRepository extends CourseVideoRepository {
             "COUNT(cvu2.id) DESC, " +
             "CASE WHEN cv.language = 'KOR' THEN 1 ELSE 2 END , " +
             "cv.title ")
-    List<CourseVideoWithLikeDto> findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(@Param("userId") Long userId, @Param("courseDetailId") Long courseDetailId);
+    List<CourseVideoWithLikeDto> findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(@Param("courseDetailId") Long courseDetailId, @Param("userId") Long userId);
 
     List<CourseVideo> findByCourseDetailId(@Param("courseDetailId") Long courseDetailId);
 }

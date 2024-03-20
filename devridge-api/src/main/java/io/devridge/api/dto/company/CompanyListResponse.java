@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class CompanyListDto {
+public class CompanyListResponse {
 
-    private List<CompanyDto> companies;
+    private final List<CompanyDto> companies;
 
-    public CompanyListDto(List<Company> companies) {
+    public CompanyListResponse(List<Company> companies) {
         this.companies = companies.stream()
                 .map(CompanyDto::new)
                 .collect(Collectors.toList());
     }
 
     @Getter
-    public class CompanyDto {
-        private Long id;
-        private String name;
+    public static class CompanyDto {
+        private final Long id;
+        private final String name;
 
         public CompanyDto(Company company) {
             this.id = company.getId();

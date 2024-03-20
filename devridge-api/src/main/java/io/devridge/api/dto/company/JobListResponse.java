@@ -8,20 +8,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class JobListDto {
+public class JobListResponse {
 
-    private List<JobDto> jobs;
+    private final List<JobDto> jobs;
 
-    public JobListDto(List<CompanyJob> companyJobs) {
+    public JobListResponse(List<CompanyJob> companyJobs) {
         this.jobs = companyJobs.stream()
                 .map(companyJob -> new JobDto(companyJob.getJob()))
                 .collect(Collectors.toList());
     }
 
     @Getter
-    public class JobDto {
-        private Long id;
-        private String name;
+    public static class JobDto {
+        private final Long id;
+        private final String name;
 
         public JobDto(Job job) {
             this.id = job.getId();

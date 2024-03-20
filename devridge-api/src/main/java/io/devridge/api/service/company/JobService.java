@@ -1,11 +1,10 @@
 package io.devridge.api.service.company;
 
-import io.devridge.api.dto.company.JobListDto;
+import io.devridge.api.dto.company.JobListResponse;
 import io.devridge.api.handler.ex.company.CompanyNotFoundException;
 import io.devridge.api.repository.company.ApiCompanyJobRepository;
 import io.devridge.core.domain.company.Company;
 import io.devridge.core.domain.company.CompanyJob;
-import io.devridge.core.domain.company.Job;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,11 @@ public class JobService {
 
     private final ApiCompanyJobRepository companyJobRepository;
 
-    public JobListDto getJobListByCompanyId(long companyId) {
+    public JobListResponse getJobListByCompanyId(long companyId) {
         Company company = companyService.findCompany(companyId).orElseThrow(CompanyNotFoundException::new);
         List<CompanyJob> companyJobs = companyJobRepository.getCompanyJobByCompany(company);
 
-        return new JobListDto(companyJobs);
+        return new JobListResponse(companyJobs);
     }
 
     Optional<CompanyJob> findCompanyJob(long companyId, long jobId) {

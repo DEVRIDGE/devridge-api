@@ -46,12 +46,12 @@ public class EducationMaterialService {
         }
     }
 
-    public List<CourseVideoWithLikeDto> getCourseVideos(Long loginUserId, long courseDetailId) {
+    public List<CourseVideoWithLikeDto> getCourseVideos(Long courseDetailId, Long loginUserId) {
 
-        return courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(loginUserId, courseDetailId);
+        return courseVideoRepository.findWithLikeCntByCourseDetailIdOrderByLikeCntDesc(courseDetailId, loginUserId);
     }
 
-    public List<CourseBook> getCourseBooks(long courseDetailId) {
+    public List<CourseBook> getCourseBooks(Long courseDetailId) {
 
         return courseBookRepository.findByCourseDetailIdOrderByLanguage(courseDetailId);
     }

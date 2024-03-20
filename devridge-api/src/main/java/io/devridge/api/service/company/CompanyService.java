@@ -1,6 +1,6 @@
 package io.devridge.api.service.company;
 
-import io.devridge.api.dto.company.CompanyListDto;
+import io.devridge.api.dto.company.CompanyListResponse;
 import io.devridge.core.domain.company.Company;
 import io.devridge.core.domain.company.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,10 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public CompanyListDto getCompanyList() {
+    public CompanyListResponse getCompanyList() {
         List<Company> companyList = companyRepository.findAll();
 
-        return new CompanyListDto(companyList);
+        return new CompanyListResponse(companyList);
     }
 
     Optional<Company> findCompany(long companyId) {

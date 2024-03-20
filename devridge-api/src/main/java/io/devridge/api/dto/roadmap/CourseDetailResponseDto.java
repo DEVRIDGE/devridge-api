@@ -26,7 +26,7 @@ public class CourseDetailResponseDto {
     }
 
     @Getter
-    public class CourseDetailDto {
+    public static class CourseDetailDto {
         private final Long id;
         private final String name;
 

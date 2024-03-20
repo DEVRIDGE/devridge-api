@@ -8,13 +8,13 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class ChangeStudyStatusRequestDto {
     @NotNull
-    private Long companyId;
+    private final Long companyId;
     @NotNull
-    private Long jobId;
+    private final Long jobId;
     @NotNull
-    private Long detailedPositionId;
+    private final Long detailedPositionId;
     @NotNull
-    private StudyStatus studyStatus;
+    private final StudyStatus studyStatus;
 
     public ChangeStudyStatusRequestDto(Long companyId, Long jobId, Long detailedPositionId, StudyStatus studyStatus) {
         this.companyId = companyId;

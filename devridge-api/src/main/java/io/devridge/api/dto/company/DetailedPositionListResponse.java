@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class DetailedPositionListDto {
-    private List<DetailedPositionDto> detailedPositionDtos;
+public class DetailedPositionListResponse {
+    private final List<DetailedPositionDto> detailedPositionDtos;
 
-    public DetailedPositionListDto(List<DetailedPosition> detailedPositions) {
+    public DetailedPositionListResponse(List<DetailedPosition> detailedPositions) {
         this.detailedPositionDtos = detailedPositions.stream().map(DetailedPositionDto::new).collect(Collectors.toList());
     }
 
     @Getter
-    public class DetailedPositionDto {
-        private Long id;
-        private String name;
+    public static class DetailedPositionDto {
+        private final Long id;
+        private final String name;
 
         public DetailedPositionDto(DetailedPosition detailedPosition) {
             this.id = detailedPosition.getId();
