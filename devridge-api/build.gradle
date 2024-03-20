@@ -1,11 +1,15 @@
 // 실행가능한 jar로 생성하는 옵션, main이 없는 라이브러리에서는 false로 비활성화함
-bootJar { enabled = true }
+bootJar {
+	mainClass = 'io.devridge.api.DevRidgeApplication'
+	enabled = true
+}
+
 
 // 외부에서 의존하기 위한 jar로 생성하는 옵션, main이 없는 라이브러리에서는 true로 비활성화함
 jar { enabled = false }
 
 dependencies {
-	implementation project(':devridge-core:domain')
+	implementation project(':devridge-core-domain')
 	implementation project(':devridge-admin')
 
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
@@ -19,3 +23,4 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
+

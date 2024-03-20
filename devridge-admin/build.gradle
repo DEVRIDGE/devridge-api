@@ -3,7 +3,7 @@ bootJar { enabled = false }
 jar { enabled = true }
 
 dependencies {
-	implementation project(':devridge-core:domain')
+	implementation project(':devridge-core-domain')
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

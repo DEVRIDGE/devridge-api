@@ -66,3 +66,7 @@ gradle.projectsEvaluated {
 		}
 	}
 }
+
+bootJar {
+	enabled = false
+}
