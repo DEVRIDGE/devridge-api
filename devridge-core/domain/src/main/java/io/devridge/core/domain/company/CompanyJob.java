@@ -19,20 +19,10 @@ public class CompanyJob extends BaseTimeEntity {
     @Column(name = "company_job_id")
     private Long id;
 
-    /**
-     * CompanyInfoService에서 CompanyJob 저장할 때 부모객체가 자식객체 저장할 때
-     * object references an unsaved transient instance - save the transient instance before flushing 에러
-     * 발생할 수 있어서 cascade를 CascadeType.ALL로 바꿈
-     */
     @JoinColumn(name = "job_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Job job;
 
-    /**
-     * CompanyInfoService에서 CompanyJob 저장할 때 부모객체가 자식객체 저장할 때
-     * object references an unsaved transient instance - save the transient instance before flushing 에러
-     * 발생할 수 있어서 cascade를 CascadeType.ALL로 바꿈
-     */
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Company company;

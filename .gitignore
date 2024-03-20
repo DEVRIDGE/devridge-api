@@ -37,9 +37,10 @@ out/
 .vscode/
 
 
-src/main/resources/application-prod.yaml
+**/application-prod.yml
 
 .DS_Store
 
 
 logs/
+libs/

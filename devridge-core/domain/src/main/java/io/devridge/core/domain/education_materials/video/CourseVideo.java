@@ -43,4 +43,12 @@ public class CourseVideo extends BaseTimeEntity {
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
+
+    public void modifyCourseVideo(CourseVideoModify courseVideoModify) {
+        this.title = courseVideoModify.getTitle();
+        this.url = courseVideoModify.getUrl();
+        this.owner = courseVideoModify.getOwner();
+        this.thumbnail = courseVideoModify.getThumbnail();
+        this.source = courseVideoModify.getSource();
+    }
 }

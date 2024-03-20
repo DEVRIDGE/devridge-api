@@ -34,3 +34,35 @@ subprojects {
 		useJUnitPlatform()
 	}
 }
+
+gradle.projectsEvaluated {
+	// 작업이 시작되기 전에 실행할 로직을 정의합니다.
+	tasks.register('buildApiJar') {
+		dependsOn ':devridge-api:bootJar'
+
+		doFirst {
+			// 'admin' 모듈의 'bootJar' 작업을 찾아 비활성화합니다.
+			if (project(':devridge-admin').tasks.findByName('bootJar')) {
+				project(':devridge-admin').tasks.named('bootJar').configure {
+					enabled = false
+				}
+				println "'admin:bootJar' is disabled."
+			}
+		}
+
+		doLast {
+			def apiJar = file("${project(':devridge-api').buildDir}/libs")
+			def rootLibsDir = new File(project.rootDir, 'libs')
+			if (!rootLibsDir.exists()) {
+				rootLibsDir.mkdirs()
+			}
+			println 'Copying API module JAR to the root/libs directory...'
+			copy {
+				from apiJar
+				include '*.jar'
+				into rootLibsDir
+			}
+			println 'API module JAR has been copied to the root/libs directory.'
+		}
+	}
+}

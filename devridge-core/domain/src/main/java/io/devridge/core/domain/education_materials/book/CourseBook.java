@@ -40,4 +40,11 @@ public class CourseBook extends BaseTimeEntity {
     @JoinColumn(name = "course_detail_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseDetail courseDetail;
+
+    public void modifyCourseBook(CourseBookModify courseBookModify) {
+        this.title = courseBookModify.getTitle();
+        this.url = courseBookModify.getUrl();
+        this.thumbnail = courseBookModify.getThumbnail();
+        this.source = courseBookModify.getSource();
+    }
 }

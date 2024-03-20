@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="bookCreateModal">
+    <div class="modal fade" id="registerBookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerBookModalLabel">책 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/item/{courseDetailId}/book(courseDetailId=${courseDetailId})}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="registerModalBookTitle" class="form-label">제목</label>
+                            <input type="text" class="form-control" id="registerModalBookTitle" name="title" placeholder="제목을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalBookUrl" class="form-label">책 판매 URL</label>
+                            <input type="text" class="form-control" id="registerModalBookUrl" name="url" placeholder="URL을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoThumbnail" class="form-label">책 썸네일 URL</label>
+                            <input type="text" class="form-control" id="registerModalVideoThumbnail" name="thumbnail" placeholder="썸네일 URL을 입력하세요.">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerModalVideoType" class="form-label">책 거래 유형</label>
+                            <select class="form-select" id="registerModalVideoType" name="source" required>
+                                <option value="" selected>유형을 선택하세요.</option>
+                                <option th:each="bookSource : ${courseItemList.bookSourceList}" th:value="${bookSource}" th:text="${bookSource}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

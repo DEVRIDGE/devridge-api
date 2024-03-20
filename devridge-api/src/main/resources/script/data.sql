@@ -69,6 +69,7 @@ INSERT INTO course_to_detail(course_to_detail_id, course_id, course_detail_id, c
 INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (1, 'C++', 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (2, ' DJ AN G O ', 8, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (3, ' Java ', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO company_required_ability(company_required_ability_id, company_required_ability_name, course_detail_id, created_at, updated_at) VALUES (4, ' TEST 매칭되지 않은 요구역량 ', null, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
 INSERT INTO company_info_company_required_ability(company_info_company_required_ability_id, company_info_id, company_required_ability_id, created_at, updated_at) VALUES (1, 1, 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO company_info_company_required_ability(company_info_company_required_ability_id, company_info_id, company_required_ability_id, created_at, updated_at) VALUES (2, 1, 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
@@ -82,5 +83,3 @@ INSERT INTO company_info_company_required_ability(company_info_company_required_
  INSERT INTO course_video(course_video_id, course_detail_id, course_video_title, course_video_url, course_video_thumbnail, course_video_source, created_at, updated_at)
  VALUES (2, 1, '[자바의정석-기초편] ch1-1,2 자바란? 자바의 역사', 'https://www.youtube.com/watch?v=oJlCC1DutbA&list=PLW2UjW795-f6xWA2_MUhEVgPauhGl3xIp', 'https://img.youtube.com/vi/oJlCC1DutbA/0.jpg', 'YOUTUBE', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 
-
--- 유저 학습 상태
